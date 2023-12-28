@@ -1,8 +1,8 @@
 <template>
-  <el-container style="height: 100vh;width: 100vw;">
+  <el-container style="height: 100vh;width: 100vw; overflow: hidden;">
     <el-header>
-      <el-menu :default-active="route.name" mode="horizontal" @select="handleSelect">
-        <img style="width: 60px" src="./assets/logo.svg" alt="logo" />
+      <el-menu style="height: 7vh;width: 100vw;" :default-active="route.name" mode="horizontal" @select="handleSelect">
+        <img style="height:6vh" src="./assets/logo.svg" alt="logo" />
         <el-menu-item index="music-library">音乐库</el-menu-item>
         <el-menu-item index="song-list">歌单</el-menu-item>
         <el-menu-item index="config">设置</el-menu-item>
@@ -11,7 +11,7 @@
     <el-main>
       <router-view></router-view>
     </el-main>
-    <el-footer>
+    <el-footer style="height: 10vh;width: 100vw; border-top:1px solid var(--el-border-color);padding: 1vh;">
       <PlayerController />
     </el-footer>
   </el-container>
