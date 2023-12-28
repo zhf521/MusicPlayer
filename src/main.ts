@@ -1,0 +1,19 @@
+import 'normalize.css';
+import '@/assets/main.css';
+import { createApp } from 'vue';
+import App from './App.vue';
+import router from './router';
+import { createPinia } from 'pinia';
+// import piniaPluginPersistedstate from 'pinia-plugin-persistedstate';
+// import localforage from 'localforage';
+// import SvgIcon from './components/SvgIcon.vue';
+
+// localforage.config({
+//     name: 'music-player',
+// });
+
+const app = createApp(App);
+const pinia = createPinia();
+// pinia.use(piniaPluginPersistedstate);
+// app.component('SvgIcon', SvgIcon);
+app.use(router).use(pinia).mount('#app');
