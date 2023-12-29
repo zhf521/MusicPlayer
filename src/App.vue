@@ -1,11 +1,11 @@
 <template>
   <el-container style="height: 100vh;width: 100vw; ">
     <el-header>
-      <el-menu style="height: 7vh;" :default-active="route.name" mode="horizontal" @select="handleSelect">
+      <el-menu style="height: 7vh;" :default-active="route.path.split('/')[1]" mode="horizontal" @select="handleSelect">
         <img style="height:6vh;" src="./assets/logo.svg" alt="logo" />
         <el-menu-item index="music-library">音乐库</el-menu-item>
         <el-menu-item index="song-list">歌单</el-menu-item>
-        <el-menu-item index="config">设置</el-menu-item>
+        <el-menu-item index="setting">设置</el-menu-item>
       </el-menu>
     </el-header>
     <el-main>
@@ -25,7 +25,7 @@ const router = useRouter();
 
 // 菜单选中
 const handleSelect = (key: string) => {
-  router.push(key);
+  router.push({ name: key });
 }
 
 </script>
