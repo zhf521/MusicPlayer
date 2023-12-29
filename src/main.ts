@@ -6,11 +6,6 @@ import router from './router';
 import { createPinia } from 'pinia';
 import SvgIcon from './components/SvgIcon.vue';
 // import piniaPluginPersistedstate from 'pinia-plugin-persistedstate';
-// import localforage from 'localforage';
-
-// localforage.config({
-//     name: 'music-player',
-// });
 
 const app = createApp(App);
 const pinia = createPinia();
