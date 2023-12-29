@@ -10,14 +10,16 @@ const router = createRouter({
         {
             path: '/music-library',
             name: 'music-library',
+            meta: { showFather: true },
             component: () => import('@/views/MusicLibraryView.vue'),
-            // children: [
-            //     {
-            //         path: 'add-music',
-            //         name: 'add-music',
-            //         component: () => import('../views/AddMusicView.vue'),
-            //     },
-            // ],
+            children: [
+                {
+                    path: 'add-music',
+                    name: 'add-music',
+                    meta: { showFather: false },
+                    component: () => import('../views/AddMusicView.vue'),
+                },
+            ],
         },
         {
             path: '/song-list',
@@ -25,9 +27,9 @@ const router = createRouter({
             component: () => import('@/views/SongListView.vue'),
         },
         {
-            path: '/config',
-            name: 'config',
-            component: () => import('@/views/ConfigView.vue'),
+            path: '/setting',
+            name: 'setting',
+            component: () => import('@/views/SettingView.vue'),
         },
     ],
 });
