@@ -19,14 +19,23 @@
 <script setup lang="ts">
 import { useRouter, useRoute } from 'vue-router';
 import PlayerController from './components/PlayerController.vue';
+import { onMounted } from 'vue';
+import { useUserSettingStore } from '@/stores/userSetting';
 // 引入路由和路由器
 const route = useRoute();
 const router = useRouter();
-
+// 引入userSettingStore
+const userSettingStore = useUserSettingStore();
 // 菜单选中
 const handleSelect = (key: string) => {
   router.push({ name: key });
 }
+
+// 组件挂载成功后执行
+onMounted(async () => {
+  // 加载用户配置
+  await userSettingStore.loadUserSetting();
+});
 
 </script>
 <style scoped></style>

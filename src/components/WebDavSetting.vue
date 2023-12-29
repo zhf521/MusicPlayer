@@ -21,7 +21,8 @@
 import { onMounted, reactive, ref } from 'vue';
 import { type FormInstance } from 'element-plus';
 import { createClient } from "webdav";
-import localforage from 'localforage';
+import { useUserSettingStore } from '@/stores/userSetting';
+import { storeToRefs } from 'pinia';
 
 // 定义WebDavForm接口
 interface WebDavForm {
@@ -45,10 +46,12 @@ const rules = reactive({
     { type: 'url', message: '输入的地址不合法', trigger: 'blur' }
   ],
 });
-
+// 引入userSettingStore中的变量和函数
+const userSettingStore = useUserSettingStore();
+const { userSetting } = storeToRefs(userSettingStore);
 // 组件挂载成功后执行
 onMounted(async () => {
-  const webDavSetting = await localforage.getItem('webDavSetting');
+  const webDavSetting = userSetting.value.webDavSetting;
   if (webDavSetting) {
     webDavForm.url = webDavSetting.url;
     webDavForm.username = webDavSetting.username;
@@ -59,7 +62,6 @@ onMounted(async () => {
 // 保存配置
 const saveSetting = async (formEl: FormInstance | undefined) => {
   if (!formEl) return;
-
   await formEl.validate(async (valid, fields) => {
     if (valid) {
       try {
@@ -68,14 +70,13 @@ const saveSetting = async (formEl: FormInstance | undefined) => {
           password: webDavForm.password,
         });
         await client.getDirectoryContents('/');
-        await localforage.setItem('webDavSetting', JSON.parse(JSON.stringify(webDavForm)));
+        userSettingStore.saveUserSetting('webDavSetting', JSON.parse(JSON.stringify(webDavForm)));
         ElMessage({
           type: 'success',
           message: '保存成功',
         })
       } catch (error) {
         console.log(error);
-
         if (error.status === 401) {
           ElMessage({
             type: 'error',
