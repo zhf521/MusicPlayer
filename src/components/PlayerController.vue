@@ -74,7 +74,6 @@
 .icon {
   width: 3vh;
   height: 3vh;
-  color: #333;
   transition: transform 0.3s ease;
 }
 
