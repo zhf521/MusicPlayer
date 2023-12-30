@@ -50,7 +50,7 @@ const rules = reactive({
 const userSettingStore = useUserSettingStore();
 const { userSetting } = storeToRefs(userSettingStore);
 // 组件挂载成功后执行
-onMounted(async () => {
+onMounted(() => {
   const webDavSetting = userSetting.value.webDavSetting;
   if (webDavSetting) {
     webDavForm.url = webDavSetting.url;
