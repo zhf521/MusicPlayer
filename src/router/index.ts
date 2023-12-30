@@ -14,7 +14,7 @@ const router = createRouter({
             component: () => import('@/views/MusicLibraryView.vue'),
             children: [
                 {
-                    path: 'add-music',
+                    path: 'add-music/:filename?',
                     name: 'add-music',
                     meta: { showFather: false },
                     component: () => import('../views/AddMusicView.vue'),
