@@ -64,6 +64,7 @@ const handleRowClick = async (row) => {
     loading.value = true;
     try {
       await getDirectory(row.filename);
+      router.push({ name: 'add-music', params: { filename: row.filename } })
     } catch (error) {
       console.log(error);
     } finally {
