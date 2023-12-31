@@ -1,12 +1,12 @@
 <template>
-  <el-table :data="props.list" height="100%" style="width: 100%" stripe @cell-dblclick="test">
+  <el-table :data="props.list" height="100%" style="width: 100%" stripe @cell-dblclick="play" show-overflow-tooltip>
     <template #empty>
       空空如也~
     </template>
     <el-table-column type="index" />
     <el-table-column label="标题">
       <template #default="scope">
-        {{ scope.row.title || scope.row.fileName }}
+        {{ scope.row.title || scope.row.basename }}
       </template>
     </el-table-column>
     <el-table-column label="歌手">
@@ -28,17 +28,16 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted } from 'vue';
+import { usePlayerControllerStore } from '@/stores/playerController';
 
 // props参数
 const props = defineProps({
   list: Array
 });
-onMounted(() => {
-  console.log(props.list);
-});
-// const tableData = props.list;
-const test = (row, column, cell, event) => {
-  console.log(row, column, cell, event);
+// 引入playerControllerStore中的变量和函数
+const playerControllerStore = usePlayerControllerStore();
+const { } = playerControllerStore;
+const play = (row, column, cell, event) => {
+  console.log(row.$index);
 }
 </script>
