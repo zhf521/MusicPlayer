@@ -17,7 +17,7 @@ const route = useRoute();
 const router = useRouter();
 // 添加音乐到音乐库
 const addMusic = () => {
-  router.push('/music-library/add-music')
+  router.push({ name: 'add-music', params: { filename: '/' } })
 }
 </script>
 <style scoped>
