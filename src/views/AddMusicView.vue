@@ -1,6 +1,6 @@
 <template>
   <!-- WebDav未设置 -->
-  <div v-if="false" class="not-set">
+  <div v-if="!userSetting.webDavSetting" class="not-set">
     <el-empty description="WebDav服务器未配置或配置有误">
       <el-button type="primary" @click="goToSet">点我去设置</el-button>
     </el-empty>
@@ -34,7 +34,7 @@
         <el-table-column prop="size" label="大小" />
       </el-table>
       <div style="margin-top: 1vh;">
-        <el-button type="primary" @click="addToMusicLibrary">添加到音乐库</el-button>
+        <el-button type="primary" @click="addMusic">添加到音乐库</el-button>
         <el-button @click="clearSelection">清除选择</el-button>
       </div>
     </div>
@@ -43,7 +43,10 @@
 <script setup lang="ts">
 import { useRoute, useRouter } from 'vue-router';
 import { useGetDirectory } from '@/hooks/useGetDirectory';
-import { computed, onMounted, ref, watch } from 'vue';
+import { computed, nextTick, onMounted, ref, watch } from 'vue';
+import { useMusicLibraryStore } from '@/stores/musicLibrary';
+import { storeToRefs } from 'pinia';
+import { useUserSettingStore } from '@/stores/userSetting';
 
 // 引入路由和路由器
 const route = useRoute();
@@ -56,17 +59,22 @@ const loading = ref(false);
 const selectedMusic = ref([]);
 // 文件表格的引用
 const fileTableRef = ref<InstanceType<typeof ElTable>>()
+// 引入musicLibraryStore中的变量和函数
+const musicLibraryStore = useMusicLibraryStore();
+const { musicLibrary } = storeToRefs(musicLibraryStore);
+const { addToMusicLibrary } = musicLibraryStore;
+// 引入userSettingStore中的变量和函数
+const userSettingStore = useUserSettingStore();
+const { userSetting } = storeToRefs(userSettingStore);
+const { loadUserSetting } = userSettingStore;
 
 // 组件挂载完成后执行
 onMounted(async () => {
+  // 加载用户设置
+  await loadUserSetting();
   loading.value = true;
   try {
-    if (route.params.filename === '') {
-      // 判断是否为根目录
-      await getDirectory('/');
-    } else {
-      await getDirectory(decodeURIComponent(route.params.filename));
-    }
+    await getDirectory(decodeURIComponent(route.params.filename))
   } catch (error) {
     console.log(error);
   } finally {
@@ -131,12 +139,24 @@ const handleSelectionChange = (val) => {
   selectedMusic.value = val;
 }
 // 添加到音乐库
-const addToMusicLibrary = () => {
+const addMusic = () => {
   console.log(selectedMusic.value);
+  selectedMusic.value.forEach((item) => {
+    if (!musicLibrary.value.some((music) => music.filename === item.filename)) {
+      addToMusicLibrary(item);
+    }
+  })
+  selectedMusic.value = [];
+  fileTableRef.value.clearSelection();
+  ElMessage({
+    type: 'success',
+    message: '添加成功',
+  })
+  router.push('/music-library');
 }
 // 清除选择
 const clearSelection = () => {
-  fileTableRef.value.clearSelection()
+  fileTableRef.value.clearSelection();
 }
 </script>
 <style scoped>
