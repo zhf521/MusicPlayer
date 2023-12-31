@@ -24,8 +24,9 @@ import { useUserSettingStore } from '@/stores/userSetting';
 // 引入路由和路由器
 const route = useRoute();
 const router = useRouter();
-// 引入userSettingStore
+// 引入userSettingStore中的函数
 const userSettingStore = useUserSettingStore();
+const { loadUserSetting } = userSettingStore;
 // 菜单选中
 const handleSelect = (key: string) => {
   router.push({ name: key });
@@ -34,7 +35,7 @@ const handleSelect = (key: string) => {
 // 组件挂载成功后执行
 onMounted(async () => {
   // 加载用户配置
-  await userSettingStore.loadUserSetting();
+  await loadUserSetting();
 });
 
 </script>
