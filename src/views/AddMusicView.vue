@@ -7,9 +7,14 @@
   </div>
   <!-- 文件管理 -->
   <div v-else class="file-manager">
+    <!-- 面包屑 -->
     <div class="breadcrumb">
-      面包屑
+      <el-breadcrumb separator="/" class="breadcrumb">
+        <el-breadcrumb-item v-for="(crumb, index) in breadcrumbs" :key="index" :to="getTo(index)">{{ crumb
+        }}</el-breadcrumb-item>
+      </el-breadcrumb>
     </div>
+    <!-- 文件内容 -->
     <div class="file-content">
       <el-table v-loading="loading" :data="contents" height="75vh" style="width: 100%" @row-click="handleRowClick">
         <el-table-column type="selection" />
@@ -31,11 +36,12 @@
   </div>
 </template>
 <script setup lang="ts">
-import { useRouter } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import { useGetDirectory } from '@/hooks/useGetDirectory';
-import { onMounted, ref } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
 
-// 引入路由器
+// 引入路由和路由器
+const route = useRoute();
 const router = useRouter();
 // 引入UseGetDirectory中的变量和函数
 const { contents, getDirectory } = useGetDirectory();
@@ -52,8 +58,37 @@ onMounted(async () => {
   } finally {
     loading.value = false;
   }
-})
+});
 
+// 计算面包屑导航
+const breadcrumbs = computed(() => {
+  const paths = route.params.filename.split('/').filter((path) => path !== '');
+  if (paths.length === 0) {
+    return ['根目录'];
+  } else {
+    return ['根目录', ...paths.map((path) => decodeURIComponent(path))];
+  }
+});
+// 点击面包屑项时跳转
+const getTo = (index) => {
+  if (index === 0) {
+    return { name: 'add-music', params: { filename: '/' } }; // 根目录
+  } else {
+    const paths = route.params.filename.split('/').slice(0, index + 1).join('/');
+    return { name: 'add-music', params: { filename: paths } }; // 点击的路径
+  }
+}
+// 监听路由参数变化
+watch(() => route.params.filename, async (newVal) => {
+  loading.value = true;
+  try {
+    await getDirectory(newVal);
+  } catch (error) {
+    console.log(error);
+  } finally {
+    loading.value = false;
+  }
+});
 // 跳转到设置
 const goToSet = () => {
   router.push('/setting')
