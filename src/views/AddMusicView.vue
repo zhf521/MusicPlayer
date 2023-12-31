@@ -52,7 +52,12 @@ const loading = ref(false);
 onMounted(async () => {
   loading.value = true;
   try {
-    await getDirectory('/');
+    if (route.params.filename === '') {
+      // 判断是否为根目录
+      await getDirectory('/');
+    } else {
+      await getDirectory(decodeURIComponent(route.params.filename));
+    }
   } catch (error) {
     console.log(error);
   } finally {
