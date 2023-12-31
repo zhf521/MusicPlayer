@@ -29,6 +29,7 @@
   </el-row>
 </template>
 <script setup lang="ts">
+
 </script>
 <style scoped>
 .player-controller {

@@ -17,10 +17,10 @@
     <!-- 文件内容 -->
     <div class="file-content">
       <el-table v-loading="loading" :data="contents" height="68vh" style="width: 100%" @row-click="handleRowClick"
-        @selection-change="handleSelectionChange" ref="fileTableRef">
+        @selection-change="handleSelectionChange" ref="fileTableRef" show-overflow-tooltip>
         <el-table-column type="selection" />
         <el-table-column type="index" />
-        <el-table-column label="名称" show-overflow-tooltip>
+        <el-table-column label="名称">
           <template #default="scope">
             <div style="display:flex; align-items: center;">
               <SvgIcon style="width: 4vh;height: 4vh;"
