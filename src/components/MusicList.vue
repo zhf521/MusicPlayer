@@ -1,5 +1,5 @@
 <template>
-  <el-table :data="tableData" height="100%" style="width: 100%" stripe @cell-dblclick="test">
+  <el-table :data="props.list" height="100%" style="width: 100%" stripe @cell-dblclick="test">
     <template #empty>
       空空如也~
     </template>
@@ -28,93 +28,16 @@
 </template>
 
 <script setup lang="ts">
-const tableData = [
-  //   {
-  //     fileName: '11111',
-  //     title: '123',
-  //     // singer: '哈哈哈哈',
-  //     album: '你好',
-  //     duration: '123',
-  //   },
-  //   {
-  //     fileName: '11111',
-  //     title: '测试',
-  //     singer: '哈哈哈哈',
-  //     album: '你好',
-  //     // duration: '123',
-  //   }, {
-  //     fileName: '11111',
-  //     // title: '测试',
-  //     singer: '哈哈哈哈',
-  //     album: '你好',
-  //     duration: '123',
-  //   }, {
-  //     title: '测试',
-  //     singer: '哈哈哈哈',
-  //     album: '你好',
-  //     duration: '123',
-  //   }, {
-  //     title: '测试',
-  //     singer: '哈哈哈哈',
-  //     album: '你好',
-  //     duration: '123',
-  //   }, {
-  //     title: '测试',
-  //     singer: '哈哈哈哈',
-  //     album: '你好',
-  //     duration: '123',
-  //   }, {
-  //     title: '测试',
-  //     singer: '哈哈哈哈',
-  //     album: '你好',
-  //     duration: '123',
-  //   }, {
-  //     title: '测试',
-  //     singer: '哈哈哈哈',
-  //     album: '你好',
-  //     duration: '123',
-  //   }, {
-  //     title: '测试',
-  //     singer: '哈哈哈哈',
-  //     album: '你好',
-  //     duration: '123',
-  //   }, {
-  //     title: '测试',
-  //     singer: '哈哈哈哈',
-  //     album: '你好',
-  //     duration: '123',
-  //   }, {
-  //     title: '测试',
-  //     singer: '哈哈哈哈',
-  //     album: '你好',
-  //     duration: '123',
-  //   }, {
-  //     title: '测试',
-  //     singer: '哈哈哈哈',
-  //     album: '你好',
-  //     duration: '123',
-  //   }, {
-  //     title: '测试',
-  //     singer: '哈哈哈哈',
-  //     album: '你好',
-  //     duration: '123',
-  //   }, {
-  //     title: '测试',
-  //     singer: '哈哈哈哈',
-  //     album: '你好',
-  //     duration: '123',
-  //   }, {
-  //     title: '测试',
-  //     singer: '哈哈哈哈',
-  //     album: '你好',
-  //     duration: '123',
-  //   }, {
-  //     title: '测试',
-  //     singer: '哈哈哈哈',
-  //     album: '你好',
-  //     duration: '123',
-  //   },
-];
+import { onMounted } from 'vue';
+
+// props参数
+const props = defineProps({
+  list: Array
+});
+onMounted(() => {
+  console.log(props.list);
+});
+// const tableData = props.list;
 const test = (row, column, cell, event) => {
   console.log(row, column, cell, event);
 }
