@@ -4,6 +4,7 @@
       <el-button type="primary" @click="goToAddMusic">点我去添加</el-button>
     </el-empty>
     <div v-else class="music-list">
+      <el-button type="primary" size="large" @click="goToAddMusic">添加</el-button>
       <MusicList :list="musicLibrary" />
     </div>
   </div>
