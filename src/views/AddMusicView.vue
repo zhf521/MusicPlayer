@@ -19,7 +19,7 @@
       <el-table v-loading="loading" :data="contents" height="68vh" style="width: 100%" @row-click="handleRowClick"
         @selection-change="handleSelectionChange" ref="fileTableRef">
         <el-table-column type="selection" />
-        <el-table-column type="index" style="width: 10px;" />
+        <el-table-column type="index" />
         <el-table-column label="名称" show-overflow-tooltip>
           <template #default="scope">
             <div style="display:flex; align-items: center;">
