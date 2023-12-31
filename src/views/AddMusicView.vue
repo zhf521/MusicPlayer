@@ -16,7 +16,8 @@
     </div>
     <!-- 文件内容 -->
     <div class="file-content">
-      <el-table v-loading="loading" :data="contents" height="75vh" style="width: 100%" @row-click="handleRowClick">
+      <el-table v-loading="loading" :data="contents" height="68vh" style="width: 100%" @row-click="handleRowClick"
+        @selection-change="handleSelectionChange" ref="fileTableRef">
         <el-table-column type="selection" />
         <el-table-column type="index" style="width: 10px;" />
         <el-table-column label="名称" show-overflow-tooltip>
@@ -32,6 +33,10 @@
         <el-table-column prop="lastmod" label="修改时间" />
         <el-table-column prop="size" label="大小" />
       </el-table>
+      <div style="margin-top: 1vh;">
+        <el-button type="primary" @click="addToMusicLibrary">添加到音乐库</el-button>
+        <el-button @click="clearSelection">清除选择</el-button>
+      </div>
     </div>
   </div>
 </template>
@@ -47,6 +52,10 @@ const router = useRouter();
 const { contents, getDirectory } = useGetDirectory();
 // 加载状态
 const loading = ref(false);
+// 选择的值
+const selectedMusic = ref([]);
+// 文件表格的引用
+const fileTableRef = ref<InstanceType<typeof ElTable>>()
 
 // 组件挂载完成后执行
 onMounted(async () => {
@@ -112,10 +121,22 @@ const handleRowClick = async (row) => {
     }
   } else {
     ElMessage({
-      message: '别点啦~没有下一级啦！',
+      message: '别点啦~没有下一级啦！这么喜欢我就把我加入音乐库吧~',
       type: 'warning',
     })
   }
+}
+// 触发选择切换
+const handleSelectionChange = (val) => {
+  selectedMusic.value = val;
+}
+// 添加到音乐库
+const addToMusicLibrary = () => {
+  console.log(selectedMusic.value);
+}
+// 清除选择
+const clearSelection = () => {
+  fileTableRef.value.clearSelection()
 }
 </script>
 <style scoped>
