@@ -13,7 +13,8 @@
       <div class="music-btns">
         <SvgIcon class="icon" iconName="icon-random" />
         <SvgIcon class="icon" iconName="icon-prev" />
-        <SvgIcon class="icon" iconName="icon-play" />
+        <SvgIcon class="icon" :iconName="(isPlaying === false) ? 'icon-play' : 'icon-pause'"
+          :title="(isPlaying === false) ? '播放' : '暂停'" @click="togglePlay" />
         <SvgIcon class="icon" iconName="icon-next" />
         <SvgIcon class="icon" iconName="icon-volume" />
       </div>
@@ -27,9 +28,32 @@
       </div>
     </el-col>
   </el-row>
+  <audio ref="playerRef"></audio>
 </template>
 <script setup lang="ts">
+import { nextTick, onMounted, ref } from 'vue';
+import { usePlayerControllerStore } from '@/stores/playerController';
+import { storeToRefs } from 'pinia';
+// 引入playerControllerStore中的变量和函数
+const playerControllerStore = usePlayerControllerStore();
+const { isPlaying } = storeToRefs(playerControllerStore);
+const { setAudioElement, setPlayState, loadAndPlayMusic } = playerControllerStore;
+// 音乐标签实例
+const playerRef = ref(null);
 
+// 组件挂载完后执行
+onMounted(() => {
+  // 设置audio元素
+  nextTick(() => {
+    setAudioElement(playerRef.value);
+  });
+})
+
+// 切换播放、暂停
+const togglePlay = () => {
+  // // 设置播放状态
+  setPlayState(!isPlaying.value);
+}
 </script>
 <style scoped>
 .player-controller {

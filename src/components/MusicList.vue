@@ -1,27 +1,22 @@
 <template>
-  <el-table :data="props.list" height="100%" style="width: 100%" stripe @cell-dblclick="play" show-overflow-tooltip>
+  <el-table :data="props.list" height="100%" style="width: 100%" stripe @cell-dblclick="togglePlay" show-overflow-tooltip>
     <template #empty>
       空空如也~
     </template>
     <el-table-column type="index" />
     <el-table-column label="标题">
       <template #default="scope">
-        {{ scope.row.title || scope.row.basename }}
+        {{ scope.row.tag && scope.row.tag.tags.title || scope.row.basename }}
       </template>
     </el-table-column>
-    <el-table-column label="歌手">
+    <el-table-column label="艺术家">
       <template #default="scope">
-        {{ scope.row.singer || '未知歌手' }}
+        {{ scope.row.tag && scope.row.tag.tags.artist || '未知艺术家' }}
       </template>
     </el-table-column>
     <el-table-column prop="album" label="专辑">
       <template #default="scope">
-        {{ scope.row.album || '未知专辑' }}
-      </template>
-    </el-table-column>
-    <el-table-column prop="duration" label="时长">
-      <template #default="scope">
-        {{ scope.row.duration || '未知时长' }}
+        {{ scope.row.tag && scope.row.tag.tags.album || '未知专辑' }}
       </template>
     </el-table-column>
   </el-table>
@@ -29,6 +24,8 @@
 
 <script setup lang="ts">
 import { usePlayerControllerStore } from '@/stores/playerController';
+import { useUserSettingStore } from '@/stores/userSetting';
+import { onMounted } from 'vue';
 
 // props参数
 const props = defineProps({
@@ -36,8 +33,16 @@ const props = defineProps({
 });
 // 引入playerControllerStore中的变量和函数
 const playerControllerStore = usePlayerControllerStore();
-const { } = playerControllerStore;
-const play = (row, column, cell, event) => {
-  console.log(row.$index);
+const { loadAndPlayMusic } = playerControllerStore;
+const togglePlay = (row) => {
+  loadAndPlayMusic(row.filename);
 }
+// 引入userSettingStore中的变量和函数
+const userSettingStore = useUserSettingStore();
+// const { userSetting } = storeToRefs(userSettingStore);
+const { loadUserSetting } = userSettingStore;
+onMounted(async () => {
+  // 加载用户设置
+  await loadUserSetting();
+})
 </script>

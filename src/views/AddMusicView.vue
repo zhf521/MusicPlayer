@@ -51,7 +51,7 @@ import { useUserSettingStore } from '@/stores/userSetting';
 // 引入路由和路由器
 const route = useRoute();
 const router = useRouter();
-// 引入UseGetDirectory中的变量和函数
+// 引入useGetDirectory中的变量和函数
 const { contents, getDirectory } = useGetDirectory();
 // 加载状态
 const loading = ref(false);

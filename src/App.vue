@@ -14,6 +14,7 @@
     <el-footer style="height: 10vh;width: 100vw; border-top:1px solid var(--el-border-color);padding: 1vh;">
       <PlayerController />
     </el-footer>
+    <audio src=""></audio>
   </el-container>
 </template>
 <script setup lang="ts">
