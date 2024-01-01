@@ -26,9 +26,9 @@ export const usePlayerControllerStore = defineStore('playerController', () => {
         audioElement.value = audio;
     };
     // 加载并播放音乐
-    const loadAndPlayMusic = async (filename) => {
+    const loadAndPlayMusic = async (list, index) => {
         try {
-            await getFileURL(filename);
+            await getFileURL(list[index].filename);
             audioElement.value.src = fileURL.value;
             audioElement.value.play();
             isPlaying.value = true;
