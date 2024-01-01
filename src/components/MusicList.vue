@@ -1,12 +1,14 @@
 <template>
-  <el-table :data="props.list" height="100%" style="width: 100%" stripe @cell-dblclick="togglePlay" show-overflow-tooltip>
+  <el-table :data="props.list" height="100%" style="width: 100%" stripe show-overflow-tooltip>
     <template #empty>
       空空如也~
     </template>
     <el-table-column type="index" />
     <el-table-column label="标题">
       <template #default="scope">
-        {{ scope.row.tag && scope.row.tag.tags.title || scope.row.basename }}
+        <div @dblclick="togglePlay(scope.row, scope.$index)" style="overflow: hidden; text-overflow: ellipsis;">
+          {{ scope.row.tag && scope.row.tag.tags.title || scope.row.basename }}
+        </div>
       </template>
     </el-table-column>
     <el-table-column label="艺术家">
@@ -34,8 +36,9 @@ const props = defineProps({
 // 引入playerControllerStore中的变量和函数
 const playerControllerStore = usePlayerControllerStore();
 const { loadAndPlayMusic } = playerControllerStore;
-const togglePlay = (row) => {
+const togglePlay = (row, index) => {
   loadAndPlayMusic(row.filename);
+  console.log(row, index);
 }
 // 引入userSettingStore中的变量和函数
 const userSettingStore = useUserSettingStore();
