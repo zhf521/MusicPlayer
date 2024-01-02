@@ -6,7 +6,7 @@
     <el-table-column type="index" />
     <el-table-column label="标题">
       <template #default="scope">
-        <div @dblclick="togglePlay(scope.$index)" style="overflow: hidden; text-overflow: ellipsis;">
+        <div @dblclick="play(scope.$index)" style="overflow: hidden; text-overflow: ellipsis;">
           {{ scope.row.tag && scope.row.tag.tags.title || scope.row.basename }}
         </div>
       </template>
@@ -36,7 +36,7 @@ const props = defineProps({
 // 引入playerControllerStore中的变量和函数
 const playerControllerStore = usePlayerControllerStore();
 const { loadAndPlayMusic } = playerControllerStore;
-const togglePlay = (index) => {
+const play = (index) => {
   loadAndPlayMusic(props.list, index);
 }
 // 引入userSettingStore中的变量和函数
