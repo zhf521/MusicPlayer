@@ -14,7 +14,7 @@
         <SvgIcon class="icon" iconName="icon-random" />
         <SvgIcon class="icon" iconName="icon-prev" />
         <SvgIcon class="icon" :iconName="(isPlaying === false) ? 'icon-play' : 'icon-pause'"
-          :title="(isPlaying === false) ? '播放' : '暂停'" @click="togglePlay" />
+          :title="(isPlaying === false) ? '播放' : '暂停'" @click="toggleMusicPlay" />
         <SvgIcon class="icon" iconName="icon-next" />
         <SvgIcon class="icon" iconName="icon-volume" />
       </div>
@@ -37,7 +37,7 @@ import { storeToRefs } from 'pinia';
 // 引入playerControllerStore中的变量和函数
 const playerControllerStore = usePlayerControllerStore();
 const { isPlaying } = storeToRefs(playerControllerStore);
-const { setAudioElement, setPlayState, loadAndPlayMusic } = playerControllerStore;
+const { setAudioElement, togglePlay } = playerControllerStore;
 // 音乐标签实例
 const playerRef = ref(null);
 
@@ -50,9 +50,8 @@ onMounted(() => {
 })
 
 // 切换播放、暂停
-const togglePlay = () => {
-  // // 设置播放状态
-  setPlayState(!isPlaying.value);
+const toggleMusicPlay = () => {
+  togglePlay();
 }
 </script>
 <style scoped>
