@@ -1,5 +1,6 @@
 import { useGetFileURL } from '@/hooks/useGetFileURL';
 import { compareArrays } from '@/utils/compareArrays';
+import { randomShuffle } from '@/utils/randomShuffle';
 import { defineStore } from 'pinia';
 import { computed, ref } from 'vue';
 
@@ -12,16 +13,18 @@ export const usePlayerControllerStore = defineStore('playerController', () => {
     const isPlaying = ref(false);
     // 正在播放列表
     const playList = ref([]);
-    // 顺序播放列表
+    // 顺序的列表
     const orderList = ref([]);
     // 当前播放音乐的索引
     const currentIndex = ref(-1);
-    // // 当前播放的音乐
-    // const currentMusic = computed(() => {
-    //     return playList.value[currentIndex.value] || {};
-    // });
-    // // 播放模式，默认模式为顺序播放
-    // const mode = ref(1);
+    // 播放模式，默认模式为列表循环
+    const mode = ref(0);
+    // 当前播放的音乐
+    const currentMusic = computed(() => {
+        return playList.value[currentIndex.value] || {};
+    });
+    // 当前音乐的信息
+    const currentMusicInfo = ref(null);
 
     // 设置audio元素
     const setAudioElement = (audio) => {
@@ -31,14 +34,16 @@ export const usePlayerControllerStore = defineStore('playerController', () => {
     const loadAndPlayMusic = async (list, index) => {
         if (!compareArrays(list, playList.value)) {
             console.log('播放列表不相同');
-            setPlayList(list);
+            playList.value = list;
+            orderList.value = list;
         }
         try {
             await getFileURL(playList.value[index].filename);
             audioElement.value.src = fileURL.value;
             audioElement.value.play();
             currentIndex.value = index;
-            isPlaying.value = true;
+            currentMusicInfo.value = playList.value[index].tag.tags;
+                isPlaying.value = true;
         } catch (error) {
             console.log(error);
         }
@@ -53,11 +58,47 @@ export const usePlayerControllerStore = defineStore('playerController', () => {
             isPlaying.value = true;
         }
     };
-    // 设置正在播放列表
-    const setPlayList = (list) => {
+    // 上一曲
+    const prev = () => {
+        if (currentIndex.value > 0) {
+            const newIndex = currentIndex.value - 1;
+            loadAndPlayMusic(playList.value, newIndex);
+        } else {
+            const newIndex = playList.value.length - 1;
+            loadAndPlayMusic(playList.value, newIndex);
+        }
+    };
+    // 下一曲
+    const next = () => {
+        if (currentIndex.value === playList.value.length - 1) {
+            const newIndex = 0;
+            loadAndPlayMusic(playList.value, newIndex);
+        } else {
+            const newIndex = currentIndex.value + 1;
+            loadAndPlayMusic(playList.value, newIndex);
+        }
+    };
+    // 设置播放模式
+    const setMode = (newMode) => {
+        mode.value = newMode;
+        let list = [];
+        switch (mode.value) {
+            // 列表循环
+            case 0:
+                list = orderList.value;
+                break;
+            // 随机播放
+            case 1:
+                list = randomShuffle(orderList.value);
+                break;
+        }
+        // 获取当前歌曲在顺序列表中的索引
+        const index = playList.value.findIndex(
+            (item) => item.filename === currentMusic.value.filename
+        );
+        // 设置当前索引
+        currentIndex.value = index;
         playList.value = list;
-        // 顺序播放列表同样是这个正在播放的列表
-        orderList.value = list;
     };
     // // 设置播放状态
     // const setPlayState = (state) => {
@@ -69,31 +110,19 @@ export const usePlayerControllerStore = defineStore('playerController', () => {
     //     setCurrentIndex(index);
     //     setPlaying(true);
     // };
-    // // 设置当前播放索引
-    // const setCurrentIndex = (index) => {
-    //     currentIndex.value = index;
-    // };
-    // // 设置播放模式
-    // const setMode = (newMode) => {
-    //     mode.value = newMode;
-    // };
     return {
         audioElement,
         setAudioElement,
         isPlaying,
         loadAndPlayMusic,
         togglePlay,
-        setPlayList,
-        // mode,
-        // playList,
-        // orderList,
-
-        // currentIndex,
-        // currentMusic,
-        // setPlayList,
-        // selectPlay,
-
-        // setCurrentIndex,
-        // setMode,
+        prev,
+        next,
+        mode,
+        setMode,
+        currentIndex,
+        currentMusic,
+        playList,
+        currentMusicInfo,
     };
 });
