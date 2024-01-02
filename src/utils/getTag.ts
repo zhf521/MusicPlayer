@@ -1,4 +1,4 @@
-export default async function getTag(file) {
+export async function getTag(file) {
     return new Promise(async (resolve, reject) => {
         jsmediatags.read(file, {
             onSuccess: function (tag) {
