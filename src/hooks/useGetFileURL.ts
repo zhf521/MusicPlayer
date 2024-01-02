@@ -1,6 +1,6 @@
 import { useMusicLibraryStore } from '@/stores/musicLibrary';
 import { useUserSettingStore } from '@/stores/userSetting';
-import getTag from '@/utils/getTag';
+import { getTag } from '@/utils/getTag';
 import { storeToRefs } from 'pinia';
 import { onMounted, ref } from 'vue';
 import { createClient } from 'webdav';
