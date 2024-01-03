@@ -35,6 +35,7 @@ import { computed, nextTick, onMounted, ref } from 'vue';
 import { usePlayerControllerStore } from '@/stores/playerController';
 import { storeToRefs } from 'pinia';
 import { getMusicCover } from '@/utils/getMusicCover';
+import { formatTime } from '@/utils/formatTime';
 
 // 引入playerControllerStore中的变量和函数
 const playerControllerStore = usePlayerControllerStore();
@@ -70,43 +71,20 @@ onMounted(() => {
     audioElement.value.oncanplay = () => {
       // 获取音频时长
       const musicTime = audioElement.value.duration;
-      // 计算音频分钟
-      const musicMinute = Math.floor(musicTime / 60);
-      // 计算音频秒
-      const musicSecond = Math.floor(musicTime % 60);
-      if (musicMinute < 10 && musicSecond < 10) {
-        dTime.value = `0${musicMinute}:0${musicSecond}`;
-      } else if (musicMinute < 10) {
-        dTime.value = `0${musicMinute}:${musicSecond}`;
-      } else if (musicSecond < 10) {
-        dTime.value = `${musicMinute}:0${musicSecond}`;
-      } else {
-        dTime.value = `${musicMinute}:${musicSecond}`;
-      }
+      // 格式化音频时长
+      dTime.value = formatTime(musicTime);
     }
     // 音频正在播放时
     audioElement.value.ontimeupdate = () => {
       // 获取音频时长
       const musicTime = audioElement.value.duration;
-      // 获取已播放的音频时长
+      // 获取已播放的时长
       const playedTime = audioElement.value.currentTime;
+      // 格式化已播放的时长
+      cTime.value = formatTime(playedTime);
       // 计算已播放进度条比例宽度
       playedProgressWidth.value = `${(playedTime / musicTime) * 100}%`;
-      // 计算已播放的音频分钟
-      const musicMinute = Math.floor(playedTime / 60);
-      // 计算已播放的音频秒
-      const musicSecond = Math.floor(playedTime % 60);
-      if (musicMinute < 10 && musicSecond < 10) {
-        cTime.value = `0${musicMinute}:0${musicSecond}`;
-      } else if (musicMinute < 10) {
-        cTime.value = `0${musicMinute}:${musicSecond}`;
-      } else if (musicSecond < 10) {
-        cTime.value = `${musicMinute}:0${musicSecond}`;
-      } else {
-        cTime.value = `${musicMinute}:${musicSecond}`;
-      }
     }
-
   })
 })
 
