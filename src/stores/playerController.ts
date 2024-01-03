@@ -8,7 +8,7 @@ export const usePlayerControllerStore = defineStore('playerController', () => {
     // 引入useGetFileURL中的变量和函数
     const { fileURL, getFileURL } = useGetFileURL();
     // audio元素
-    const audioElement = ref(null || Element);
+    const audioElement = ref(null);
     // 播放状态，是否播放
     const isPlaying = ref(false);
     // 正在播放列表

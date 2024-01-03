@@ -19,6 +19,7 @@
         <SvgIcon class="icon" iconName="icon-volume" />
       </div>
       <div class="progress-bar">
+        <ProgressBar :cTime="cTime" :dTime="dTime" :playedProgressWidth="playedProgressWidth" />
       </div>
     </el-col>
     <el-col :span="7">
@@ -27,10 +28,10 @@
       </div>
     </el-col>
   </el-row>
-  <audio ref="playerRef" @ended="handleAudioEnd"></audio>
+  <audio ref="playerRef"></audio>
 </template>
 <script setup lang="ts">
-import { computed, nextTick, onMounted, ref} from 'vue';
+import { computed, nextTick, onMounted, ref } from 'vue';
 import { usePlayerControllerStore } from '@/stores/playerController';
 import { storeToRefs } from 'pinia';
 import { getMusicCover } from '@/utils/getMusicCover';
@@ -43,13 +44,70 @@ const { setAudioElement, togglePlay, prev, next, setMode } = playerControllerSto
 const playerRef = ref(null);
 // 播放模式
 const playMode = ['list-loop', 'one-loop', 'random'];
+// 当前播放时间
+const cTime = ref();
+// 音乐总时长
+const dTime = ref();
+// 已播放进度条宽度
+const playedProgressWidth = ref();
 
 // 组件挂载完后执行
 onMounted(() => {
   // 设置audio元素
   nextTick(() => {
     setAudioElement(playerRef.value);
-  });
+    // 音频播放完
+    audioElement.value.onended = () => {
+      if (mode.value === 1) {
+        // 单曲循环
+        audioElement.value.currentTime = 0; // 重新开始播放当前音频
+        audioElement.value.play(); // 继续播放
+      } else {
+        next();
+      }
+    }
+    // 音频加载完可播放
+    audioElement.value.oncanplay = () => {
+      // 获取音频时长
+      const musicTime = audioElement.value.duration;
+      // 计算音频分钟
+      const musicMinute = Math.floor(musicTime / 60);
+      // 计算音频秒
+      const musicSecond = Math.floor(musicTime % 60);
+      if (musicMinute < 10 && musicSecond < 10) {
+        dTime.value = `0${musicMinute}:0${musicSecond}`;
+      } else if (musicMinute < 10) {
+        dTime.value = `0${musicMinute}:${musicSecond}`;
+      } else if (musicSecond < 10) {
+        dTime.value = `${musicMinute}:0${musicSecond}`;
+      } else {
+        dTime.value = `${musicMinute}:${musicSecond}`;
+      }
+    }
+    // 音频正在播放时
+    audioElement.value.ontimeupdate = () => {
+      // 获取音频时长
+      const musicTime = audioElement.value.duration;
+      // 获取已播放的音频时长
+      const playedTime = audioElement.value.currentTime;
+      // 计算已播放进度条比例宽度
+      playedProgressWidth.value = `${(playedTime / musicTime) * 100}%`;
+      // 计算已播放的音频分钟
+      const musicMinute = Math.floor(playedTime / 60);
+      // 计算已播放的音频秒
+      const musicSecond = Math.floor(playedTime % 60);
+      if (musicMinute < 10 && musicSecond < 10) {
+        cTime.value = `0${musicMinute}:0${musicSecond}`;
+      } else if (musicMinute < 10) {
+        cTime.value = `0${musicMinute}:${musicSecond}`;
+      } else if (musicSecond < 10) {
+        cTime.value = `${musicMinute}:0${musicSecond}`;
+      } else {
+        cTime.value = `${musicMinute}:${musicSecond}`;
+      }
+    }
+
+  })
 })
 
 // 切换播放、暂停
@@ -78,16 +136,6 @@ const modeIconTitle = computed(() => {
   const playModeTitle = ['列表循环', '单曲循环', '随机播放'];
   return playModeTitle[mode.value];
 })
-// 音频播放完成
-const handleAudioEnd = () => {
-  if (mode.value === 1) {
-    // 单曲循环
-    audioElement.value.currentTime = 0; // 重新开始播放当前音频
-    audioElement.value.play(); // 继续播放
-  } else {
-    next();
-  }
-}
 </script>
 <style scoped>
 .player-controller {
