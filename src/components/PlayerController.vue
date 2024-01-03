@@ -2,7 +2,7 @@
   <el-row :gutter="3" justify="space-evenly" class="player-controller">
     <el-col :span="7">
       <div class="music-details">
-        <img class="music-cover" src="" alt="music-cover">
+        <img class="music-cover" :src="currentMusicInfo ? getMusicCover(currentMusicInfo.picture) : ''" alt="music-cover">
         <div class="music-info">
           <div class="music-title">{{ currentMusicInfo && currentMusicInfo.title || '标题' }}</div>
           <div class="music-artist">{{ currentMusicInfo && currentMusicInfo.artist || '艺术家' }}</div>
@@ -19,7 +19,6 @@
         <SvgIcon class="icon" iconName="icon-volume" />
       </div>
       <div class="progress-bar">
-        <!-- <el-slider /> -->
       </div>
     </el-col>
     <el-col :span="7">
@@ -31,9 +30,11 @@
   <audio ref="playerRef" @ended="handleAudioEnd"></audio>
 </template>
 <script setup lang="ts">
-import { computed, nextTick, onMounted, ref } from 'vue';
+import { computed, nextTick, onMounted, ref} from 'vue';
 import { usePlayerControllerStore } from '@/stores/playerController';
 import { storeToRefs } from 'pinia';
+import { getMusicCover } from '@/utils/getMusicCover';
+
 // 引入playerControllerStore中的变量和函数
 const playerControllerStore = usePlayerControllerStore();
 const { isPlaying, mode, audioElement, currentMusicInfo } = storeToRefs(playerControllerStore);
@@ -41,7 +42,7 @@ const { setAudioElement, togglePlay, prev, next, setMode } = playerControllerSto
 // 音乐标签实例
 const playerRef = ref(null);
 // 播放模式
-const playMode = ['list-loop', 'random', 'one-loop'];
+const playMode = ['list-loop', 'one-loop', 'random'];
 
 // 组件挂载完后执行
 onMounted(() => {
@@ -74,12 +75,12 @@ const modeIconName = computed(() => {
 })
 // 播放模式title
 const modeIconTitle = computed(() => {
-  const playModeTitle = ['列表循环', '随机播放', '单曲循环'];
+  const playModeTitle = ['列表循环', '单曲循环', '随机播放'];
   return playModeTitle[mode.value];
 })
 // 音频播放完成
 const handleAudioEnd = () => {
-  if (mode.value === 2) {
+  if (mode.value === 1) {
     // 单曲循环
     audioElement.value.currentTime = 0; // 重新开始播放当前音频
     audioElement.value.play(); // 继续播放
@@ -114,7 +115,7 @@ const handleAudioEnd = () => {
 
 .music-title {
   font-size: 3vh;
-  font-weight: bold;
+  font-weight: 500;
 }
 
 .music-artist {

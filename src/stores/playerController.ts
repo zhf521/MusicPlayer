@@ -8,7 +8,7 @@ export const usePlayerControllerStore = defineStore('playerController', () => {
     // 引入useGetFileURL中的变量和函数
     const { fileURL, getFileURL } = useGetFileURL();
     // audio元素
-    const audioElement = ref(null);
+    const audioElement = ref(null || Element);
     // 播放状态，是否播放
     const isPlaying = ref(false);
     // 正在播放列表
@@ -43,7 +43,7 @@ export const usePlayerControllerStore = defineStore('playerController', () => {
             audioElement.value.play();
             currentIndex.value = index;
             currentMusicInfo.value = playList.value[index].tag.tags;
-                isPlaying.value = true;
+            isPlaying.value = true;
         } catch (error) {
             console.log(error);
         }
@@ -81,24 +81,29 @@ export const usePlayerControllerStore = defineStore('playerController', () => {
     // 设置播放模式
     const setMode = (newMode) => {
         mode.value = newMode;
-        let list = [];
-        switch (mode.value) {
-            // 列表循环
-            case 0:
-                list = orderList.value;
-                break;
-            // 随机播放
-            case 1:
-                list = randomShuffle(orderList.value);
-                break;
+        if (mode.value === 1) {
+            // 单曲循环
+            return;
+        } else {
+            let list = [];
+            switch (mode.value) {
+                // 列表循环
+                case 0:
+                    list = orderList.value;
+                    break;
+                // 随机播放
+                case 2:
+                    list = randomShuffle(orderList.value);
+                    break;
+            }
+            // 获取当前歌曲在顺序列表中的索引
+            const index = playList.value.findIndex(
+                (item) => item.filename === currentMusic.value.filename
+            );
+            // 设置当前索引
+            currentIndex.value = index;
+            playList.value = list;
         }
-        // 获取当前歌曲在顺序列表中的索引
-        const index = playList.value.findIndex(
-            (item) => item.filename === currentMusic.value.filename
-        );
-        // 设置当前索引
-        currentIndex.value = index;
-        playList.value = list;
     };
     // // 设置播放状态
     // const setPlayState = (state) => {
