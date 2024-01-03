@@ -42,6 +42,7 @@ declare module 'vue' {
     IconTooling: typeof import('./src/components/icons/IconTooling.vue')['default']
     MusicList: typeof import('./src/components/MusicList.vue')['default']
     PlayerController: typeof import('./src/components/PlayerController.vue')['default']
+    ProgressBar: typeof import('./src/components/ProgressBar.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     SvgIcon: typeof import('./src/components/SvgIcon.vue')['default']
