@@ -35,7 +35,6 @@ import { computed, nextTick, onMounted, ref } from 'vue';
 import { usePlayerControllerStore } from '@/stores/playerController';
 import { storeToRefs } from 'pinia';
 import { getMusicCover } from '@/utils/getMusicCover';
-import { formatTime } from '@/utils/formatTime';
 
 // 引入playerControllerStore中的变量和函数
 const playerControllerStore = usePlayerControllerStore();
@@ -70,20 +69,16 @@ onMounted(() => {
     // 音频加载完可播放
     audioElement.value.oncanplay = () => {
       // 获取音频时长
-      const musicTime = audioElement.value.duration;
-      // 格式化音频时长
-      dTime.value = formatTime(musicTime);
+      dTime.value = audioElement.value.duration;
     }
     // 音频正在播放时
     audioElement.value.ontimeupdate = () => {
       // 获取音频时长
       const musicTime = audioElement.value.duration;
-      // 获取已播放的时长
-      const playedTime = audioElement.value.currentTime;
-      // 格式化已播放的时长
-      cTime.value = formatTime(playedTime);
+      // 获取当前播放的时间
+      cTime.value = audioElement.value.currentTime;
       // 计算已播放进度条比例宽度
-      playedProgressWidth.value = `${(playedTime / musicTime) * 100}%`;
+      playedProgressWidth.value = `${(cTime.value / musicTime) * 100}%`;
     }
   })
 })
