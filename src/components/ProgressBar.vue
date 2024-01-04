@@ -30,17 +30,30 @@ const props = defineProps(['cTime', 'dTime', 'playedProgressWidth']);
 const playerControllerStore = usePlayerControllerStore();
 const { audioElement } = storeToRefs(playerControllerStore);
 const progressDotRef = ref(null);
+const dragCurrentTime = ref(null);
+const isDragging = ref(false);
 // 组件挂载完成后执行
 onMounted(() => {
   // 设置已播放进度的初始宽度
   playedProgressRef.value.style.width = 0;
+  // 设置已播放进度的初始宽度
+  playedProgressRef.value.style.width = 0;
+
+  // 获取进度条和小圆点的宽度
+  const progressBarWidth = progressBarRef.value.offsetWidth;
+  const dotWidth = progressDotRef.value.offsetWidth;
+
+  // 初始化小圆点的位置，使其与进度条对齐
+  progressDotRef.value.style.transform = `translateX(-${dotWidth / 2}px)`;
   // 监听宽度变化
   watch(() => props.playedProgressWidth, (newVal) => {
-    // 更新已播放进度的样式
-    playedProgressRef.value.style.width = newVal;
-    // 更新小圆点的位置，根据已播放进度条的位置计算
-    const dotPosition = (parseFloat(newVal) / 100) * progressBarRef.value.offsetWidth - progressDotRef.value.offsetWidth / 2;
-    progressDotRef.value.style.transform = `translateX(${dotPosition}px)`;
+    if (!isDragging.value) {
+      // 更新已播放进度的样式
+      playedProgressRef.value.style.width = newVal;
+      // 更新小圆点的位置，根据已播放进度条的位置计算
+      const dotPosition = (parseFloat(newVal) / 100) * progressBarRef.value.offsetWidth - progressDotRef.value.offsetWidth / 2;
+      progressDotRef.value.style.transform = `translateX(${dotPosition}px)`;
+    }
   });
 })
 
@@ -48,20 +61,30 @@ onMounted(() => {
 const handleClick = (event) => {
   // 获取progressBarRef元素位置
   const progressBar = progressBarRef.value.getBoundingClientRect();
-  // playedProgressRef新的宽度
-  const newWidth = `${(event.clientX - progressBar.left) / progressBar.width * 100}%`;
-  // 更新已播放进度的样式
-  playedProgressRef.value.style.width = newWidth;
+  // // playedProgressRef新的宽度
+  // const newWidth = `${(event.clientX - progressBar.left) / progressBar.width * 100}%`;
+  // // 更新已播放进度的样式
+  // playedProgressRef.value.style.width = newWidth;
   // 总时间
   const totalTime = props.dTime;
   // 当前点击对应的时间
   const currentTime = totalTime * (event.clientX - progressBar.left) / progressBar.width;
   // 为audio设置播放当前时间
   audioElement.value.currentTime = currentTime;
+  // 更新已播放进度条的样式
+  playedProgressRef.value.style.width = `${(event.clientX - progressBar.left) / progressBar.width * 100}%`;
+
+  // 更新小圆点的位置
+  const dotPosition = (event.clientX - progressBar.left - progressDotRef.value.offsetWidth / 2);
+  if (dotPosition >= 0 && dotPosition <= progressBar.width) {
+    progressDotRef.value.style.transform = `translateX(${dotPosition}px)`;
+  }
 }
 
 // 鼠标按下小圆点
 const handleMouseDown = (event) => {
+  // 设置正在拖动的标志为true
+  isDragging.value = true;
   // 阻止默认行为，比如拖动时选中文字
   event.preventDefault();
   // 在文档上添加鼠标移动和松开事件监听
@@ -74,63 +97,69 @@ const handleMouseMove = (event) => {
   // 获取progressBarRef元素位置
   const progressBar = progressBarRef.value.getBoundingClientRect();
   // 计算新的宽度
-  const newWidth = `${(event.clientX - progressBar.left) / progressBar.width * 100}%`;
+  let newWidth = `${(event.clientX - progressBar.left) / progressBar.width * 100}%`;
+  // 检查新的宽度是否超出边界
+  if (event.clientX - progressBar.left < 0) { // 超出左边界
+    newWidth = '0%'; // 将宽度设为0%
+  } else if (event.clientX > progressBar.right) { // 超出右边界
+    newWidth = '100%'; // 将宽度设为100%
+  }
   // 更新已播放进度的样式
   playedProgressRef.value.style.width = newWidth;
+
+  // 更新小圆点的位置，根据已播放进度条的位置计算
+  const dotPosition = (event.clientX - progressBar.left - progressDotRef.value.offsetWidth / 2);
+  if (dotPosition >= 0 && dotPosition <= progressBar.width) {
+    progressDotRef.value.style.transform = `translateX(${dotPosition}px)`;
+  }
+
   // 总时间
   const totalTime = props.dTime;
-  // 当前点击对应的时间
-  const currentTime = totalTime * (event.clientX - progressBar.left) / progressBar.width;
-  // 为audio设置播放当前时间
-  audioElement.value.currentTime = currentTime;
+  // 当前移动对应的时间
+  dragCurrentTime.value = totalTime * (event.clientX - progressBar.left) / progressBar.width;
 }
 
 // 鼠标松开事件处理函数
 const handleMouseUp = (event) => {
+  // 移除正在拖动的标志
+  isDragging.value = false;
   // 移除文档上的鼠标移动和松开事件监听
   document.removeEventListener('mousemove', handleMouseMove);
   document.removeEventListener('mouseup', handleMouseUp);
+  // 为audio设置播放当前时间
+  audioElement.value.currentTime = dragCurrentTime.value;
 }
 
 </script>
 <style scoped>
 .music-progress {
   display: flex;
-  flex-direction: column;
   align-items: center;
 }
 
 .bar {
-  margin-top: 10px;
   width: 100%;
-  display: flex;
-  align-items: center;
   position: relative;
+  margin: 0 10px;
 }
 
 .progress-bar {
-  flex: 1;
-  height: 6px;
+  width: 100%;
+  height: 4px;
   background-color: #ccc;
-  position: relative;
 }
 
 .played-progress {
-  position: absolute;
-  top: 0;
-  left: 0;
   height: 100%;
-  background-color: #f00;
+  background-color: #000;
 }
 
 .progress-dot {
   position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  left: -4px;
+  top: -2px;
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background-color: #fff;
+  background-color: #000;
 }
 </style>
