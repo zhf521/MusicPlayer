@@ -2,7 +2,8 @@
   <el-row :gutter="3" justify="space-evenly" class="player-controller">
     <el-col :span="7">
       <div class="music-details">
-        <img class="music-cover" :src="currentMusicInfo ? getMusicCover(currentMusicInfo.picture) : ''" alt="music-cover">
+        <img class="music-cover" :src="currentMusicInfo ? getMusicCover(currentMusicInfo.picture) : ''" alt="音乐封面"
+          @click="openImmersion">
         <div class="music-info">
           <div class="music-title">{{ currentMusicInfo && currentMusicInfo.title || '标题' }}</div>
           <div class="music-artist">{{ currentMusicInfo && currentMusicInfo.artist || '艺术家' }}</div>
@@ -29,12 +30,16 @@
     </el-col>
   </el-row>
   <audio ref="playerRef"></audio>
+  <div class="immersion-view" v-show="isImmersion">
+    <ImmersionView @handleCloseImmersion="closeImmersion" />
+  </div>
 </template>
 <script setup lang="ts">
 import { computed, nextTick, onMounted, ref } from 'vue';
 import { usePlayerControllerStore } from '@/stores/playerController';
 import { storeToRefs } from 'pinia';
 import { getMusicCover } from '@/utils/getMusicCover';
+import ImmersionView from '@/components/Immersion.vue';
 
 // 引入playerControllerStore中的变量和函数
 const playerControllerStore = usePlayerControllerStore();
@@ -50,6 +55,8 @@ const cTime = ref();
 const dTime = ref();
 // 已播放进度条宽度
 const playedProgressWidth = ref();
+// immersion是否开启
+const isImmersion = ref(false);
 
 // 组件挂载完后执行
 onMounted(() => {
@@ -109,6 +116,14 @@ const modeIconTitle = computed(() => {
   const playModeTitle = ['列表循环', '单曲循环', '随机播放'];
   return playModeTitle[mode.value];
 })
+// 开启沉浸模式
+const openImmersion = () => {
+  isImmersion.value = true;
+}
+// 关闭沉浸模式
+const closeImmersion = (params) => {
+  isImmersion.value = params;
+}
 </script>
 <style scoped>
 .player-controller {
@@ -129,6 +144,8 @@ const modeIconTitle = computed(() => {
   object-fit: cover;
   box-shadow: var(--el-box-shadow);
 }
+
+.music-cover:hover {}
 
 .music-info {
   margin-left: 1vw;
@@ -167,5 +184,15 @@ const modeIconTitle = computed(() => {
   justify-content: center;
   width: 100%;
   height: 100%;
+}
+
+.immersion-view {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: white;
+  z-index: 9999;
 }
 </style>
