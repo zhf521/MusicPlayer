@@ -26,6 +26,7 @@ declare module 'vue' {
     ElTable: typeof import('element-plus/es')['ElTable']
     ElTableColumn: typeof import('element-plus/es')['ElTableColumn']
     Immersion: typeof import('./src/components/Immersion.vue')['default']
+    Lyric: typeof import('./src/components/Lyric.vue')['default']
     MusicList: typeof import('./src/components/MusicList.vue')['default']
     PlayerController: typeof import('./src/components/PlayerController.vue')['default']
     ProgressBar: typeof import('./src/components/ProgressBar.vue')['default']

@@ -19,7 +19,7 @@
         <SvgIcon class="icon" iconName="icon-next" title="下一曲" @click="nextMusic" />
         <SvgIcon class="icon" iconName="icon-volume" />
       </div>
-      <div class="progress-bar">
+      <div>
         <ProgressBar :cTime="cTime" :dTime="dTime" :playedProgressWidth="playedProgressWidth" />
       </div>
     </el-col>
@@ -31,7 +31,7 @@
   </el-row>
   <audio ref="playerRef"></audio>
   <div class="immersion-view" v-show="isImmersion">
-    <ImmersionView @handleCloseImmersion="closeImmersion" />
+    <Immersion @handleCloseImmersion="closeImmersion" />
   </div>
 </template>
 <script setup lang="ts">
@@ -39,7 +39,6 @@ import { computed, nextTick, onMounted, ref } from 'vue';
 import { usePlayerControllerStore } from '@/stores/playerController';
 import { storeToRefs } from 'pinia';
 import { getMusicCover } from '@/utils/getMusicCover';
-import ImmersionView from '@/components/Immersion.vue';
 
 // 引入playerControllerStore中的变量和函数
 const playerControllerStore = usePlayerControllerStore();

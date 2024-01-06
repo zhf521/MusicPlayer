@@ -1,4 +1,4 @@
-export function formatTime(totalSeconds) {
+export function formatTimeToString(totalSeconds) {
     if (totalSeconds) {
         const minutes = Math.floor(totalSeconds / 60);
         const seconds = Math.floor(totalSeconds % 60);
@@ -8,4 +8,10 @@ export function formatTime(totalSeconds) {
     } else {
         return '00:00';
     }
+}
+
+// 把时间字符串格式处理为number(秒)
+export function formatStringToTime(str) {
+    const timeArr = str.split(':');
+    return +timeArr[0] * 60 + +timeArr[1];
 }

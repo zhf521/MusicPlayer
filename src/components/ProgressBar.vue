@@ -1,7 +1,7 @@
 <template>
   <div class="music-progress">
     <!-- 当前时间 -->
-    <div>{{ formatTime(props.cTime) }}</div>
+    <div>{{ formatTimeToString(props.cTime) }}</div>
     <!-- 进度条 -->
     <div class="bar">
       <div class="progress-bar" ref="progressBarRef" @click="handleClick">
@@ -10,12 +10,12 @@
       </div>
     </div>
     <!-- 总时长-->
-    <div>{{ formatTime(props.dTime) }}</div>
+    <div>{{ formatTimeToString(props.dTime) }}</div>
   </div>
 </template>
 <script setup lang="ts">
 import { usePlayerControllerStore } from '@/stores/playerController';
-import { formatTime } from '@/utils/formatTime';
+import { formatTimeToString } from '@/utils/formatTime';
 import { storeToRefs } from 'pinia';
 import { onMounted, ref, watch } from 'vue';
 // 进度条对象
