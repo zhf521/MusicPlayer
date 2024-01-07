@@ -14,10 +14,11 @@
   </div>
 </template>
 <script setup>
-import { usePlayerControllerStore } from '@/stores/playerController';
-import { formatTimeToString } from '@/utils/formatTime';
+import { usePlayerControllerStore } from '@/stores/playerController.js';
+import { formatTimeToString } from '@/utils/formatTime.js';
 import { storeToRefs } from 'pinia';
 import { onMounted, ref, watch } from 'vue';
+
 // 进度条对象
 const progressBarRef = ref(null);
 // 已播放进度对象
@@ -41,7 +42,7 @@ onMounted(() => {
       playedProgressRef.value.style.width = newVal;
     }
   });
-})
+});
 
 // 处理点击进度条事件
 const handleClick = (event) => {
@@ -55,7 +56,7 @@ const handleClick = (event) => {
   audioElement.value.currentTime = currentTime;
   // 更新已播放进度条的样式
   playedProgressRef.value.style.width = `${(event.clientX - progressBar.left) / progressBar.width * 100}%`;
-}
+};
 
 // 鼠标按下已播放进度条
 const handleMouseDown = (event) => {
@@ -66,7 +67,7 @@ const handleMouseDown = (event) => {
   // 在文档上添加鼠标移动和松开事件监听
   document.addEventListener('mousemove', handleMouseMove);
   document.addEventListener('mouseup', handleMouseUp);
-}
+};
 
 // 鼠标移动事件处理函数
 const handleMouseMove = (event) => {
@@ -86,7 +87,7 @@ const handleMouseMove = (event) => {
   dragCurrentTime.value = totalTime * (event.clientX - progressBar.left) / progressBar.width;
   // 更新已播放进度的样式
   playedProgressRef.value.style.width = newWidth;
-}
+};
 
 // 鼠标松开事件处理函数
 const handleMouseUp = (event) => {

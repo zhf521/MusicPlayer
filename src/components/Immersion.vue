@@ -20,7 +20,7 @@
       </div>
     </div>
     <div class="lyric">
-      <Lyric :lrc="currentMusicInfo && currentMusicInfo.lyrics" />
+      <Lyric :lrc="currentMusicInfo && currentMusicInfo.lyrics.lyrics" />
     </div>
     <div class="buttons">
       <SvgIcon iconName="icon-close" className="button" @click="close" />
@@ -137,7 +137,6 @@ const close = () => {
 .lyric {
   width: 40vw;
   height: 100vh;
-  background-color: green;
 }
 
 .buttons {
