@@ -1,7 +1,7 @@
 <template>
   <div class="music-progress">
     <!-- 当前时间 -->
-    <div>{{ formatTimeToString(props.cTime) }}</div>
+    <div>{{ props.cTime ? formatTimeToString(props.cTime) : '00:00' }}</div>
     <!-- 进度条 -->
     <div class="bar">
       <div class="progress-bar" ref="progressBarRef" @click="handleClick">
@@ -10,10 +10,10 @@
       </div>
     </div>
     <!-- 总时长-->
-    <div>{{ formatTimeToString(props.dTime) }}</div>
+    <div>{{ props.cTime ? formatTimeToString(props.dTime) : '00:00' }}</div>
   </div>
 </template>
-<script setup lang="ts">
+<script setup>
 import { usePlayerControllerStore } from '@/stores/playerController';
 import { formatTimeToString } from '@/utils/formatTime';
 import { storeToRefs } from 'pinia';
@@ -28,7 +28,6 @@ const props = defineProps(['cTime', 'dTime', 'playedProgressWidth']);
 // 引入playerControllerStore中的变量
 const playerControllerStore = usePlayerControllerStore();
 const { audioElement } = storeToRefs(playerControllerStore);
-const progressDotRef = ref(null);
 const dragCurrentTime = ref(null);
 const isDragging = ref(false);
 // 组件挂载完成后执行

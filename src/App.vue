@@ -14,10 +14,9 @@
     <el-footer style="height: 10vh;width: 100vw; border-top:1px solid var(--el-border-color);padding: 1vh;">
       <PlayerController />
     </el-footer>
-    <audio src=""></audio>
   </el-container>
 </template>
-<script setup lang="ts">
+<script setup>
 import { useRouter, useRoute } from 'vue-router';
 import PlayerController from './components/PlayerController.vue';
 import { onMounted } from 'vue';
@@ -29,9 +28,9 @@ const router = useRouter();
 const userSettingStore = useUserSettingStore();
 const { loadUserSetting } = userSettingStore;
 // 菜单选中
-const handleSelect = (key: string) => {
+const handleSelect = (key) => {
   router.push({ name: key });
-}
+};
 
 // 组件挂载成功后执行
 onMounted(async () => {

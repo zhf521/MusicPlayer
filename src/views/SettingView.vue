@@ -3,7 +3,7 @@
   <h3>WebDav设置</h3>
   <WebDavSetting />
 </template>
-<script setup lang="ts">
+<script setup>
 import WebDavSetting from '@/components/WebDavSetting.vue';
 
 </script>

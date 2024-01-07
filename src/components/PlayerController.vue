@@ -34,7 +34,7 @@
     <Immersion @handleCloseImmersion="closeImmersion" />
   </div>
 </template>
-<script setup lang="ts">
+<script setup>
 import { computed, nextTick, onMounted, ref } from 'vue';
 import { usePlayerControllerStore } from '@/stores/playerController';
 import { storeToRefs } from 'pinia';

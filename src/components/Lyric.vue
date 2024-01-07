@@ -4,30 +4,33 @@
     </div>
   </div>
 </template>
-<script setup lang="ts">
+<script setup>
 import { usePlayerControllerStore } from '@/stores/playerController';
 import { formatLyric } from '@/utils/formatLyric';
 import { storeToRefs } from 'pinia';
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, type Ref } from 'vue';
 
-const containerRef = ref(null);
-const listRef = ref(null);
-const props = defineProps(['lrc']);
+const containerRef: Ref<HTMLDivElement | null> = ref(null);
+const listRef: Ref<HTMLDivElement | null> = ref(null);
+const props = defineProps({ lrc: String });
 // 引入playerControllerStore中的变量和函数
 const playerControllerStore = usePlayerControllerStore();
 const { audioElement } = storeToRefs(playerControllerStore);
 
 onMounted(() => {
   createLrcElement();
-  if (audioElement.value) {
-    audioElement.value.ontimeupdate = () => {
-      setOffset();
-    }
+  audioElement.value.ontimeupdate = () => {
+    setOffset();
   }
 })
 
+interface formattedLrc {
+  time: number;
+  word: string;
+}
+
 // 根据当前音频播放时间，获得需要高亮的歌词index
-const findIndex = (lrcArr) => {
+const findIndex: (lrcArr: formattedLrc[]) => number = (lrcArr) => {
   for (let i = 0; i < lrcArr.length; i++) {
     if (lrcArr[i].time > audioElement.value.currentTime) {
       return i - 1;
@@ -38,7 +41,7 @@ const findIndex = (lrcArr) => {
 }
 
 // 创建list中的元素
-const createLrcElement = () => {
+const createLrcElement: () => void = () => {
   const frag = document.createDocumentFragment();
   for (let i = 0; i < formatLyric(props.lrc).length; i++) {
     const listItemDiv = document.createElement('div');
@@ -49,7 +52,7 @@ const createLrcElement = () => {
 }
 
 // 设置offset
-const setOffset = () => {
+const setOffset: () => void = () => {
   const currentIndex = findIndex(formatLyric(props.lrc), props.musicCurrentTime);
   let offset = listRef.value.children[0].clientHeight * currentIndex + listRef.value.children[0].clientHeight / 2 - containerRef.value.clientHeight / 2;
 

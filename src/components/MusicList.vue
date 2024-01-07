@@ -24,7 +24,7 @@
   </el-table>
 </template>
 
-<script setup lang="ts">
+<script setup>
 import { usePlayerControllerStore } from '@/stores/playerController';
 import { useUserSettingStore } from '@/stores/userSetting';
 import { onMounted } from 'vue';

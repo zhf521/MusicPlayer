@@ -5,10 +5,10 @@ import App from './App.vue';
 import router from './router';
 import { createPinia } from 'pinia';
 import SvgIcon from './components/SvgIcon.vue';
-// import piniaPluginPersistedstate from 'pinia-plugin-persistedstate';
+import ElementPlus from 'element-plus';
+import 'element-plus/dist/index.css';
 
 const app = createApp(App);
 const pinia = createPinia();
-// pinia.use(piniaPluginPersistedstate);
 app.component('SvgIcon', SvgIcon);
-app.use(router).use(pinia).mount('#app');
+app.use(router).use(pinia).use(ElementPlus).mount('#app');

@@ -27,7 +27,7 @@
     </div>
   </div>
 </template>
-<script setup lang="ts">
+<script setup>
 import { usePlayerControllerStore } from '@/stores/playerController';
 import { getMusicCover } from '@/utils/getMusicCover';
 import { storeToRefs } from 'pinia';

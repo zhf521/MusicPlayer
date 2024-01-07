@@ -17,24 +17,16 @@
     </el-form-item>
   </el-form>
 </template>
-<script setup lang="ts">
+<script setup>
 import { onMounted, reactive, ref } from 'vue';
-import { type FormInstance } from 'element-plus';
 import { createClient } from "webdav";
 import { useUserSettingStore } from '@/stores/userSetting';
 import { storeToRefs } from 'pinia';
 
-// 定义WebDavForm接口
-interface WebDavForm {
-  url: string;
-  username: string;
-  password: string;
-}
-
 // 表单实例
-const webDavFormRef = ref<FormInstance>();
+const webDavFormRef = ref(null);
 // 表单对象
-const webDavForm = reactive<WebDavForm>({
+const webDavForm = reactive({
   url: '',
   username: '',
   password: '',
@@ -60,7 +52,7 @@ onMounted(() => {
 });
 
 // 保存配置
-const saveSetting = async (formEl: FormInstance | undefined) => {
+const saveSetting = async (formEl) => {
   if (!formEl) return;
   await formEl.validate(async (valid, fields) => {
     if (valid) {
@@ -98,7 +90,7 @@ const saveSetting = async (formEl: FormInstance | undefined) => {
   });
 };
 
-const resetForm = (formEl: FormInstance | undefined) => {
+const resetForm = (formEl) => {
   if (!formEl) return;
   formEl.resetFields();
 };

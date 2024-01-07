@@ -40,7 +40,7 @@
     </div>
   </div>
 </template>
-<script setup lang="ts">
+<script setup>
 import { useRoute, useRouter } from 'vue-router';
 import { useGetDirectory } from '@/hooks/useGetDirectory';
 import { computed, nextTick, onMounted, ref, watch } from 'vue';

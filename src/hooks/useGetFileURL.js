@@ -20,7 +20,7 @@ export function useGetFileURL() {
         await loadUserSetting();
     });
     // 定义获取文件URL的函数
-    const getFileURL = async (filename: string) => {
+    const getFileURL = async (filename) => {
         // 获取webDav设置
         const webDavSetting = userSetting.value.webDavSetting;
         try {

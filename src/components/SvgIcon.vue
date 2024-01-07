@@ -4,7 +4,7 @@
     <title>{{ title }}</title>
   </svg>
 </template>
-<script setup lang="ts">
+<script setup>
 import { computed } from 'vue';
 
 const props = defineProps({

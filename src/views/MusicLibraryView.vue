@@ -10,7 +10,7 @@
   </div>
   <router-view></router-view>
 </template>
-<script setup lang="ts">
+<script setup>
 import { useMusicLibraryStore } from '@/stores/musicLibrary';
 import { storeToRefs } from 'pinia';
 import { onMounted } from 'vue';
