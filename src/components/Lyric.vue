@@ -5,8 +5,8 @@
   </div>
 </template>
 <script setup>
-import { usePlayerControllerStore } from '@/stores/playerController';
-import { formatLyric } from '@/utils/formatLyric';
+import { usePlayerControllerStore } from '@/stores/playerController.js';
+import { formatLyric } from '@/utils/formatLyric.js';
 import { storeToRefs } from 'pinia';
 import { onMounted, ref } from 'vue';
 
@@ -19,9 +19,11 @@ const { audioElement } = storeToRefs(playerControllerStore);
 
 onMounted(() => {
   createLrcElement();
-  audioElement.value.ontimeupdate = () => {
-    setOffset();
-  };
+  if (audioElement.value) {
+    audioElement.value.ontimeupdate = () => {
+      setOffset();
+    };
+  }
 });
 
 // 根据当前音频播放时间，获得需要高亮的歌词index

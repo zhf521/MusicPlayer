@@ -29,7 +29,7 @@
 </template>
 <script setup>
 import { usePlayerControllerStore } from '@/stores/playerController.js';
-import { getMusicCover } from '@/utils/getMusicCover.js';
+import { getMusicCover } from '@/utils/getMusicCover';
 import { storeToRefs } from 'pinia';
 import { computed } from 'vue';
 import Lyric from '@/components/Lyric.vue';
