@@ -58,14 +58,7 @@
       </div>
       <!-- 滚动歌词和播放列表 -->
       <div class="lyric-or-playlist">
-        <div class="lrc-container" ref="containerRef">
-          <div class="lrc-list" ref="listRef">
-            <div v-for="(lyric, index) in formatLyric(currentMusicInfo?.lyrics.lyrics)" :key="index"
-              :class="{ 'active': index === currentIndex }">
-              {{ lyric.word }}
-            </div>
-          </div>
-        </div>
+        <Lyric ref="lyricRef" :lrc="currentMusicInfo && currentMusicInfo.lyrics.lyrics" />
       </div>
       <div class="buttons">
         <SvgIcon iconName="icon-close" className="button" @click="closeImmersion" />
@@ -80,7 +73,7 @@ import { storeToRefs } from 'pinia';
 import { getMusicCover } from '@/utils/getMusicCover.js';
 import ProgressBar from '@/components/ProgressBar.vue';
 import SvgIcon from '@/components/SvgIcon.vue';
-import { formatLyric } from '@/utils/formatLyric.js';
+import Lyric from '@/components/Lyric.vue';
 
 // 引入playerControllerStore中的变量和函数
 const playerControllerStore = usePlayerControllerStore();
@@ -98,9 +91,9 @@ const dTime = ref();
 const playedProgressWidth = ref();
 // immersion是否开启
 const isImmersion = ref(false);
+// 
+const lyricRef = ref(null);
 
-const containerRef = ref(null);
-const listRef = ref(null);
 // 组件挂载完后执行
 onMounted(() => {
   // 设置audio元素
@@ -129,8 +122,7 @@ onMounted(() => {
       cTime.value = audioElement.value.currentTime;
       // 计算已播放进度条比例宽度
       playedProgressWidth.value = `${(cTime.value / musicTime) * 100}%`;
-      // 滚动歌词
-      setOffset();
+      lyricRef.value.setOffset();
     };
   });
 });
@@ -169,32 +161,6 @@ const openImmersion = () => {
 const closeImmersion = () => {
   isImmersion.value = false;
 };
-const currentIndex = ref(0);
-
-// 根据当前音频播放时间，获得需要高亮的歌词index
-const findIndex = (lrcArr) => {
-  let index = lrcArr.findIndex((item) => item.time > cTime.value);
-  if (index === -1) {
-    index = lrcArr.length;
-  }
-  return index - 1;
-};
-
-// 设置offset
-const setOffset = () => {
-  currentIndex.value = findIndex(formatLyric(currentMusicInfo.value.lyrics.lyrics));
-  let offset = listRef.value.children[0].clientHeight * currentIndex.value + listRef.value.children[0].clientHeight / 2 - containerRef.value.clientHeight / 2;
-
-  // 设置最小offset为0
-  if (offset < 0) {
-    offset = 0;
-  }
-  // 设置最大offset
-  if (offset > listRef.value.clientHeight - containerRef.value.clientHeight) {
-    offset = listRef.value.clientHeight - containerRef.value.clientHeight;
-  }
-  listRef.value.style.transform = `translateY(-${offset}px)`;
-};
 </script>
 <style scoped>
 .player-controller {
@@ -216,6 +182,7 @@ const setOffset = () => {
   box-shadow: var(--el-box-shadow);
 }
 
+.music-cover:hover {}
 
 .music-info {
   margin-left: 1vw;
@@ -347,28 +314,5 @@ const setOffset = () => {
 
 .button:hover {
   transform: scale(1.2);
-}
-
-.lrc-container {
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-}
-
-.lrc-list {
-  transition: 0.1s;
-}
-
-.lrc-list div {
-  width: 100%;
-  padding: 10px;
-  word-wrap: break-word;
-  text-align: center;
-  transition: 0.1s;
-}
-
-.lrc-list div.active {
-  transform: scale(1.5);
-  color: greenyellow;
 }
 </style>
