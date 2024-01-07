@@ -12,7 +12,7 @@
 import { usePlayerControllerStore } from '@/stores/playerController.js';
 import { formatLyric } from '@/utils/formatLyric.js';
 import { storeToRefs } from 'pinia';
-import { onMounted, ref, watch } from 'vue';
+import { ref } from 'vue';
 
 const containerRef = ref(null);
 const listRef = ref(null);
@@ -21,18 +21,6 @@ const props = defineProps(['lrc']);
 const playerControllerStore = usePlayerControllerStore();
 const { audioElement } = storeToRefs(playerControllerStore);
 const currentIndex = ref(0);
-
-watch(audioElement, () => {
-  if (audioElement.value) {
-    audioElement.value.ontimeupdate = () => {
-      setOffset();
-    };
-  }
-});
-
-onMounted(() => {
-  createLrcElement();
-});
 
 // 根据当前音频播放时间，获得需要高亮的歌词index
 const findIndex = (lrcArr) => {
@@ -45,21 +33,9 @@ const findIndex = (lrcArr) => {
   return lrcArr.length - 1;
 };
 
-// 创建list中的元素
-const createLrcElement = () => {
-  const lyricList = formatLyric(props.lrc);
-  const listFragment = document.createDocumentFragment();
-  for (let i = 0; i < lyricList.length; i++) {
-    const listItem = document.createElement('div');
-    listItem.textContent = lyricList[i].word;
-    listFragment.appendChild(listItem);
-  }
-  listRef.value.appendChild(listFragment);
-};
-
 // 设置offset
 const setOffset = () => {
-  currentIndex.value = findIndex(formatLyric(props.lrc), props.musicCurrentTime);
+  currentIndex.value = findIndex(formatLyric(props.lrc));
   let offset = listRef.value.children[0].clientHeight * currentIndex.value + listRef.value.children[0].clientHeight / 2 - containerRef.value.clientHeight / 2;
 
   // 设置最小offset为0
@@ -72,8 +48,9 @@ const setOffset = () => {
   }
   listRef.value.style.transform = `translateY(-${offset}px)`;
 };
-</script>
 
+defineExpose({ setOffset });
+</script>
 <style scoped>
 .lrc-container {
   width: 100%;

@@ -1,9 +1,12 @@
 <template>
+  <!-- 音频标签 -->
+  <audio ref="playerRef"></audio>
+  <!-- 播放控制器 -->
   <el-row :gutter="3" justify="space-evenly" class="player-controller">
     <el-col :span="7">
       <div class="music-details">
-        <img class="music-cover" :src="currentMusicInfo ? getMusicCover(currentMusicInfo.picture) : ''" alt="音乐封面"
-          @click="openImmersion">
+        <img class="controller-music-cover" :src="currentMusicInfo ? getMusicCover(currentMusicInfo.picture) : ''"
+          alt="音乐封面" @click="openImmersion">
         <div class="music-info">
           <div class="music-title">{{ currentMusicInfo && currentMusicInfo.title || '标题' }}</div>
           <div class="music-artist">{{ currentMusicInfo && currentMusicInfo.artist || '艺术家' }}</div>
@@ -29,9 +32,38 @@
       </div>
     </el-col>
   </el-row>
-  <audio ref="playerRef"></audio>
+  <!-- 沉浸模式 -->
   <div class="immersion-view" v-show="isImmersion">
-    <Immersion @handleCloseImmersion="closeImmersion" />
+    <div class="immersion">
+      <!-- 左侧空白 -->
+      <div class="space"></div>
+      <!-- 音乐信息 -->
+      <div class="music">
+        <img class="music-cover" :src="currentMusicInfo ? getMusicCover(currentMusicInfo.picture) : ''" alt="音乐封面">
+        <div class="music-info">
+          <div class="music-title">{{ currentMusicInfo && currentMusicInfo.title || '标题' }}</div>
+          <div class="music-artist">{{ currentMusicInfo && currentMusicInfo.artist || '艺术家' }}</div>
+        </div>
+        <div class="music-controller">
+          <SvgIcon className="button" :iconName="modeIconName" :title="modeIconTitle" @click="changePlayMode" />
+          <SvgIcon className="button" iconName="icon-prev" title="上一曲" @click="prevMusic"></SvgIcon>
+          <SvgIcon className="button" :iconName="(isPlaying === false) ? 'icon-play' : 'icon-pause'"
+            :title="(isPlaying === false) ? '播放' : '暂停'" @click="toggleMusicPlay"></SvgIcon>
+          <SvgIcon className="button" iconName="icon-next" title="下一曲" @click="nextMusic"></SvgIcon>
+          <SvgIcon className="button" iconName="icon-playlist"></SvgIcon>
+        </div>
+        <div class="progress">
+          <ProgressBar :cTime="cTime" :dTime="dTime" :playedProgressWidth="playedProgressWidth" />
+        </div>
+      </div>
+      <!-- 滚动歌词和播放列表 -->
+      <div class="lyric-or-playlist">
+        <Lyric ref="lyricRef" :lrc="currentMusicInfo && currentMusicInfo.lyrics.lyrics" />
+      </div>
+      <div class="buttons">
+        <SvgIcon iconName="icon-close" className="button" @click="closeImmersion" />
+      </div>
+    </div>
   </div>
 </template>
 <script setup>
@@ -40,7 +72,8 @@ import { usePlayerControllerStore } from '@/stores/playerController.js';
 import { storeToRefs } from 'pinia';
 import { getMusicCover } from '@/utils/getMusicCover.js';
 import ProgressBar from '@/components/ProgressBar.vue';
-import Immersion from '@/components/Immersion.vue';
+import SvgIcon from '@/components/SvgIcon.vue';
+import Lyric from '@/components/Lyric.vue';
 
 // 引入playerControllerStore中的变量和函数
 const playerControllerStore = usePlayerControllerStore();
@@ -58,6 +91,8 @@ const dTime = ref();
 const playedProgressWidth = ref();
 // immersion是否开启
 const isImmersion = ref(false);
+// 
+const lyricRef = ref(null);
 
 // 组件挂载完后执行
 onMounted(() => {
@@ -87,6 +122,7 @@ onMounted(() => {
       cTime.value = audioElement.value.currentTime;
       // 计算已播放进度条比例宽度
       playedProgressWidth.value = `${(cTime.value / musicTime) * 100}%`;
+      lyricRef.value.setOffset();
     };
   });
 });
@@ -122,8 +158,8 @@ const openImmersion = () => {
   isImmersion.value = true;
 };
 // 关闭沉浸模式
-const closeImmersion = (params) => {
-  isImmersion.value = params;
+const closeImmersion = () => {
+  isImmersion.value = false;
 };
 </script>
 <style scoped>
@@ -138,7 +174,7 @@ const closeImmersion = (params) => {
   align-items: center;
 }
 
-.music-cover {
+.controller-music-cover {
   width: 8vh;
   height: 8vh;
   border-radius: 10%;
@@ -195,5 +231,88 @@ const closeImmersion = (params) => {
   height: 100vh;
   background-color: white;
   z-index: 9999;
+}
+
+.immersion {
+  display: flex;
+  justify-content: space-between;
+}
+
+.space {
+  width: 15vw;
+  height: 100vh;
+}
+
+.music {
+  width: 35vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.music-cover {
+  width: 20vw;
+  height: 20vw;
+  margin-bottom: 5vw;
+  border-radius: 10%;
+  object-fit: cover;
+  box-shadow: var(--el-box-shadow);
+}
+
+.music-info {
+  height: 100px;
+  width: 100%;
+  padding: 10px 20px;
+}
+
+.music-title {
+  font-size: 30px;
+  font-weight: 600;
+}
+
+.music-artist {
+  margin-top: 10px;
+}
+
+.music-controller {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 60px;
+}
+
+.progress {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 20px;
+}
+
+.lyric-or-playlist {
+  width: 40vw;
+  height: 100vh;
+}
+
+.buttons {
+  width: 10vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.button {
+  height: 30px;
+  width: 30px;
+  margin: 20px 0;
+  transition: transform 0.3s ease;
+}
+
+.button:hover {
+  transform: scale(1.2);
 }
 </style>

@@ -22,6 +22,7 @@ import { onMounted, reactive, ref } from 'vue';
 import { createClient } from "webdav";
 import { useUserSettingStore } from '@/stores/userSetting';
 import { storeToRefs } from 'pinia';
+import { ElMessage } from 'element-plus';
 
 // 表单实例
 const webDavFormRef = ref(null);
@@ -66,19 +67,19 @@ const saveSetting = async (formEl) => {
         ElMessage({
           type: 'success',
           message: '保存成功',
-        })
+        });
       } catch (error) {
         console.log(error);
         if (error.status === 401) {
           ElMessage({
             type: 'error',
             message: '用户名或密码错误',
-          })
+          });
         } else {
           ElMessage({
             type: 'error',
             message: '地址错误',
-          })
+          });
         }
       }
     } else {

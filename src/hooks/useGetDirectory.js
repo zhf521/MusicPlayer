@@ -19,14 +19,14 @@ export function useGetDirectory() {
     // 获取webDav设置
     const webDavSetting = userSetting.value.webDavSetting;
     // 定义获取文件夹内容的函数
-    const getDirectory = async (path: string) => {
+    const getDirectory = async (path) => {
         try {
             const allContents = await createClient(webDavSetting.url, {
                 username: webDavSetting.username,
                 password: webDavSetting.password,
             }).getDirectoryContents(path);
             if (Array.isArray(allContents)) {
-                contents.value = allContents.filter((item: any) => {
+                contents.value = allContents.filter((item) => {
                     if (item.type === 'directory') {
                         return true;
                     }

@@ -10,7 +10,7 @@
       </div>
     </div>
     <!-- 总时长-->
-    <div>{{ props.cTime ? formatTimeToString(props.dTime) : '00:00' }}</div>
+    <div>{{ props.dTime ? formatTimeToString(props.dTime) : '00:00' }}</div>
   </div>
 </template>
 <script setup>

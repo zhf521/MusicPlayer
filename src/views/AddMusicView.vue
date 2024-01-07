@@ -47,6 +47,7 @@ import { computed, onMounted, ref, watch } from 'vue';
 import { useMusicLibraryStore } from '@/stores/musicLibrary.js';
 import { storeToRefs } from 'pinia';
 import { useUserSettingStore } from '@/stores/userSetting.js';
+import SvgIcon from '@/components/SvgIcon.vue';
 
 // 引入路由和路由器
 const route = useRoute();
@@ -67,6 +68,8 @@ const { addToMusicLibrary } = musicLibraryStore;
 const userSettingStore = useUserSettingStore();
 const { userSetting } = storeToRefs(userSettingStore);
 const { loadUserSetting } = userSettingStore;
+
+import { ElMessage } from 'element-plus';
 
 // 组件挂载完成后执行
 onMounted(async () => {
