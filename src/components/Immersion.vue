@@ -28,10 +28,11 @@
   </div>
 </template>
 <script setup>
-import { usePlayerControllerStore } from '@/stores/playerController';
-import { getMusicCover } from '@/utils/getMusicCover';
+import { usePlayerControllerStore } from '@/stores/playerController.js';
+import { getMusicCover } from '@/utils/getMusicCover.js';
 import { storeToRefs } from 'pinia';
 import { computed } from 'vue';
+import Lyric from '@/components/Lyric.vue';
 
 // 声明自定义事件
 const emits = defineEmits(['handleCloseImmersion']);
@@ -45,33 +46,33 @@ const playMode = ['list-loop', 'one-loop', 'random'];
 // 切换播放、暂停
 const toggleMusicPlay = () => {
   togglePlay();
-}
+};
 // 上一曲
 const prevMusic = () => {
   prev();
-}
+};
 // 下一曲
 const nextMusic = () => {
   next();
-}
+};
 // 切换播放模式
 const changePlayMode = () => {
   const newMode = (mode.value + 1) % 3;
   setMode(newMode);
-}
+};
 // 播放模式iconName
 const modeIconName = computed(() => {
   return `icon-${playMode[mode.value]}`;
-})
+});
 // 播放模式title
 const modeIconTitle = computed(() => {
   const playModeTitle = ['列表循环', '单曲循环', '随机播放'];
   return playModeTitle[mode.value];
-})
+});
 // 关闭沉浸模式
 const close = () => {
   emits('handleCloseImmersion', false);
-}
+};
 </script>
 <style scoped>
 .immersion {

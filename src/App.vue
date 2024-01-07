@@ -18,9 +18,10 @@
 </template>
 <script setup>
 import { useRouter, useRoute } from 'vue-router';
-import PlayerController from './components/PlayerController.vue';
+import PlayerController from '@/components/PlayerController.vue';
 import { onMounted } from 'vue';
 import { useUserSettingStore } from '@/stores/userSetting';
+
 // 引入路由和路由器
 const route = useRoute();
 const router = useRouter();

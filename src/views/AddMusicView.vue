@@ -42,11 +42,11 @@
 </template>
 <script setup>
 import { useRoute, useRouter } from 'vue-router';
-import { useGetDirectory } from '@/hooks/useGetDirectory';
-import { computed, nextTick, onMounted, ref, watch } from 'vue';
-import { useMusicLibraryStore } from '@/stores/musicLibrary';
+import { useGetDirectory } from '@/hooks/useGetDirectory.js';
+import { computed, onMounted, ref, watch } from 'vue';
+import { useMusicLibraryStore } from '@/stores/musicLibrary.js';
 import { storeToRefs } from 'pinia';
-import { useUserSettingStore } from '@/stores/userSetting';
+import { useUserSettingStore } from '@/stores/userSetting.js';
 
 // 引入路由和路由器
 const route = useRoute();
@@ -58,7 +58,7 @@ const loading = ref(false);
 // 选择的值
 const selectedMusic = ref([]);
 // 文件表格的引用
-const fileTableRef = ref<InstanceType<typeof ElTable>>()
+const fileTableRef = ref(null);
 // 引入musicLibraryStore中的变量和函数
 const musicLibraryStore = useMusicLibraryStore();
 const { musicLibrary } = storeToRefs(musicLibraryStore);
@@ -74,7 +74,7 @@ onMounted(async () => {
   await loadUserSetting();
   loading.value = true;
   try {
-    await getDirectory(decodeURIComponent(route.params.filename))
+    await getDirectory(decodeURIComponent(route.params.filename));
   } catch (error) {
     console.log(error);
   } finally {
@@ -99,7 +99,7 @@ const getTo = (index) => {
     const paths = route.params.filename.split('/').slice(0, index + 1).join('/');
     return { name: 'add-music', params: { filename: paths } }; // 点击的路径
   }
-}
+};
 // 监听路由参数变化
 watch(() => route.params.filename, async (newVal) => {
   loading.value = true;
@@ -113,15 +113,15 @@ watch(() => route.params.filename, async (newVal) => {
 });
 // 跳转到设置
 const goToSet = () => {
-  router.push('/setting')
-}
+  router.push('/setting');
+};
 // 某一行被单击触发
 const handleRowClick = async (row) => {
   if (row.type === 'directory') {
     loading.value = true;
     try {
       await getDirectory(row.filename);
-      router.push({ name: 'add-music', params: { filename: row.filename } })
+      router.push({ name: 'add-music', params: { filename: row.filename } });
     } catch (error) {
       console.log(error);
     } finally {
@@ -131,13 +131,13 @@ const handleRowClick = async (row) => {
     ElMessage({
       message: '别点啦~没有下一级啦！这么喜欢我就把我加入音乐库吧~',
       type: 'warning',
-    })
+    });
   }
-}
+};
 // 触发选择切换
 const handleSelectionChange = (val) => {
   selectedMusic.value = val;
-}
+};
 // 添加到音乐库
 const addMusic = () => {
   console.log(selectedMusic.value);
@@ -145,19 +145,19 @@ const addMusic = () => {
     if (!musicLibrary.value.some((music) => music.filename === item.filename)) {
       addToMusicLibrary(item);
     }
-  })
+  });
   selectedMusic.value = [];
   fileTableRef.value.clearSelection();
   ElMessage({
     type: 'success',
     message: '添加成功',
-  })
+  });
   router.push('/music-library');
-}
+};
 // 清除选择
 const clearSelection = () => {
   fileTableRef.value.clearSelection();
-}
+};
 </script>
 <style scoped>
 :deep(.cell) {

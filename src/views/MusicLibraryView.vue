@@ -11,10 +11,11 @@
   <router-view></router-view>
 </template>
 <script setup>
-import { useMusicLibraryStore } from '@/stores/musicLibrary';
+import { useMusicLibraryStore } from '@/stores/musicLibrary.js';
 import { storeToRefs } from 'pinia';
 import { onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
+import MusicList from '@/components/MusicList.vue';
 
 // 引入路由和路由器
 const route = useRoute();
@@ -32,8 +33,8 @@ onMounted(() => {
 
 // 去添加音乐
 const goToAddMusic = () => {
-  router.push({ name: 'add-music', params: { filename: '/' } })
-}
+  router.push({ name: 'add-music', params: { filename: '/' } });
+};
 </script>
 <style scoped>
 .music-list {

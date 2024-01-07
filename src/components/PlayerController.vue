@@ -36,9 +36,11 @@
 </template>
 <script setup>
 import { computed, nextTick, onMounted, ref } from 'vue';
-import { usePlayerControllerStore } from '@/stores/playerController';
+import { usePlayerControllerStore } from '@/stores/playerController.js';
 import { storeToRefs } from 'pinia';
-import { getMusicCover } from '@/utils/getMusicCover';
+import { getMusicCover } from '@/utils/getMusicCover.js';
+import ProgressBar from '@/components/ProgressBar.vue';
+import Immersion from '@/components/Immersion.vue';
 
 // 引入playerControllerStore中的变量和函数
 const playerControllerStore = usePlayerControllerStore();
@@ -71,12 +73,12 @@ onMounted(() => {
       } else {
         next();
       }
-    }
+    };
     // 音频加载完可播放
     audioElement.value.oncanplay = () => {
       // 获取音频时长
       dTime.value = audioElement.value.duration;
-    }
+    };
     // 音频正在播放时
     audioElement.value.ontimeupdate = () => {
       // 获取音频时长
@@ -85,44 +87,44 @@ onMounted(() => {
       cTime.value = audioElement.value.currentTime;
       // 计算已播放进度条比例宽度
       playedProgressWidth.value = `${(cTime.value / musicTime) * 100}%`;
-    }
-  })
-})
+    };
+  });
+});
 
 // 切换播放、暂停
 const toggleMusicPlay = () => {
   togglePlay();
-}
+};
 // 上一曲
 const prevMusic = () => {
   prev();
-}
+};
 // 下一曲
 const nextMusic = () => {
   next();
-}
+};
 // 切换播放模式
 const changePlayMode = () => {
   const newMode = (mode.value + 1) % 3;
   setMode(newMode);
-}
+};
 // 播放模式iconName
 const modeIconName = computed(() => {
   return `icon-${playMode[mode.value]}`;
-})
+});
 // 播放模式title
 const modeIconTitle = computed(() => {
   const playModeTitle = ['列表循环', '单曲循环', '随机播放'];
   return playModeTitle[mode.value];
-})
+});
 // 开启沉浸模式
 const openImmersion = () => {
   isImmersion.value = true;
-}
+};
 // 关闭沉浸模式
 const closeImmersion = (params) => {
   isImmersion.value = params;
-}
+};
 </script>
 <style scoped>
 .player-controller {
