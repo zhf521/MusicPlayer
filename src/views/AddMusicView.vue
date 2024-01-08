@@ -146,7 +146,8 @@ const addMusic = () => {
   console.log(selectedMusic.value);
   selectedMusic.value.forEach((item) => {
     if (!musicLibrary.value.some((music) => music.filename === item.filename)) {
-      addToMusicLibrary(item);
+      let musicItem = { filename: item.filename, basename: item.basename };
+      addToMusicLibrary(musicItem);
     }
   });
   selectedMusic.value = [];

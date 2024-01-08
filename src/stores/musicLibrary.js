@@ -19,15 +19,6 @@ export const useMusicLibraryStore = defineStore('musicLibrary', () => {
     // 添加到音乐库
     const addToMusicLibrary = async (item) => {
         musicLibrary.value.push(item);
-        try {
-            console.log(JSON.parse(JSON.stringify(musicLibrary.value)));
-            await localforage.setItem(
-                'musicLibrary',
-                JSON.parse(JSON.stringify(musicLibrary.value))
-            );
-        } catch (error) {
-            console.error('failed to update music library', error);
-        }
     };
     // 添加标签到音乐
     const addTagToMusic = async (filename, tag) => {
