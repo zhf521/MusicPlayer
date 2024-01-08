@@ -35,18 +35,19 @@
     <div class="space"></div>
     <!-- 音乐信息 -->
     <div class="music">
-      <img class="music-cover" :src="currentMusicInfo ? getMusicCover(currentMusicInfo.picture) : ''" alt="音乐封面">
+      <img class="music-cover"
+        :src="currentMusicInfo ? getMusicCover(currentMusicInfo.picture) : '../../public/default-cover.jpg'" alt="音乐封面">
       <div class="music-info">
         <div class="music-title">{{ currentMusicInfo && currentMusicInfo.title || '标题' }}</div>
         <div class="music-artist">{{ currentMusicInfo && currentMusicInfo.artist || '艺术家' }}</div>
       </div>
       <div class="music-controller">
-        <SvgIcon className="button" :iconName="modeIconName" :title="modeIconTitle" @click="changePlayMode" />
-        <SvgIcon className="button" iconName="icon-prev" title="上一曲" @click="prevMusic"></SvgIcon>
-        <SvgIcon className="button" :iconName="(isPlaying === false) ? 'icon-play' : 'icon-pause'"
+        <SvgIcon className="icon" :iconName="modeIconName" :title="modeIconTitle" @click="changePlayMode" />
+        <SvgIcon className="icon" iconName="icon-prev" title="上一曲" @click="prevMusic"></SvgIcon>
+        <SvgIcon className="icon" :iconName="(isPlaying === false) ? 'icon-play' : 'icon-pause'"
           :title="(isPlaying === false) ? '播放' : '暂停'" @click="toggleMusicPlay"></SvgIcon>
-        <SvgIcon className="button" iconName="icon-next" title="下一曲" @click="nextMusic"></SvgIcon>
-        <SvgIcon className="button" iconName="icon-playlist"></SvgIcon>
+        <SvgIcon className="icon" iconName="icon-next" title="下一曲" @click="nextMusic"></SvgIcon>
+        <SvgIcon className="icon" iconName="icon-playlist"></SvgIcon>
       </div>
       <div class="progress">
         <ProgressBar :cTime="cTime" :dTime="dTime" :playedProgressWidth="playedProgressWidth" />
@@ -54,10 +55,10 @@
     </div>
     <!-- 滚动歌词和播放列表 -->
     <div class="lyric-or-playlist">
-      <div class="lrc-container" ref="containerRef">
-        <div class="lrc-list" ref="listRef">
-          <div v-for="(lyric, index) in formatLyric(currentMusicInfo?.lyrics.lyrics)" :key="index"
-            :class="{ 'active': index === currentIndex }">
+      <div class="lrc-container" ref="lrcContainerRef">
+        <div class="lrc-list" ref="lrcListRef">
+          <div v-for="(lyric, index) in  formatLyric(currentMusicInfo?.lyrics.lyrics) " :key="index"
+            :class="{ 'lrc-word': true, 'active': index === currentIndex }">
             {{ lyric.word }}
           </div>
         </div>
@@ -65,7 +66,7 @@
     </div>
     <!-- 右侧收起按钮 -->
     <div class="button">
-      <SvgIcon iconName="icon-close" className="button" @click="closeImmersion" />
+      <SvgIcon iconName="icon-close" className="icon" @click="closeImmersion" />
     </div>
   </div>
 </template>
@@ -95,8 +96,8 @@ const playedProgressWidth = ref();
 // immersion是否开启
 const isImmersion = ref(false);
 
-const containerRef = ref(null);
-const listRef = ref(null);
+const lrcContainerRef = ref(null);
+const lrcListRef = ref(null);
 // 组件挂载完后执行
 onMounted(() => {
   // 设置audio元素
@@ -179,20 +180,20 @@ const findIndex = (lrcArr) => {
 // 设置offset
 const setOffset = () => {
   currentIndex.value = findIndex(formatLyric(currentMusicInfo.value.lyrics.lyrics));
-  let offset = listRef.value.children[0].clientHeight * currentIndex.value + listRef.value.children[0].clientHeight / 2 - containerRef.value.clientHeight / 2;
+  let offset = lrcListRef.value.children[0].clientHeight * currentIndex.value + lrcListRef.value.children[0].clientHeight / 2 - lrcContainerRef.value.clientHeight / 2;
 
   // 设置最小offset为0
   if (offset < 0) {
     offset = 0;
   }
   // 设置最大offset
-  if (offset > listRef.value.clientHeight - containerRef.value.clientHeight) {
-    offset = listRef.value.clientHeight - containerRef.value.clientHeight;
+  if (offset > lrcListRef.value.clientHeight - lrcContainerRef.value.clientHeight) {
+    offset = lrcListRef.value.clientHeight - lrcContainerRef.value.clientHeight;
   }
-  listRef.value.style.transform = `translateY(-${offset}px)`;
+  lrcListRef.value.style.transform = `translateY(-${offset}px)`;
 };
 </script>
-<style scoped>
+<style scoped lang="less">
 /* 播放控制器样式 */
 .controller {
   height: 100%;
@@ -286,85 +287,111 @@ const setOffset = () => {
   .space {
     width: 10%;
   }
+
+  /* 音乐信息 */
+  .music {
+    width: 40%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+
+    .music-cover {
+      width: 50%;
+      border-radius: 10%;
+      object-fit: cover;
+      box-shadow: var(--el-box-shadow);
+      align-self: center;
+    }
+
+    .music-info {
+      padding: 10px 20px;
+
+      .music-title {
+        font-size: 20px;
+        font-weight: 800;
+      }
+
+      .music-artist {
+        font-size: 16px;
+        margin: 4px 0 0;
+      }
+    }
+
+    .music-controller {
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+
+      .icon {
+        width: 30px;
+        height: 30px;
+        transition: transform 0.3s ease;
+
+        &:hover {
+          transform: scale(1.2);
+        }
+      }
+    }
+
+    .progress {
+      padding: 0 20px;
+    }
+  }
+
+  /* 滚动歌词和播放列表 */
+  .lyric-or-playlist {
+    width: 40%;
+    background-color: pink;
+
+    .lrc-container {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+
+      .lrc-list {
+        transition: 0.1s;
+
+        .lrc-word {
+          width: 100%;
+          padding: 10px;
+          word-wrap: break-word;
+          text-align: center;
+          transition: 0.1s;
+
+          &.active {
+            transform: scale(1.5);
+            color: greenyellow;
+          }
+        }
+
+      }
+    }
+  }
+
+  /* 右侧收起按钮 */
+  .button {
+    width: 10%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    .icon {
+      width: 30px;
+      height: 30px;
+      margin: 60px 0;
+      transition: transform 0.3s ease;
+
+      &:hover {
+        transform: scale(1.2);
+      }
+    }
+  }
 }
 
 /* 
-.space {
-  width: 15vw;
-  height: 100vh;
-}
-
-.music {
-  width: 35vw;
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-}
-
-.music-cover {
-  width: 20vw;
-  height: 20vw;
-  margin-bottom: 5vw;
-  border-radius: 10%;
-  object-fit: cover;
-  box-shadow: var(--el-box-shadow);
-}
-
-.music-info {
-  height: 100px;
-  width: 100%;
-  padding: 10px 20px;
-}
-
-.music-title {
-  font-size: 30px;
-  font-weight: 600;
-}
-
-.music-artist {
-  margin-top: 10px;
-}
-
-.music-controller {
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 10px 60px;
-}
-
-.progress {
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 10px 20px;
-}
-
 .lyric-or-playlist {
   width: 40vw;
   height: 100vh;
-}
-
-.buttons {
-  width: 10vw;
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.button {
-  height: 30px;
-  width: 30px;
-  margin: 20px 0;
-  transition: transform 0.3s ease;
-}
-
-.button:hover {
-  transform: scale(1.2);
 }
 
 .lrc-container {
@@ -378,15 +405,10 @@ const setOffset = () => {
 }
 
 .lrc-list div {
-  width: 100%;
-  padding: 10px;
-  word-wrap: break-word;
-  text-align: center;
-  transition: 0.1s;
+ 
 }
 
 .lrc-list div.active {
-  transform: scale(1.5);
-  color: greenyellow;
+  x
 } */
 </style>
