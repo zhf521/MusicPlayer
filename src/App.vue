@@ -1,5 +1,5 @@
 <template>
-  <el-container style="height: 100vh;width: 100vw; ">
+  <el-container class="container">
     <el-header>
       <el-menu style="height: 7vh;" :default-active="route.path.split('/')[1]" mode="horizontal" @select="handleSelect">
         <img style="height:6vh;" src="./assets/logo.svg" alt="logo" />
@@ -11,7 +11,7 @@
     <el-main>
       <router-view></router-view>
     </el-main>
-    <el-footer style="height: 10vh;width: 100vw; border-top:1px solid var(--el-border-color);padding: 1vh;">
+    <el-footer class="footer">
       <PlayerController />
     </el-footer>
   </el-container>
@@ -40,4 +40,16 @@ onMounted(async () => {
 });
 
 </script>
-<style scoped></style>
+<style scoped lang="less">
+.container {
+  height: 100vh;
+  width: 100vw;
+
+  .footer {
+    height: 105px;
+    width: 100%;
+    border-top: 1px solid var(--el-border-color);
+    padding: 10px 0;
+  }
+}
+</style>

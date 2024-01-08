@@ -2,74 +2,70 @@
   <!-- 音频标签 -->
   <audio ref="playerRef"></audio>
   <!-- 播放控制器 -->
-  <el-row :gutter="3" justify="space-evenly" class="player-controller">
-    <el-col :span="7">
-      <div class="music-details">
-        <img class="controller-music-cover" :src="currentMusicInfo ? getMusicCover(currentMusicInfo.picture) : ''"
-          alt="音乐封面" @click="openImmersion">
-        <div class="music-info">
-          <div class="music-title">{{ currentMusicInfo && currentMusicInfo.title || '标题' }}</div>
-          <div class="music-artist">{{ currentMusicInfo && currentMusicInfo.artist || '艺术家' }}</div>
-        </div>
+  <div class="controller">
+    <div class="details">
+      <img class="music-cover"
+        :src="currentMusicInfo ? getMusicCover(currentMusicInfo.picture) : '../../public/default-cover.jpg'" alt="音乐封面"
+        @click="openImmersion">
+      <div class="music-info">
+        <div class="music-title">{{ currentMusicInfo && currentMusicInfo.title || '标题' }}</div>
+        <div class="music-artist">{{ currentMusicInfo && currentMusicInfo.artist || '艺术家' }}</div>
       </div>
-    </el-col>
-    <el-col :span="7">
-      <div class="music-btns">
-        <SvgIcon class="icon" :iconName="modeIconName" :title="modeIconTitle" @click="changePlayMode" />
-        <SvgIcon class="icon" iconName="icon-prev" title="上一曲" @click="prevMusic" />
-        <SvgIcon class="icon" :iconName="(isPlaying === false) ? 'icon-play' : 'icon-pause'"
+    </div>
+    <div class="btns-progress">
+      <div class="btns">
+        <SvgIcon className="icon" :iconName="modeIconName" :title="modeIconTitle" @click="changePlayMode" />
+        <SvgIcon className="icon" iconName="icon-prev" title="上一曲" @click="prevMusic" />
+        <SvgIcon className="icon" :iconName="(isPlaying === false) ? 'icon-play' : 'icon-pause'"
           :title="(isPlaying === false) ? '播放' : '暂停'" @click="toggleMusicPlay" />
-        <SvgIcon class="icon" iconName="icon-next" title="下一曲" @click="nextMusic" />
-        <SvgIcon class="icon" iconName="icon-volume" />
+        <SvgIcon className="icon" iconName="icon-next" title="下一曲" @click="nextMusic" />
+        <SvgIcon className="icon" iconName="icon-volume" />
       </div>
-      <div>
+      <div class="progress">
         <ProgressBar :cTime="cTime" :dTime="dTime" :playedProgressWidth="playedProgressWidth" />
       </div>
-    </el-col>
-    <el-col :span="7">
-      <div class="playlist">
-        <SvgIcon class="icon" iconName="icon-playlist" />
-      </div>
-    </el-col>
-  </el-row>
+    </div>
+    <div class="playlist">
+      <SvgIcon class="icon" iconName="icon-playlist" />
+    </div>
+  </div>
   <!-- 沉浸模式 -->
-  <div class="immersion-view" v-show="isImmersion">
-    <div class="immersion">
-      <!-- 左侧空白 -->
-      <div class="space"></div>
-      <!-- 音乐信息 -->
-      <div class="music">
-        <img class="music-cover" :src="currentMusicInfo ? getMusicCover(currentMusicInfo.picture) : ''" alt="音乐封面">
-        <div class="music-info">
-          <div class="music-title">{{ currentMusicInfo && currentMusicInfo.title || '标题' }}</div>
-          <div class="music-artist">{{ currentMusicInfo && currentMusicInfo.artist || '艺术家' }}</div>
-        </div>
-        <div class="music-controller">
-          <SvgIcon className="button" :iconName="modeIconName" :title="modeIconTitle" @click="changePlayMode" />
-          <SvgIcon className="button" iconName="icon-prev" title="上一曲" @click="prevMusic"></SvgIcon>
-          <SvgIcon className="button" :iconName="(isPlaying === false) ? 'icon-play' : 'icon-pause'"
-            :title="(isPlaying === false) ? '播放' : '暂停'" @click="toggleMusicPlay"></SvgIcon>
-          <SvgIcon className="button" iconName="icon-next" title="下一曲" @click="nextMusic"></SvgIcon>
-          <SvgIcon className="button" iconName="icon-playlist"></SvgIcon>
-        </div>
-        <div class="progress">
-          <ProgressBar :cTime="cTime" :dTime="dTime" :playedProgressWidth="playedProgressWidth" />
-        </div>
+  <div class="immersion" v-show="isImmersion">
+    <!-- 左侧空白 -->
+    <div class="space"></div>
+    <!-- 音乐信息 -->
+    <div class="music">
+      <img class="music-cover" :src="currentMusicInfo ? getMusicCover(currentMusicInfo.picture) : ''" alt="音乐封面">
+      <div class="music-info">
+        <div class="music-title">{{ currentMusicInfo && currentMusicInfo.title || '标题' }}</div>
+        <div class="music-artist">{{ currentMusicInfo && currentMusicInfo.artist || '艺术家' }}</div>
       </div>
-      <!-- 滚动歌词和播放列表 -->
-      <div class="lyric-or-playlist">
-        <div class="lrc-container" ref="containerRef">
-          <div class="lrc-list" ref="listRef">
-            <div v-for="(lyric, index) in formatLyric(currentMusicInfo?.lyrics.lyrics)" :key="index"
-              :class="{ 'active': index === currentIndex }">
-              {{ lyric.word }}
-            </div>
+      <div class="music-controller">
+        <SvgIcon className="button" :iconName="modeIconName" :title="modeIconTitle" @click="changePlayMode" />
+        <SvgIcon className="button" iconName="icon-prev" title="上一曲" @click="prevMusic"></SvgIcon>
+        <SvgIcon className="button" :iconName="(isPlaying === false) ? 'icon-play' : 'icon-pause'"
+          :title="(isPlaying === false) ? '播放' : '暂停'" @click="toggleMusicPlay"></SvgIcon>
+        <SvgIcon className="button" iconName="icon-next" title="下一曲" @click="nextMusic"></SvgIcon>
+        <SvgIcon className="button" iconName="icon-playlist"></SvgIcon>
+      </div>
+      <div class="progress">
+        <ProgressBar :cTime="cTime" :dTime="dTime" :playedProgressWidth="playedProgressWidth" />
+      </div>
+    </div>
+    <!-- 滚动歌词和播放列表 -->
+    <div class="lyric-or-playlist">
+      <div class="lrc-container" ref="containerRef">
+        <div class="lrc-list" ref="listRef">
+          <div v-for="(lyric, index) in formatLyric(currentMusicInfo?.lyrics.lyrics)" :key="index"
+            :class="{ 'active': index === currentIndex }">
+            {{ lyric.word }}
           </div>
         </div>
       </div>
-      <div class="buttons">
-        <SvgIcon iconName="icon-close" className="button" @click="closeImmersion" />
-      </div>
+    </div>
+    <!-- 右侧收起按钮 -->
+    <div class="button">
+      <SvgIcon iconName="icon-close" className="button" @click="closeImmersion" />
     </div>
   </div>
 </template>
@@ -197,66 +193,86 @@ const setOffset = () => {
 };
 </script>
 <style scoped>
-.player-controller {
-  height: 8vh;
-  widows: 100vw;
-}
-
-.music-details {
-  height: 8vh;
-  display: flex;
-  align-items: center;
-}
-
-.controller-music-cover {
-  width: 8vh;
-  height: 8vh;
-  border-radius: 10%;
-  object-fit: cover;
-  box-shadow: var(--el-box-shadow);
-}
-
-
-.music-info {
-  margin-left: 1vw;
-}
-
-.music-title {
-  font-size: 3vh;
-  font-weight: 500;
-}
-
-.music-artist {
-  margin-top: 1vh;
-  color: #666;
-}
-
-.music-btns {
-  display: flex;
-  align-items: center;
-  justify-content: space-around;
-  padding: 1vh;
-}
-
-.icon {
-  width: 3vh;
-  height: 3vh;
-  transition: transform 0.3s ease;
-}
-
-.icon:hover {
-  transform: scale(1.2);
-}
-
-.playlist {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
+/* 播放控制器样式 */
+.controller {
   height: 100%;
+  width: 100%;
+  display: flex;
+
+  .details {
+    display: flex;
+    align-items: center;
+    width: 30%;
+    padding: 0 10px;
+
+    .music-cover {
+      width: 64px;
+      height: 64px;
+      border-radius: 10%;
+      object-fit: cover;
+      box-shadow: var(--el-box-shadow);
+    }
+
+    .music-info {
+      margin-left: 10px;
+
+      .music-title {
+        font-size: 18px;
+        font-weight: 800;
+      }
+
+      .music-artist {
+        font-size: 12px;
+        margin: 4px 0 0;
+      }
+    }
+  }
+
+  .btns-progress {
+    width: 40%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    .btns {
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      padding: 5px 30px;
+
+      .icon {
+        width: 24px;
+        height: 24px;
+        transition: transform 0.3s ease;
+
+        &:hover {
+          transform: scale(1.2);
+        }
+      }
+    }
+  }
+
+  .playlist {
+    width: 30%;
+    padding: 0 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    .icon {
+      width: 24px;
+      height: 24px;
+      transition: transform 0.3s ease;
+
+      &:hover {
+        transform: scale(1.2);
+      }
+    }
+  }
 }
 
-.immersion-view {
+/* 沉浸模式样式 */
+.immersion {
   position: fixed;
   top: 0;
   left: 0;
@@ -264,13 +280,15 @@ const setOffset = () => {
   height: 100vh;
   background-color: white;
   z-index: 9999;
-}
-
-.immersion {
   display: flex;
-  justify-content: space-between;
+
+  /* 左侧空白 */
+  .space {
+    width: 10%;
+  }
 }
 
+/* 
 .space {
   width: 15vw;
   height: 100vh;
@@ -370,5 +388,5 @@ const setOffset = () => {
 .lrc-list div.active {
   transform: scale(1.5);
   color: greenyellow;
-}
+} */
 </style>
