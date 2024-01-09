@@ -1,12 +1,12 @@
 <template>
   <!-- 音频标签 -->
-  <audio ref="playerRef"></audio>
+  <audio ref="playerRef" @ended="handleAudioEnded" @canplay="handleAudioCanPlay" @timeupdate="handleAudioTimeUpdate"
+    @pause="handleAudioPause"></audio>
   <!-- 播放控制器 -->
   <div class="controller">
     <div class="details">
-      <img class="music-cover"
-        :src="currentMusicInfo ? getMusicCover(currentMusicInfo.picture) : '../../public/default-cover.jpg'" alt="音乐封面"
-        @click="openImmersion">
+      <img class="music-cover" :src="currentMusicInfo ? getMusicCover(currentMusicInfo.picture) : '/default-cover.jpg'"
+        alt="音乐封面" @click="openImmersion">
       <div class="music-info">
         <div class="music-title">{{ currentMusicInfo && currentMusicInfo.title || '标题' }}</div>
         <div class="music-artist">{{ currentMusicInfo && currentMusicInfo.artist || '艺术家' }}</div>
@@ -35,8 +35,8 @@
     <div class="space"></div>
     <!-- 音乐信息 -->
     <div class="music">
-      <img class="music-cover"
-        :src="currentMusicInfo ? getMusicCover(currentMusicInfo.picture) : '../../public/default-cover.jpg'" alt="音乐封面">
+      <img class="music-cover" :src="currentMusicInfo ? getMusicCover(currentMusicInfo.picture) : '/default-cover.jpg'"
+        alt="音乐封面">
       <div class="music-info">
         <div class="music-title">{{ currentMusicInfo && currentMusicInfo.title || '标题' }}</div>
         <div class="music-artist">{{ currentMusicInfo && currentMusicInfo.artist || '艺术家' }}</div>
@@ -57,16 +57,18 @@
     <div class="lyric-or-playlist">
       <div class="lrc-container" ref="lrcContainerRef">
         <div class="lrc-list" ref="lrcListRef">
-          <div v-for="(lyric, index) in  formatLyric(currentMusicInfo?.lyrics.lyrics) " :key="index"
+          <div v-for="(lrcItem, index) in  lrcLines " :key="index"
             :class="{ 'lrc-word': true, 'active': index === currentIndex }">
-            {{ lyric.word }}
+            <div>{{ lrcItem.text }}</div>
+            <div v-show="isTranslate">{{ lrcItem.extendedLyrics[0] === '//' ? '' : lrcItem.extendedLyrics[0] }}</div>
           </div>
         </div>
       </div>
     </div>
-    <!-- 右侧收起按钮 -->
+    <!-- 右侧按钮 -->
     <div class="button">
       <SvgIcon iconName="icon-close" className="icon" @click="closeImmersion" />
+      <SvgIcon iconName="icon-play" className="icon" @click="toggleTranslate" />
     </div>
   </div>
 </template>
@@ -77,15 +79,59 @@ import { storeToRefs } from 'pinia';
 import { getMusicCover } from '@/utils/getMusicCover.js';
 import ProgressBar from '@/components/ProgressBar.vue';
 import SvgIcon from '@/components/SvgIcon.vue';
-import { formatLyric } from '@/utils/formatLyric.js';
-
+import Lyric from 'lrc-file-parser';
 // 引入playerControllerStore中的变量和函数
 const playerControllerStore = usePlayerControllerStore();
 const { isPlaying, mode, audioElement, currentMusicInfo } = storeToRefs(playerControllerStore);
 const { setAudioElement, togglePlay, prev, next, setMode } = playerControllerStore;
+
 // 音乐标签实例
 const playerRef = ref(null);
-// 播放模式
+// 组件挂载完后执行
+onMounted(() => {
+  nextTick(() => {
+    // 设置audio元素
+    setAudioElement(playerRef.value);
+  });
+});
+
+/**
+ * audio标签事件监听
+ */
+const handleAudioEnded = () => {
+  if (mode.value === 1) {
+    // 单曲循环
+    audioElement.value.currentTime = 0; // 重新开始播放当前音频
+    audioElement.value.play(); // 继续播放
+  } else {
+    next();
+  }
+};
+const handleAudioCanPlay = () => {
+  // 获取音频时长
+  dTime.value = audioElement.value.duration;
+  if (currentMusicInfo.value) {
+    lrc.setLyric(currentMusicInfo.value.lyrics.lyrics);
+  }
+};
+const handleAudioTimeUpdate = () => {
+  // 获取音频时长
+  const musicTime = audioElement.value.duration;
+  // 获取当前播放的时间
+  cTime.value = audioElement.value.currentTime;
+  // 计算已播放进度条比例宽度
+  playedProgressWidth.value = `${(cTime.value / musicTime) * 100}%`;
+  // 滚动歌词
+  // setOffset();
+  lrc.play(cTime.value * 1000);
+};
+const handleAudioPause = () => {
+  lrc.pause();
+};
+/**
+ * 播放控制器
+ */
+
 const playMode = ['list-loop', 'one-loop', 'random'];
 // 当前播放时间
 const cTime = ref();
@@ -93,105 +139,78 @@ const cTime = ref();
 const dTime = ref();
 // 已播放进度条宽度
 const playedProgressWidth = ref();
-// immersion是否开启
-const isImmersion = ref(false);
-
-const lrcContainerRef = ref(null);
-const lrcListRef = ref(null);
-// 组件挂载完后执行
-onMounted(() => {
-  // 设置audio元素
-  nextTick(() => {
-    setAudioElement(playerRef.value);
-    // 音频播放完
-    audioElement.value.onended = () => {
-      if (mode.value === 1) {
-        // 单曲循环
-        audioElement.value.currentTime = 0; // 重新开始播放当前音频
-        audioElement.value.play(); // 继续播放
-      } else {
-        next();
-      }
-    };
-    // 音频加载完可播放
-    audioElement.value.oncanplay = () => {
-      // 获取音频时长
-      dTime.value = audioElement.value.duration;
-    };
-    // 音频正在播放时
-    audioElement.value.ontimeupdate = () => {
-      // 获取音频时长
-      const musicTime = audioElement.value.duration;
-      // 获取当前播放的时间
-      cTime.value = audioElement.value.currentTime;
-      // 计算已播放进度条比例宽度
-      playedProgressWidth.value = `${(cTime.value / musicTime) * 100}%`;
-      // 滚动歌词
-      setOffset();
-    };
-  });
-});
-
-// 切换播放、暂停
 const toggleMusicPlay = () => {
   togglePlay();
 };
-// 上一曲
 const prevMusic = () => {
   prev();
 };
-// 下一曲
 const nextMusic = () => {
   next();
 };
-// 切换播放模式
 const changePlayMode = () => {
   const newMode = (mode.value + 1) % 3;
   setMode(newMode);
 };
-// 播放模式iconName
 const modeIconName = computed(() => {
   return `icon-${playMode[mode.value]}`;
 });
-// 播放模式title
 const modeIconTitle = computed(() => {
   const playModeTitle = ['列表循环', '单曲循环', '随机播放'];
   return playModeTitle[mode.value];
 });
-// 开启沉浸模式
+
+/**
+ * 沉浸模式控制
+ */
+
+const isImmersion = ref(false);
 const openImmersion = () => {
   isImmersion.value = true;
 };
-// 关闭沉浸模式
 const closeImmersion = () => {
   isImmersion.value = false;
 };
-const currentIndex = ref(0);
 
-// 根据当前音频播放时间，获得需要高亮的歌词index
-const findIndex = (lrcArr) => {
-  let index = lrcArr.findIndex((item) => item.time > cTime.value);
-  if (index === -1) {
-    index = lrcArr.length;
-  }
-  return index - 1;
+/**
+ * 滚动歌词
+ */
+const lrcContainerRef = ref(null);
+const lrcListRef = ref(null);
+const currentIndex = ref(0);
+// 歌词列表
+const lrcLines = ref([]);
+let lrc = new Lyric({
+  onPlay: function (line, text) {
+    // line：当前播放行的索引，text：当前播放行的歌词
+    console.log(line, text);
+    currentIndex.value = line;
+  },
+  onSetLyric: function (lines) {
+    // lines：歌词
+    console.log(lines);
+    lrcLines.value = lines;
+  },
+  // 偏移时间，默认为0ms
+  offset: 150,
+  // 播放速度，默认为1
+  playbackRate: 1,
+  // 是否去除空行：默认为true
+  isRemoveBlankLine: true
+});
+const isTranslate = ref(false);
+const toggleTranslate = () => {
+  isTranslate.value = !isTranslate.value;
 };
 
 // 设置offset
-const setOffset = () => {
-  currentIndex.value = findIndex(formatLyric(currentMusicInfo.value.lyrics.lyrics));
-  let offset = lrcListRef.value.children[0].clientHeight * currentIndex.value + lrcListRef.value.children[0].clientHeight / 2 - lrcContainerRef.value.clientHeight / 2;
-
-  // 设置最小offset为0
-  if (offset < 0) {
-    offset = 0;
-  }
-  // 设置最大offset
-  if (offset > lrcListRef.value.clientHeight - lrcContainerRef.value.clientHeight) {
-    offset = lrcListRef.value.clientHeight - lrcContainerRef.value.clientHeight;
-  }
-  lrcListRef.value.style.transform = `translateY(-${offset}px)`;
-};
+// const setOffset = () => {
+//   currentIndex.value = findIndex(formatLyric(currentMusicInfo.value.lyrics.lyrics));
+//   // let offset = 0;
+//   // const currentLrcElement = lrcListRef.value.children[currentIndex.value];
+//   // offset = currentLrcElement.offsetTop - lrcContainerRef.value.clientHeight / 2 + currentLrcElement.clientHeight / 2;
+//   // lrcListRef.value.style.transform = `translateY(-${offset}px)`;
+// };
 </script>
 <style scoped lang="less">
 /* 播放控制器样式 */
@@ -305,6 +324,7 @@ const setOffset = () => {
 
     .music-info {
       padding: 10px 20px;
+      align-self: center;
 
       .music-title {
         font-size: 20px;
@@ -341,29 +361,29 @@ const setOffset = () => {
   /* 滚动歌词和播放列表 */
   .lyric-or-playlist {
     width: 40%;
-    background-color: pink;
+    // background-color: pink;
 
     .lrc-container {
       width: 100%;
       height: 100%;
-      overflow: hidden;
+      overflow-y: auto;
+      overflow-x: hidden;
 
       .lrc-list {
-        transition: 0.1s;
+        padding: 50vh 20px;
+        text-align: center;
+        transition: 0.3s;
 
         .lrc-word {
-          width: 100%;
-          padding: 10px;
-          word-wrap: break-word;
-          text-align: center;
-          transition: 0.1s;
+          margin: 10px 0;
+          font-size: 16px;
+          transition: 0.3s;
 
           &.active {
             transform: scale(1.5);
             color: greenyellow;
           }
         }
-
       }
     }
   }
@@ -374,6 +394,7 @@ const setOffset = () => {
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: space-between;
 
     .icon {
       width: 30px;
@@ -387,28 +408,4 @@ const setOffset = () => {
     }
   }
 }
-
-/* 
-.lyric-or-playlist {
-  width: 40vw;
-  height: 100vh;
-}
-
-.lrc-container {
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-}
-
-.lrc-list {
-  transition: 0.1s;
-}
-
-.lrc-list div {
- 
-}
-
-.lrc-list div.active {
-  x
-} */
 </style>
