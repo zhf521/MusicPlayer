@@ -10,7 +10,7 @@
       <el-input v-model="webDavForm.password" type="password" />
     </el-form-item>
     <el-form-item>
-      <el-button type="primary" @click="saveSetting(webDavFormRef)">
+      <el-button type="primary" @click="saveSettings(webDavFormRef)">
         保存
       </el-button>
       <el-button @click="resetForm(webDavFormRef)">重置</el-button>
@@ -20,7 +20,7 @@
 <script setup>
 import { onMounted, reactive, ref } from 'vue';
 import { createClient } from "webdav";
-import { useUserSettingStore } from '@/stores/userSetting';
+import { useUserSettingsStore } from '../stores/userSettings';
 import { storeToRefs } from 'pinia';
 import { ElMessage } from 'element-plus';
 
@@ -39,21 +39,21 @@ const rules = reactive({
     { type: 'url', message: '输入的地址不合法', trigger: 'blur' }
   ],
 });
-// 引入userSettingStore中的变量和函数
-const userSettingStore = useUserSettingStore();
-const { userSetting } = storeToRefs(userSettingStore);
+// 引入userSettingsStore中的变量和函数
+const userSettingsStore = useUserSettingsStore();
+const { userSettings } = storeToRefs(userSettingsStore);
 // 组件挂载成功后执行
 onMounted(() => {
-  const webDavSetting = userSetting.value.webDavSetting;
-  if (webDavSetting) {
-    webDavForm.url = webDavSetting.url;
-    webDavForm.username = webDavSetting.username;
-    webDavForm.password = webDavSetting.password;
+  const webDavSettings = userSettings.value.webDavSettings;
+  if (webDavSettings) {
+    webDavForm.url = webDavSettings.url;
+    webDavForm.username = webDavSettings.username;
+    webDavForm.password = webDavSettings.password;
   }
 });
 
 // 保存配置
-const saveSetting = async (formEl) => {
+const saveSettings = async (formEl) => {
   if (!formEl) return;
   await formEl.validate(async (valid, fields) => {
     if (valid) {
@@ -63,7 +63,7 @@ const saveSetting = async (formEl) => {
           password: webDavForm.password,
         });
         await client.getDirectoryContents('/');
-        userSettingStore.saveUserSetting('webDavSetting', JSON.parse(JSON.stringify(webDavForm)));
+        userSettingsStore.saveUserSettings('webDavSettings', JSON.parse(JSON.stringify(webDavForm)));
         ElMessage({
           type: 'success',
           message: '保存成功',

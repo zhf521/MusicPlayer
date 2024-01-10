@@ -1,5 +1,5 @@
 import { useMusicLibraryStore } from '@/stores/musicLibrary';
-import { useUserSettingStore } from '@/stores/userSetting';
+import { useUserSettingsStore } from '@/stores/userSettings';
 import { getTag } from '@/utils/getTag';
 import { storeToRefs } from 'pinia';
 import { onMounted, ref } from 'vue';
@@ -8,25 +8,25 @@ import { createClient } from 'webdav';
 export function useGetFileURL() {
     // 文件URL
     const fileURL = ref(null);
-    // 引入userSettingStore中的变量
-    const userSettingStore = useUserSettingStore();
-    const { userSetting } = storeToRefs(userSettingStore);
-    const { loadUserSetting } = userSettingStore;
+    // 引入userSettingsStore中的变量
+    const userSettingsStore = useUserSettingsStore();
+    const { userSettings } = storeToRefs(userSettingsStore);
+    const { loadUserSettings } = userSettingsStore;
     // 引入musicLibraryStore中的变量
     const musicLibraryStore = useMusicLibraryStore();
     const { addTagToMusic } = musicLibraryStore;
     // 组件加载完后执行
     onMounted(async () => {
-        await loadUserSetting();
+        await loadUserSettings();
     });
     // 定义获取文件URL的函数
     const getFileURL = async (filename) => {
         // 获取webDav设置
-        const webDavSetting = userSetting.value.webDavSetting;
+        const webDavSettings = userSettings.value.webDavSettings;
         try {
-            const res = await createClient(webDavSetting.url, {
-                username: webDavSetting.username,
-                password: webDavSetting.password,
+            const res = await createClient(webDavSettings.url, {
+                username: webDavSettings.username,
+                password: webDavSettings.password,
             }).getFileContents(filename);
             const blob = new Blob([res]);
             const tag = await getTag(blob);

@@ -25,8 +25,8 @@
 </template>
 
 <script setup>
-import { usePlayerControllerStore } from '@/stores/playerController';
-import { useUserSettingStore } from '@/stores/userSetting';
+import { usePlayerControllerStore } from '../stores/playerController';
+import { useUserSettingsStore } from '../stores/userSettings';
 import { onMounted } from 'vue';
 
 // props参数
@@ -35,16 +35,16 @@ const props = defineProps({
 });
 // 引入playerControllerStore中的变量和函数
 const playerControllerStore = usePlayerControllerStore();
-const { loadAndPlayMusic } = playerControllerStore;
+const { loadMusic } = playerControllerStore;
 const play = (index) => {
-  loadAndPlayMusic(props.list, index);
-}
-// 引入userSettingStore中的变量和函数
-const userSettingStore = useUserSettingStore();
-// const { userSetting } = storeToRefs(userSettingStore);
-const { loadUserSetting } = userSettingStore;
+  loadMusic(props.list, index, true);
+};
+// 引入userSettingsStore中的变量和函数
+const userSettingsStore = useUserSettingsStore();
+// const { userSettings } = storeToRefs(userSettingsStore);
+const { loadUserSettings } = userSettingsStore;
 onMounted(async () => {
   // 加载用户设置
-  await loadUserSetting();
-})
+  await loadUserSettings();
+});
 </script>

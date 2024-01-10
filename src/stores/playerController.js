@@ -12,16 +12,16 @@ export const usePlayerControllerStore = defineStore('playerController', () => {
     // 播放状态，是否播放
     const isPlaying = ref(false);
     // 正在播放列表
-    const playList = ref([]);
+    const playlist = ref([]);
     // 顺序的列表
     const orderList = ref([]);
     // 当前播放音乐的索引
-    const currentIndex = ref(-1);
+    const currentPlayIndex = ref(-1);
     // 播放模式，默认模式为列表循环
     const mode = ref(0);
     // 当前播放的音乐
     const currentMusic = computed(() => {
-        return playList.value[currentIndex.value] || {};
+        return playlist.value[currentPlayIndex.value] || {};
     });
     // 当前音乐的信息
     const currentMusicInfo = ref(null);
@@ -30,20 +30,22 @@ export const usePlayerControllerStore = defineStore('playerController', () => {
     const setAudioElement = (audio) => {
         audioElement.value = audio;
     };
-    // 加载并播放音乐
-    const loadAndPlayMusic = async (list, index) => {
-        if (!compareArrays(list, playList.value)) {
+    // 加载音乐
+    const loadMusic = async (list, index, autoPlay) => {
+        if (!compareArrays(list, playlist.value)) {
             console.log('播放列表不相同');
-            playList.value = list;
+            playlist.value = list;
             orderList.value = list;
         }
         try {
-            await getFileURL(playList.value[index].filename);
+            await getFileURL(playlist.value[index].filename);
             audioElement.value.src = fileURL.value;
-            audioElement.value.play();
-            currentIndex.value = index;
-            currentMusicInfo.value = playList.value[index].tag.tags;
-            isPlaying.value = true;
+            currentPlayIndex.value = index;
+            currentMusicInfo.value = playlist.value[index].tag.tags;
+            if (autoPlay) {
+                audioElement.value.play();
+                isPlaying.value = true;
+            }
         } catch (error) {
             console.log(error);
         }
@@ -60,22 +62,22 @@ export const usePlayerControllerStore = defineStore('playerController', () => {
     };
     // 上一曲
     const prev = () => {
-        if (currentIndex.value > 0) {
-            const newIndex = currentIndex.value - 1;
-            loadAndPlayMusic(playList.value, newIndex);
+        if (currentPlayIndex.value > 0) {
+            const newIndex = currentPlayIndex.value - 1;
+            loadMusic(playlist.value, newIndex, true);
         } else {
-            const newIndex = playList.value.length - 1;
-            loadAndPlayMusic(playList.value, newIndex);
+            const newIndex = playlist.value.length - 1;
+            loadMusic(playlist.value, newIndex, true);
         }
     };
     // 下一曲
     const next = () => {
-        if (currentIndex.value === playList.value.length - 1) {
+        if (currentPlayIndex.value === playlist.value.length - 1) {
             const newIndex = 0;
-            loadAndPlayMusic(playList.value, newIndex);
+            loadMusic(playlist.value, newIndex, true);
         } else {
-            const newIndex = currentIndex.value + 1;
-            loadAndPlayMusic(playList.value, newIndex);
+            const newIndex = currentPlayIndex.value + 1;
+            loadMusic(playlist.value, newIndex, true);
         }
     };
     // 设置播放模式
@@ -97,12 +99,12 @@ export const usePlayerControllerStore = defineStore('playerController', () => {
                     break;
             }
             // 获取当前歌曲在顺序列表中的索引
-            const index = playList.value.findIndex(
+            const index = playlist.value.findIndex(
                 (item) => item.filename === currentMusic.value.filename
             );
             // 设置当前索引
-            currentIndex.value = index;
-            playList.value = list;
+            currentPlayIndex.value = index;
+            playlist.value = list;
         }
     };
     // // 设置播放状态
@@ -111,23 +113,24 @@ export const usePlayerControllerStore = defineStore('playerController', () => {
     // };
     // // 选择播放（设置列表和当前音乐）
     // const selectPlay = (list, index) => {
-    //     setPlayList(list);
-    //     setCurrentIndex(index);
+    //     setPlaylist(list);
+    //     setCurrentPlayIndex(index);
     //     setPlaying(true);
     // };
     return {
         audioElement,
         setAudioElement,
         isPlaying,
-        loadAndPlayMusic,
+        loadMusic,
+        loadMusic,
         togglePlay,
         prev,
         next,
         mode,
         setMode,
-        currentIndex,
+        currentPlayIndex,
         currentMusic,
-        playList,
+        playlist,
         currentMusicInfo,
     };
 });

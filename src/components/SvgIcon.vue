@@ -28,14 +28,14 @@ const props = defineProps({
 // 图标在iconfont中的名字
 const iconName = computed(() => {
   return `#${props.iconName}`;
-})
+});
 // 给图标添加类名
 const svgClass = computed(() => {
   if (props.className) {
     return `svg-icon ${props.className}`;
   }
   return 'svg-icon';
-})
+});
 </script>
 <style scoped>
 .icon {

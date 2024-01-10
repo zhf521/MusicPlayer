@@ -1,7 +1,4 @@
 <template>
-  <!-- 音频标签 -->
-  <audio ref="playerRef" @ended="handleAudioEnded" @canplay="handleAudioCanPlay" @timeupdate="handleAudioTimeUpdate"
-    @pause="handleAudioPause"></audio>
   <!-- 播放控制器 -->
   <div class="controller">
     <div class="details">
@@ -80,54 +77,87 @@ import { getMusicCover } from '@/utils/getMusicCover.js';
 import ProgressBar from '@/components/ProgressBar.vue';
 import SvgIcon from '@/components/SvgIcon.vue';
 import Lyric from 'lrc-file-parser';
+import { useHistoryStore } from '../stores/history';
 // 引入playerControllerStore中的变量和函数
 const playerControllerStore = usePlayerControllerStore();
-const { isPlaying, mode, audioElement, currentMusicInfo } = storeToRefs(playerControllerStore);
+const { isPlaying, mode, audioElement, currentMusicInfo, playlist, currentPlayIndex } = storeToRefs(playerControllerStore);
 const { setAudioElement, togglePlay, prev, next, setMode } = playerControllerStore;
+// 引入historyStore中的变量和函数
+const historyStore = useHistoryStore();
+// const { history } = storeToRefs(historyStore);
+const { addToHistory } = historyStore;
 
-// 音乐标签实例
-const playerRef = ref(null);
 // 组件挂载完后执行
 onMounted(() => {
   nextTick(() => {
-    // 设置audio元素
-    setAudioElement(playerRef.value);
+    audioElement.value.onended = () => {
+      if (mode.value === 1) {
+        // 单曲循环
+        audioElement.value.currentTime = 0; // 重新开始播放当前音频
+        audioElement.value.play(); // 继续播放
+      } else {
+        next();
+      }
+    };
+    audioElement.value.oncanplay = () => {
+      // 获取音频时长
+      dTime.value = audioElement.value.duration;
+      if (currentMusicInfo.value) {
+        lrc.setLyric(currentMusicInfo.value.lyrics.lyrics);
+      }
+      console.log(playlist);
+    };
+    audioElement.value.ontimeupdate = () => {
+      // 获取音频时长
+      const musicTime = audioElement.value.duration;
+      // 获取当前播放的时间
+      cTime.value = audioElement.value.currentTime;
+      // 计算已播放进度条比例宽度
+      playedProgressWidth.value = `${(cTime.value / musicTime) * 100}%`;
+      // 滚动歌词
+      // setOffset();
+      lrc.play(cTime.value * 1000);
+    };
+    audioElement.value.onpause = () => {
+      lrc.pause();
+    };
   });
 });
 
 /**
  * audio标签事件监听
  */
-const handleAudioEnded = () => {
-  if (mode.value === 1) {
-    // 单曲循环
-    audioElement.value.currentTime = 0; // 重新开始播放当前音频
-    audioElement.value.play(); // 继续播放
-  } else {
-    next();
-  }
-};
-const handleAudioCanPlay = () => {
-  // 获取音频时长
-  dTime.value = audioElement.value.duration;
-  if (currentMusicInfo.value) {
-    lrc.setLyric(currentMusicInfo.value.lyrics.lyrics);
-  }
-};
-const handleAudioTimeUpdate = () => {
-  // 获取音频时长
-  const musicTime = audioElement.value.duration;
-  // 获取当前播放的时间
-  cTime.value = audioElement.value.currentTime;
-  // 计算已播放进度条比例宽度
-  playedProgressWidth.value = `${(cTime.value / musicTime) * 100}%`;
-  // 滚动歌词
-  // setOffset();
-  lrc.play(cTime.value * 1000);
-};
-const handleAudioPause = () => {
-  lrc.pause();
-};
+// const handleAudioEnded = () => {
+//   if (mode.value === 1) {
+//     // 单曲循环
+//     audioElement.value.currentTime = 0; // 重新开始播放当前音频
+//     audioElement.value.play(); // 继续播放
+//   } else {
+//     next();
+//   }
+// };
+// const handleAudioCanPlay = () => {
+//   // 获取音频时长
+//   dTime.value = audioElement.value.duration;
+//   if (currentMusicInfo.value) {
+//     lrc.setLyric(currentMusicInfo.value.lyrics.lyrics);
+//   }
+//   addToHistory({ playlist: playlist, index: currentPlayIndex });
+// };
+// const handleAudioTimeUpdate = () => {
+//   // 获取音频时长
+//   const musicTime = audioElement.value.duration;
+//   // 获取当前播放的时间
+//   cTime.value = audioElement.value.currentTime;
+//   // 计算已播放进度条比例宽度
+//   playedProgressWidth.value = `${(cTime.value / musicTime) * 100}%`;
+//   // 滚动歌词
+//   // setOffset();
+//   lrc.play(cTime.value * 1000);
+// };
+// const handleAudioPause = () => {
+//   lrc.pause();
+// };
 /**
  * 播放控制器
  */
@@ -183,12 +213,10 @@ const lrcLines = ref([]);
 let lrc = new Lyric({
   onPlay: function (line, text) {
     // line：当前播放行的索引，text：当前播放行的歌词
-    console.log(line, text);
     currentIndex.value = line;
   },
   onSetLyric: function (lines) {
     // lines：歌词
-    console.log(lines);
     lrcLines.value = lines;
   },
   // 偏移时间，默认为0ms

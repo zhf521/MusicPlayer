@@ -1,10 +1,10 @@
 <template>
   <h2>设置</h2>
   <h3>WebDav设置</h3>
-  <WebDavSetting />
+  <WebDavSettings />
 </template>
 <script setup>
-import WebDavSetting from '@/components/WebDavSetting.vue';
+import WebDavSettings from '@/components/WebDavSettings.vue';
 
 </script>
 <style scoped></style>
