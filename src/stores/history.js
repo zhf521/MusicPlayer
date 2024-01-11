@@ -19,14 +19,14 @@ export const useHistoryStore = defineStore('history', () => {
     // 添加到历史记录
     const addToHistory = async (item) => {
         history.value.push(item);
-        try {
-            await localforage.setItem(
-                'history',
-                JSON.parse(JSON.stringify(history.value))
-            );
-        } catch (error) {
-            console.error('failed to update history', error);
-        }
+        // try {
+        //     await localforage.setItem(
+        //         'history',
+        //         JSON.parse(JSON.stringify(history.value))
+        //     );
+        // } catch (error) {
+        //     console.error('failed to update history', error);
+        // }
     };
     return {
         history,

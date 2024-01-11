@@ -14,7 +14,7 @@ export function useGetFileURL() {
     const { loadUserSettings } = userSettingsStore;
     // 引入musicLibraryStore中的变量
     const musicLibraryStore = useMusicLibraryStore();
-    const { addTagToMusic } = musicLibraryStore;
+    const { addTagToMusic, addUrlToMusic } = musicLibraryStore;
     // 组件加载完后执行
     onMounted(async () => {
         await loadUserSettings();
@@ -32,6 +32,7 @@ export function useGetFileURL() {
             const tag = await getTag(blob);
             addTagToMusic(filename, tag);
             fileURL.value = URL.createObjectURL(blob);
+            addUrlToMusic(filename, fileURL.value);
         } catch (error) {
             console.error('获取文件URL失败', error);
         }

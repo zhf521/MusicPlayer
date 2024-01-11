@@ -28,7 +28,7 @@ const { loadMusicLibrary } = musicLibraryStore;
 // 组件挂载完执行
 onMounted(() => {
   // 加载音乐库
-  loadMusicLibrary();
+  // loadMusicLibrary();
 });
 
 // 去添加音乐

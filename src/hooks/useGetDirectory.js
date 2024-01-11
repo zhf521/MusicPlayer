@@ -1,4 +1,4 @@
-import { useUserSettingStore } from '@/stores/userSetting';
+import { useUserSettingsStore } from '@/stores/userSettings';
 import { storeToRefs } from 'pinia';
 import { onMounted, ref } from 'vue';
 import { createClient } from 'webdav';
@@ -8,22 +8,22 @@ export function useGetDirectory() {
     const contents = ref(null);
     // 支持的文件扩展名
     const supportedExtensions = ['.mp3'];
-    // 引入userSettingStore中的变量和函数
-    const userSettingStore = useUserSettingStore();
-    const { userSetting } = storeToRefs(userSettingStore);
-    const { loadUserSetting } = userSettingStore;
+    // 引入userSettingsStore中的变量和函数
+    const userSettingsStore = useUserSettingsStore();
+    const { userSettings } = storeToRefs(userSettingsStore);
+    const { loadUserSettings } = userSettingsStore;
     onMounted(async () => {
         // 加载用户设置
-        await loadUserSetting();
+        await loadUserSettings();
     });
     // 获取webDav设置
-    const webDavSetting = userSetting.value.webDavSetting;
+    const webDavSettings = userSettings.value.webDavSettings;
     // 定义获取文件夹内容的函数
     const getDirectory = async (path) => {
         try {
-            const allContents = await createClient(webDavSetting.url, {
-                username: webDavSetting.username,
-                password: webDavSetting.password,
+            const allContents = await createClient(webDavSettings.url, {
+                username: webDavSettings.username,
+                password: webDavSettings.password,
             }).getDirectoryContents(path);
             if (Array.isArray(allContents)) {
                 contents.value = allContents.filter((item) => {

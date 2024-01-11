@@ -6,7 +6,7 @@
     <el-table-column type="index" />
     <el-table-column label="标题">
       <template #default="scope">
-        <div @dblclick="play(scope.$index)" style="overflow: hidden; text-overflow: ellipsis;">
+        <div @dblclick="selectPlay(scope.$index)" style="overflow: hidden; text-overflow: ellipsis;">
           {{ scope.row.tag && scope.row.tag.tags.title || scope.row.basename }}
         </div>
       </template>
@@ -25,6 +25,7 @@
 </template>
 
 <script setup>
+import { storeToRefs } from 'pinia';
 import { usePlayerControllerStore } from '../stores/playerController';
 import { useUserSettingsStore } from '../stores/userSettings';
 import { onMounted } from 'vue';
@@ -35,9 +36,14 @@ const props = defineProps({
 });
 // 引入playerControllerStore中的变量和函数
 const playerControllerStore = usePlayerControllerStore();
-const { loadMusic } = playerControllerStore;
-const play = (index) => {
-  loadMusic(props.list, index, true);
+const { currentMusic } = storeToRefs(playerControllerStore);
+const { setCurrentPlayIndex, setPlaying } = playerControllerStore;
+const selectPlay = (index) => {
+  // loadMusic(props.list, index, true);
+  if (props.list[index].filename !== currentMusic.value.filename) {
+    setCurrentPlayIndex(index);
+    setPlaying(true);
+  }
 };
 // 引入userSettingsStore中的变量和函数
 const userSettingsStore = useUserSettingsStore();

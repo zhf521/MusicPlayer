@@ -1,12 +1,10 @@
 <template>
-  <!-- 音频标签 -->
-  <audio ref="playerRef"></audio>
   <el-container class="container">
     <el-header>
       <el-menu style="height: 7vh;" :default-active="route.path.split('/')[1]" mode="horizontal" @select="handleSelect">
         <img style="height:6vh;" src="./assets/logo.svg" alt="logo" />
         <el-menu-item index="music-library">音乐库</el-menu-item>
-        <el-menu-item index="song-list">歌单</el-menu-item>
+        <!-- <el-menu-item index="song-list">歌单</el-menu-item> -->
         <el-menu-item index="settings">设置</el-menu-item>
       </el-menu>
     </el-header>
@@ -17,36 +15,47 @@
       <PlayerController />
     </el-footer>
   </el-container>
+  <!-- 音频标签 -->
+  <audio controls ref="playerRef"></audio>
 </template>
 <script setup>
 import { useRouter, useRoute } from 'vue-router';
-import PlayerController from './components/PlayerController.vue';
+import PlayerController from '@/components/PlayerController.vue';
 import { onMounted, ref } from 'vue';
-import { useUserSettingsStore } from './stores/userSettings';
-import { useHistoryStore } from './stores/history';
-import { usePlayerControllerStore } from './stores/playerController';
+import { useUserSettingsStore } from '@/stores/userSettings';
+// import { useHistoryStore } from './stores/history';
+import { usePlayerControllerStore } from '@/stores/playerController';
+import { useMusicLibraryStore } from '@/stores/musicLibrary';
+import { storeToRefs } from 'pinia';
 
 // 引入路由和路由器
 const route = useRoute();
 const router = useRouter();
 // 引入playerControllerStore中的变量和函数
 const playerControllerStore = usePlayerControllerStore();
-const { setAudioElement } = playerControllerStore;
+const { setAudioElement, setPlaylist } = playerControllerStore;
 // 引入userSettingsStore中的函数
 const userSettingsStore = useUserSettingsStore();
 const { loadUserSettings } = userSettingsStore;
-// 引入historyStore中的函数
-const historyStore = useHistoryStore();
-const { loadHistory } = historyStore;
+// // 引入historyStore中的函数
+// const historyStore = useHistoryStore();
+// const { loadHistory } = historyStore;
+// 引入musicLibraryStore中的变量和函数
+const musicLibraryStore = useMusicLibraryStore();
+const { musicLibrary } = storeToRefs(musicLibraryStore);
+const { loadMusicLibrary } = musicLibraryStore;
 
 const playerRef = ref(null);
-// 组件挂载成功后执行
+// 在组件挂载到DOM后执行的操作
 onMounted(async () => {
+  await loadMusicLibrary();
+  console.log(musicLibrary.value);
+  setPlaylist(musicLibrary.value);
   setAudioElement(playerRef.value);
   // 加载用户配置
   await loadUserSettings();
-  // 加载历史记录
-  await loadHistory();
+  // // 加载历史记录
+  // await loadHistory();
 });
 
 // 菜单选中

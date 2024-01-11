@@ -18,9 +18,9 @@
         <SvgIcon className="icon" iconName="icon-next" title="下一曲" @click="nextMusic" />
         <SvgIcon className="icon" iconName="icon-volume" />
       </div>
-      <div class="progress">
+      <!-- <div class="progress">
         <ProgressBar :cTime="cTime" :dTime="dTime" :playedProgressWidth="playedProgressWidth" />
-      </div>
+      </div> -->
     </div>
     <div class="playlist">
       <SvgIcon class="icon" iconName="icon-playlist" />
@@ -65,123 +65,123 @@
     <!-- 右侧按钮 -->
     <div class="button">
       <SvgIcon iconName="icon-close" className="icon" @click="closeImmersion" />
-      <SvgIcon iconName="icon-play" className="icon" @click="toggleTranslate" />
+      <SvgIcon iconName="icon-isTranslate" className="icon" @click="toggleTranslate" />
     </div>
   </div>
 </template>
 <script setup>
-import { computed, nextTick, onMounted, ref } from 'vue';
+import { computed, nextTick, onMounted, ref, watch } from 'vue';
 import { usePlayerControllerStore } from '@/stores/playerController.js';
 import { storeToRefs } from 'pinia';
 import { getMusicCover } from '@/utils/getMusicCover.js';
 import ProgressBar from '@/components/ProgressBar.vue';
 import SvgIcon from '@/components/SvgIcon.vue';
 import Lyric from 'lrc-file-parser';
-import { useHistoryStore } from '../stores/history';
+import { randomShuffle } from '@/utils/randomShuffle';
+import { useMusicLibraryStore } from '@/stores/musicLibrary';
+import { useUserSettingsStore } from '@/stores/userSettings';
+import { getTag } from '@/utils/getTag';
+import { createClient } from 'webdav';
+// import { useHistoryStore } from '../stores/history';
 // 引入playerControllerStore中的变量和函数
 const playerControllerStore = usePlayerControllerStore();
-const { isPlaying, mode, audioElement, currentMusicInfo, playlist, currentPlayIndex } = storeToRefs(playerControllerStore);
-const { setAudioElement, togglePlay, prev, next, setMode } = playerControllerStore;
-// 引入historyStore中的变量和函数
-const historyStore = useHistoryStore();
+const { audioElement, mode, currentMusic, isPlaying, currentPlayIndex, playlist, orderList, currentMusicInfo } = storeToRefs(playerControllerStore);
+const { setPlaying, setCurrentPlayIndex, setPlayMode } = playerControllerStore;
+// // 引入historyStore中的变量和函数
+// const historyStore = useHistoryStore();
 // const { history } = storeToRefs(historyStore);
-const { addToHistory } = historyStore;
+// const { addToHistory } = historyStore;
+// const musicReady = ref(false);//音乐是否准备好
+const currentTime = ref(0);// 当前播放时间
 
 // 组件挂载完后执行
 onMounted(() => {
   nextTick(() => {
-    audioElement.value.onended = () => {
-      if (mode.value === 1) {
-        // 单曲循环
-        audioElement.value.currentTime = 0; // 重新开始播放当前音频
-        audioElement.value.play(); // 继续播放
-      } else {
-        next();
-      }
-    };
-    audioElement.value.oncanplay = () => {
-      // 获取音频时长
-      dTime.value = audioElement.value.duration;
-      if (currentMusicInfo.value) {
-        lrc.setLyric(currentMusicInfo.value.lyrics.lyrics);
-      }
-      console.log(playlist);
-    };
-    audioElement.value.ontimeupdate = () => {
-      // 获取音频时长
-      const musicTime = audioElement.value.duration;
-      // 获取当前播放的时间
-      cTime.value = audioElement.value.currentTime;
-      // 计算已播放进度条比例宽度
-      playedProgressWidth.value = `${(cTime.value / musicTime) * 100}%`;
-      // 滚动歌词
-      // setOffset();
-      lrc.play(cTime.value * 1000);
-    };
-    audioElement.value.onpause = () => {
-      lrc.pause();
-    };
+    // audioElement.value.onended = () => {
+    //   console.log('onended触发');
+    //   if (mode.value === 1) {
+    //     // 单曲循环
+    //     audioElement.value.currentTime = 0; // 重新开始播放当前音频
+    //     audioElement.value.play(); // 继续播放
+    //   } else {
+    //     next();
+    //   }
+    // };
+    // audioElement.value.oncanplay = () => {
+    //   console.log('触发');
+    //   // 获取音频时长
+    //   dTime.value = audioElement.value.duration;
+    //   if (currentMusicInfo.value) {
+    //     lrc.setLyric(currentMusicInfo.value.lyrics.lyrics);
+    //   }
+    //   console.log(playlist.value);
+    //   addToHistory({ playlist: playlist.value, index: currentPlayIndex.value });
+    // };
+    // audioElement.value.ontimeupdate = () => {
+    //   // 获取音频时长
+    //   const musicTime = audioElement.value.duration;
+    //   // 获取当前播放的时间
+    //   cTime.value = audioElement.value.currentTime;
+    //   // 计算已播放进度条比例宽度
+    //   playedProgressWidth.value = `${(cTime.value / musicTime) * 100}%`;
+    //   // 滚动歌词
+    //   // setOffset();
+    //   lrc.play(cTime.value * 1000);
+    // };
+    // audioElement.value.onpause = () => {
+    //   lrc.pause();
+    // };
+
+    if (audioElement.value) {
+      // audioElement.value.onplay = () => {
+      //   console.log('onplay');
+      //   let timer;
+      //   clearTimeout(timer);
+      //   timer = setTimeout(() => {
+      //     musicReady.value = true;
+      //   }, 100);
+      // };
+      audioElement.value.onpause = () => {
+        setPlaying(false);
+      };
+      audioElement.value.ontimeupdate = () => {
+        currentTime.value = audioElement.value.currentTime;
+        console.log(currentMusicInfo.value);
+      };
+      audioElement.value.oncanplay = () => {
+        // 添加到历史记录
+        console.log('添加到历史记录中');
+      };
+      audioElement.value.onended = () => {
+        if (mode.value === 1) {
+          // 单曲循环
+          audioElement.value.currentTime = 0; // 重新开始播放当前音频
+          audioElement.value.play(); // 继续播放
+          setPlaying(true);
+        } else {
+          nextMusic();
+        };
+      };
+      audioElement.value.onerror = () => {
+        console.log('播放出错');
+      };
+    }
   });
 });
 
 /**
- * audio标签事件监听
- */
-// const handleAudioEnded = () => {
-//   if (mode.value === 1) {
-//     // 单曲循环
-//     audioElement.value.currentTime = 0; // 重新开始播放当前音频
-//     audioElement.value.play(); // 继续播放
-//   } else {
-//     next();
-//   }
-// };
-// const handleAudioCanPlay = () => {
-//   // 获取音频时长
-//   dTime.value = audioElement.value.duration;
-//   if (currentMusicInfo.value) {
-//     lrc.setLyric(currentMusicInfo.value.lyrics.lyrics);
-//   }
-//   addToHistory({ playlist: playlist, index: currentPlayIndex });
-// };
-// const handleAudioTimeUpdate = () => {
-//   // 获取音频时长
-//   const musicTime = audioElement.value.duration;
-//   // 获取当前播放的时间
-//   cTime.value = audioElement.value.currentTime;
-//   // 计算已播放进度条比例宽度
-//   playedProgressWidth.value = `${(cTime.value / musicTime) * 100}%`;
-//   // 滚动歌词
-//   // setOffset();
-//   lrc.play(cTime.value * 1000);
-// };
-// const handleAudioPause = () => {
-//   lrc.pause();
-// };
-/**
  * 播放控制器
  */
 
+// // 音乐总时长
+// const dTime = ref();
+// // 已播放进度条宽度
+// const playedProgressWidth = ref();
+
+// 歌曲封面
+// 播放进度百分比
+// 获取播放模式iconName和iconTitle
 const playMode = ['list-loop', 'one-loop', 'random'];
-// 当前播放时间
-const cTime = ref();
-// 音乐总时长
-const dTime = ref();
-// 已播放进度条宽度
-const playedProgressWidth = ref();
-const toggleMusicPlay = () => {
-  togglePlay();
-};
-const prevMusic = () => {
-  prev();
-};
-const nextMusic = () => {
-  next();
-};
-const changePlayMode = () => {
-  const newMode = (mode.value + 1) % 3;
-  setMode(newMode);
-};
 const modeIconName = computed(() => {
   return `icon-${playMode[mode.value]}`;
 });
@@ -189,6 +189,100 @@ const modeIconTitle = computed(() => {
   const playModeTitle = ['列表循环', '单曲循环', '随机播放'];
   return playModeTitle[mode.value];
 });
+// 切换播放暂停
+const toggleMusicPlay = () => {
+  setPlaying(!isPlaying.value);
+};
+watch(isPlaying, (newPlaying) => {
+  const audio = audioElement.value;
+  nextTick(() => {
+    newPlaying ? audio.play() : audio.pause();
+  });
+});
+// 上一曲、下一曲
+const prevMusic = () => {
+  let index = currentPlayIndex.value - 1;
+  if (index < 0) {
+    index = playlist.value.length - 1;
+  }
+  setCurrentPlayIndex(index);
+  if (!isPlaying.value) {
+    setPlaying(true);
+  }
+};
+const nextMusic = () => {
+  console.log('下一曲');
+  let index = currentPlayIndex.value + 1;
+  if (index > playlist.value.length - 1) {
+    index = 0;
+  }
+  setCurrentPlayIndex(index);
+  if (!isPlaying.value) {
+    setPlaying(true);
+  }
+};
+// 文件URL
+const fileURL = ref(null);
+// 引入userSettingsStore中的变量
+const userSettingsStore = useUserSettingsStore();
+const { userSettings } = storeToRefs(userSettingsStore);
+const { loadUserSettings } = userSettingsStore;
+// 引入musicLibraryStore中的变量
+const musicLibraryStore = useMusicLibraryStore();
+const { addTagToMusic, addUrlToMusic } = musicLibraryStore;
+watch(currentMusic, async (newMusic, oldMusic) => {
+  if (!newMusic.filename) {
+    // 歌词为空
+    return;
+  }
+  if (newMusic.filename === oldMusic.filename) {
+    return;
+  }
+  const webDavSettings = userSettings.value.webDavSettings;
+  try {
+    const res = await createClient(webDavSettings.url, {
+      username: webDavSettings.username,
+      password: webDavSettings.password,
+    }).getFileContents(newMusic.filename);
+    const blob = new Blob([res]);
+    const tag = await getTag(blob);
+    await addTagToMusic(newMusic.filename, tag);
+    fileURL.value = URL.createObjectURL(blob);
+  } catch (error) {
+    console.error('获取文件URL失败', error);
+  }
+  audioElement.value.src = fileURL.value;
+  currentTime.value = 0;
+  audioElement.value.play();
+  // 获取歌词
+});
+// 切换播放模式
+const changePlayMode = () => {
+  const newMode = (mode.value + 1) % 3;
+  setPlayMode(newMode);
+  if (newMode === 1) {
+    // 单曲循环
+    return;
+  } else {
+    let list = [];
+    switch (newMode) {
+      // 列表循环
+      case 0:
+        list = orderList.value;
+        break;
+      // 随机播放
+      case 2:
+        list = randomShuffle(orderList.value);
+        break;
+    }
+    // 获取当前歌曲在顺序列表中的索引
+    const index = list.findIndex(
+      (item) => item.filename === currentMusic.value.filename
+    );
+    setCurrentPlayIndex(index);
+    playlist.value = list;
+  }
+};
 
 /**
  * 沉浸模式控制
@@ -357,11 +451,13 @@ const toggleTranslate = () => {
       .music-title {
         font-size: 20px;
         font-weight: 800;
+        text-align: center;
       }
 
       .music-artist {
         font-size: 16px;
         margin: 4px 0 0;
+        text-align: center;
       }
     }
 

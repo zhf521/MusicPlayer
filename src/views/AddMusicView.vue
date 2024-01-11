@@ -1,6 +1,6 @@
 <template>
   <!-- WebDav未设置 -->
-  <div v-if="!userSetting.webDavSetting" class="not-set">
+  <div v-if="!userSettings.webDavSettings" class="not-set">
     <el-empty description="WebDav服务器未配置或配置有误">
       <el-button type="primary" @click="goToSet">点我去设置</el-button>
     </el-empty>
@@ -46,7 +46,7 @@ import { useGetDirectory } from '@/hooks/useGetDirectory.js';
 import { computed, onMounted, ref, watch } from 'vue';
 import { useMusicLibraryStore } from '@/stores/musicLibrary.js';
 import { storeToRefs } from 'pinia';
-import { useUserSettingStore } from '@/stores/userSetting.js';
+import { useUserSettingsStore } from '@/stores/userSettings.js';
 import SvgIcon from '@/components/SvgIcon.vue';
 
 // 引入路由和路由器
@@ -64,17 +64,17 @@ const fileTableRef = ref(null);
 const musicLibraryStore = useMusicLibraryStore();
 const { musicLibrary } = storeToRefs(musicLibraryStore);
 const { addToMusicLibrary } = musicLibraryStore;
-// 引入userSettingStore中的变量和函数
-const userSettingStore = useUserSettingStore();
-const { userSetting } = storeToRefs(userSettingStore);
-const { loadUserSetting } = userSettingStore;
+// 引入userSettingsStore中的变量和函数
+const userSettingsStore = useUserSettingsStore();
+const { userSettings } = storeToRefs(userSettingsStore);
+const { loadUserSettings } = userSettingsStore;
 
 import { ElMessage } from 'element-plus';
 
 // 组件挂载完成后执行
 onMounted(async () => {
   // 加载用户设置
-  await loadUserSetting();
+  await loadUserSettings();
   loading.value = true;
   try {
     await getDirectory(decodeURIComponent(route.params.filename));
@@ -116,7 +116,7 @@ watch(() => route.params.filename, async (newVal) => {
 });
 // 跳转到设置
 const goToSet = () => {
-  router.push('/setting');
+  router.push('/settings');
 };
 // 某一行被单击触发
 const handleRowClick = async (row) => {
