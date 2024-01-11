@@ -82,7 +82,7 @@ import { useMusicLibraryStore } from '@/stores/musicLibrary';
 import { useUserSettingsStore } from '@/stores/userSettings';
 import { getTag } from '@/utils/getTag';
 import { createClient } from 'webdav';
-// import { useHistoryStore } from '../stores/history';
+import { useHistoryStore } from '../stores/history';
 // 引入playerControllerStore中的变量和函数
 const playerControllerStore = usePlayerControllerStore();
 const { audioElement, mode, currentMusic, isPlaying, currentPlayIndex, playlist, orderList, currentMusicInfo } = storeToRefs(playerControllerStore);
@@ -93,10 +93,9 @@ const { userSettings } = storeToRefs(userSettingsStore);
 // 引入musicLibraryStore中的变量
 const musicLibraryStore = useMusicLibraryStore();
 const { addTagToMusic } = musicLibraryStore;
-// // 引入historyStore中的变量和函数
-// const historyStore = useHistoryStore();
-// const { history } = storeToRefs(historyStore);
-// const { addToHistory } = historyStore;
+// 引入historyStore中的变量和函数
+const historyStore = useHistoryStore();
+const { addToHistory, saveHistoryToLocal } = historyStore;
 // const musicReady = ref(false);//音乐是否准备好
 const currentTime = ref(0);// 当前播放时间
 
@@ -153,9 +152,11 @@ onMounted(() => {
     audioElement.value.ontimeupdate = () => {
       currentTime.value = audioElement.value.currentTime;
     };
-    audioElement.value.oncanplay = () => {
+    audioElement.value.oncanplay = async () => {
       // 添加到历史记录
       console.log('添加到历史记录中');
+      addToHistory(playlist.value, currentPlayIndex.value);
+      await saveHistoryToLocal();
     };
     audioElement.value.onended = () => {
       console.log('播放结束');
@@ -228,6 +229,7 @@ const nextMusic = () => {
   }
 };
 watch(currentMusic, async (newMusic, oldMusic) => {
+  console.log(oldMusic);
   if (!newMusic.filename) {
     // 歌词为空
     return;
@@ -242,11 +244,13 @@ watch(currentMusic, async (newMusic, oldMusic) => {
       password: webDavSettings.password,
     }).getFileContents(newMusic.filename);
     const blob = new Blob([res]);
-    audioElement.value.src = URL.createObjectURL(blob);
-    currentTime.value = 0;
-    audioElement.value.play();
     const tag = await getTag(blob);
     await addTagToMusic(newMusic.filename, tag);
+    audioElement.value.src = URL.createObjectURL(blob);
+    audioElement.value.currentTime = 0;
+    if (JSON.stringify(oldMusic) !== '{}') {
+      audioElement.value.play();
+    }
   } catch (error) {
     console.error('获取文件URL失败', error);
   }

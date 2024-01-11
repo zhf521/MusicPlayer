@@ -47,70 +47,6 @@ export const usePlayerControllerStore = defineStore('playerController', () => {
             return {};
         }
     });
-    // // 当前音乐的信息
-    // const currentMusicInfo = ref(null);
-    // const orderList = ref([]);
-    // // 加载音乐
-    // const loadMusic = async (list, index, autoPlay) => {
-    //     if (!compareArrays(list, playlist.value)) {
-    //         console.log('播放列表不相同');
-    //         playlist.value = list;
-    //         orderList.value = list;
-    //     }
-    //     try {
-    //         await getFileURL(playlist.value[index].filename);
-    //         audioElement.value.src = fileURL.value;
-    //         currentPlayIndex.value = index;
-    //         currentMusicInfo.value = playlist.value[index].tag.tags;
-    //         if (autoPlay) {
-    //             audioElement.value.play();
-    //             isPlaying.value = true;
-    //         }
-    //     } catch (error) {
-    //         console.log(error);
-    //     }
-    // };
-    // // 切换播放、暂停
-    // const togglePlay = () => {
-    //     if (isPlaying.value) {
-    //         audioElement.value.pause();
-    //         isPlaying.value = false;
-    //     } else {
-    //         audioElement.value.play();
-    //         isPlaying.value = true;
-    //     }
-    // };
-    // // 上一曲
-    // const prev = () => {
-    //     if (currentPlayIndex.value > 0) {
-    //         const newIndex = currentPlayIndex.value - 1;
-    //         loadMusic(playlist.value, newIndex, true);
-    //     } else {
-    //         const newIndex = playlist.value.length - 1;
-    //         loadMusic(playlist.value, newIndex, true);
-    //     }
-    // };
-    // // 下一曲
-    // const next = () => {
-    //     if (currentPlayIndex.value === playlist.value.length - 1) {
-    //         const newIndex = 0;
-    //         loadMusic(playlist.value, newIndex, true);
-    //     } else {
-    //         const newIndex = currentPlayIndex.value + 1;
-    //         loadMusic(playlist.value, newIndex, true);
-    //     }
-    // };
-
-    // // 设置播放状态
-    // const setPlayState = (state) => {
-    //     isPlaying.value = state;
-    // };
-    // // 选择播放（设置列表和当前音乐）
-    // const selectPlay = (list, index) => {
-    //     setPlaylist(list);
-    //     setCurrentPlayIndex(index);
-    //     setPlaying(true);
-    // };
     return {
         playlist,
         orderList,
@@ -125,11 +61,5 @@ export const usePlayerControllerStore = defineStore('playerController', () => {
         setPlayMode,
         currentMusic,
         currentMusicInfo,
-        // loadMusic,
-        // loadMusic,
-        // togglePlay,
-        // prev,
-        // next,
-        // currentMusicInfo,
     };
 });
