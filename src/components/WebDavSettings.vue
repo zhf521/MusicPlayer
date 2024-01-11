@@ -42,6 +42,7 @@ const rules = reactive({
 // 引入userSettingsStore中的变量和函数
 const userSettingsStore = useUserSettingsStore();
 const { userSettings } = storeToRefs(userSettingsStore);
+const { setUserSettings, saveUserSettingsToLocal } = userSettingsStore;
 // 组件挂载成功后执行
 onMounted(() => {
   const webDavSettings = userSettings.value.webDavSettings;
@@ -63,7 +64,8 @@ const saveSettings = async (formEl) => {
           password: webDavForm.password,
         });
         await client.getDirectoryContents('/');
-        userSettingsStore.saveUserSettings('webDavSettings', JSON.parse(JSON.stringify(webDavForm)));
+        setUserSettings('webDavSettings', JSON.parse(JSON.stringify(webDavForm)));
+        await saveUserSettingsToLocal();
         ElMessage({
           type: 'success',
           message: '保存成功',
