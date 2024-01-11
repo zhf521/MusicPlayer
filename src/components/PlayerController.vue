@@ -87,6 +87,12 @@ import { createClient } from 'webdav';
 const playerControllerStore = usePlayerControllerStore();
 const { audioElement, mode, currentMusic, isPlaying, currentPlayIndex, playlist, orderList, currentMusicInfo } = storeToRefs(playerControllerStore);
 const { setPlaying, setCurrentPlayIndex, setPlayMode } = playerControllerStore;
+// 引入userSettingsStore中的变量
+const userSettingsStore = useUserSettingsStore();
+const { userSettings } = storeToRefs(userSettingsStore);
+// 引入musicLibraryStore中的变量
+const musicLibraryStore = useMusicLibraryStore();
+const { addTagToMusic } = musicLibraryStore;
 // // 引入historyStore中的变量和函数
 // const historyStore = useHistoryStore();
 // const { history } = storeToRefs(historyStore);
@@ -132,40 +138,40 @@ onMounted(() => {
     //   lrc.pause();
     // };
 
-    if (audioElement.value) {
-      // audioElement.value.onplay = () => {
-      //   console.log('onplay');
-      //   let timer;
-      //   clearTimeout(timer);
-      //   timer = setTimeout(() => {
-      //     musicReady.value = true;
-      //   }, 100);
-      // };
-      audioElement.value.onpause = () => {
-        setPlaying(false);
+
+    // audioElement.value.onplay = () => {
+    //   console.log('onplay');
+    //   let timer;
+    //   clearTimeout(timer);
+    //   timer = setTimeout(() => {
+    //     musicReady.value = true;
+    //   }, 100);
+    // };
+    // audioElement.value.onpause = () => {
+    //   setPlaying(false);
+    // };
+    audioElement.value.ontimeupdate = () => {
+      currentTime.value = audioElement.value.currentTime;
+    };
+    audioElement.value.oncanplay = () => {
+      // 添加到历史记录
+      console.log('添加到历史记录中');
+    };
+    audioElement.value.onended = () => {
+      console.log('播放结束');
+      if (mode.value === 1) {
+        // 单曲循环
+        audioElement.value.currentTime = 0; // 重新开始播放当前音频
+        audioElement.value.play(); // 继续播放
+        setPlaying(true);
+      } else {
+        console.log('播放结束，下一曲');
+        nextMusic();
       };
-      audioElement.value.ontimeupdate = () => {
-        currentTime.value = audioElement.value.currentTime;
-        console.log(currentMusicInfo.value);
-      };
-      audioElement.value.oncanplay = () => {
-        // 添加到历史记录
-        console.log('添加到历史记录中');
-      };
-      audioElement.value.onended = () => {
-        if (mode.value === 1) {
-          // 单曲循环
-          audioElement.value.currentTime = 0; // 重新开始播放当前音频
-          audioElement.value.play(); // 继续播放
-          setPlaying(true);
-        } else {
-          nextMusic();
-        };
-      };
-      audioElement.value.onerror = () => {
-        console.log('播放出错');
-      };
-    }
+    };
+    audioElement.value.onerror = () => {
+      console.log('播放出错');
+    };
   });
 });
 
@@ -221,15 +227,6 @@ const nextMusic = () => {
     setPlaying(true);
   }
 };
-// 文件URL
-const fileURL = ref(null);
-// 引入userSettingsStore中的变量
-const userSettingsStore = useUserSettingsStore();
-const { userSettings } = storeToRefs(userSettingsStore);
-const { loadUserSettings } = userSettingsStore;
-// 引入musicLibraryStore中的变量
-const musicLibraryStore = useMusicLibraryStore();
-const { addTagToMusic, addUrlToMusic } = musicLibraryStore;
 watch(currentMusic, async (newMusic, oldMusic) => {
   if (!newMusic.filename) {
     // 歌词为空
@@ -245,15 +242,14 @@ watch(currentMusic, async (newMusic, oldMusic) => {
       password: webDavSettings.password,
     }).getFileContents(newMusic.filename);
     const blob = new Blob([res]);
+    audioElement.value.src = URL.createObjectURL(blob);
+    currentTime.value = 0;
+    audioElement.value.play();
     const tag = await getTag(blob);
     await addTagToMusic(newMusic.filename, tag);
-    fileURL.value = URL.createObjectURL(blob);
   } catch (error) {
     console.error('获取文件URL失败', error);
   }
-  audioElement.value.src = fileURL.value;
-  currentTime.value = 0;
-  audioElement.value.play();
   // 获取歌词
 });
 // 切换播放模式

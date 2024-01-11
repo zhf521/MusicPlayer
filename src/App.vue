@@ -21,7 +21,7 @@
 <script setup>
 import { useRouter, useRoute } from 'vue-router';
 import PlayerController from '@/components/PlayerController.vue';
-import { onMounted, ref } from 'vue';
+import { nextTick, onMounted, ref } from 'vue';
 import { useUserSettingsStore } from '@/stores/userSettings';
 // import { useHistoryStore } from './stores/history';
 import { usePlayerControllerStore } from '@/stores/playerController';
@@ -48,10 +48,9 @@ const { loadMusicLibrary } = musicLibraryStore;
 const playerRef = ref(null);
 // 在组件挂载到DOM后执行的操作
 onMounted(async () => {
-  await loadMusicLibrary();
-  console.log(musicLibrary.value);
-  setPlaylist(musicLibrary.value);
   setAudioElement(playerRef.value);
+  await loadMusicLibrary();
+  setPlaylist(musicLibrary.value);
   // 加载用户配置
   await loadUserSettings();
   // // 加载历史记录
