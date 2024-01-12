@@ -18,20 +18,7 @@ export const useMusicLibraryStore = defineStore('musicLibrary', () => {
     };
     // 添加到音乐库
     const addToMusicLibrary = async (item) => {
-        console.log(item);
-        item.forEach((item) => {
-            if (
-                !musicLibrary.value.some(
-                    (music) => music.filename === item.filename
-                )
-            ) {
-                let musicItem = {
-                    filename: item.filename,
-                    basename: item.basename,
-                };
-                musicLibrary.value.push(musicItem);
-            }
-        });
+        musicLibrary.value.push(item);
     };
     // 添加标签到音乐
     const addTagToMusic = async (filename, tag) => {
@@ -49,7 +36,6 @@ export const useMusicLibraryStore = defineStore('musicLibrary', () => {
                 'musicLibrary',
                 JSON.parse(JSON.stringify(musicLibrary.value))
             );
-            console.log('保存成功');
         } catch (error) {
             console.error('failed to update musicLibrary', error);
         }

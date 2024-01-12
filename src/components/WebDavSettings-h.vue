@@ -1,4 +1,4 @@
-<template>
+<!-- <template>
   <el-form ref="webDavFormRef" :model="webDavForm" :rules="rules" status-icon>
     <el-form-item label="地址" prop="url">
       <el-input v-model="webDavForm.url" placeholder="https://xxxxxxxx/dav" type="url" />
@@ -97,4 +97,11 @@ const resetForm = (formEl) => {
   if (!formEl) return;
   formEl.resetFields();
 };
+</script> -->
+
+<template>
+  设置
+</template>
+<script setup lang="ts">
 </script>
+<style scoped></style>

@@ -10,21 +10,12 @@ const router = createRouter({
         {
             path: '/music-library',
             name: 'music-library',
-            meta: { showFather: true },
             component: () => import('@/views/MusicLibraryView.vue'),
-            children: [
-                {
-                    path: 'add-music/:filename',
-                    name: 'add-music',
-                    meta: { showFather: false },
-                    component: () => import('@/views/AddMusicView.vue'),
-                },
-            ],
         },
         {
-            path: '/song-list',
-            name: 'song-list',
-            component: () => import('@/views/SongListView.vue'),
+            path: '/cloud-files/:filename',
+            name: 'cloud-files',
+            component: () => import('@/views/CloudFilesView.vue'),
         },
         {
             path: '/settings',
@@ -32,13 +23,6 @@ const router = createRouter({
             component: () => import('@/views/SettingsView.vue'),
         },
     ],
-});
-
-router.beforeEach((to, from, next) => {
-    if (to.meta.title) {
-        document.title = to.meta.title;
-    }
-    next();
 });
 
 export default router;

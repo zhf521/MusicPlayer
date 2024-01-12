@@ -6,7 +6,7 @@
     </el-empty>
   </div>
   <!-- 文件管理 -->
-  <div v-else class="file-manager">
+  <div v-else>
     <!-- 面包屑 -->
     <div class="breadcrumb">
       <el-breadcrumb separator="/" class="breadcrumb">

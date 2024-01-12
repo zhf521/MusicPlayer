@@ -1,7 +1,8 @@
-import { ref } from 'vue';
-import { useUserSettingsStore } from '../stores/userSettings';
+import { useUserSettingsStore } from '@/stores/userSettings';
 import { storeToRefs } from 'pinia';
+import { onMounted, ref } from 'vue';
 import { createClient } from 'webdav';
+
 export function useGetDirectory() {
     // 文件夹内容
     const contents = ref(null);
@@ -10,8 +11,13 @@ export function useGetDirectory() {
     // 引入userSettingsStore中的变量和函数
     const userSettingsStore = useUserSettingsStore();
     const { userSettings } = storeToRefs(userSettingsStore);
+    const { loadUserSettings } = userSettingsStore;
+    onMounted(async () => {
+        // 加载用户设置
+        await loadUserSettings();
+    });
     // 获取webDav设置
-    let webDavSettings = userSettings.value.webDavSettings;
+    const webDavSettings = userSettings.value.webDavSettings;
     // 定义获取文件夹内容的函数
     const getDirectory = async (path) => {
         try {

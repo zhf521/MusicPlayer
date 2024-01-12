@@ -1,3 +1,5 @@
+
+
 export async function getTag(file) {
     return new Promise(async (resolve, reject) => {
         jsmediatags.read(file, {
