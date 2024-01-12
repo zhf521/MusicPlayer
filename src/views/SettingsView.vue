@@ -5,6 +5,5 @@
 </template>
 <script setup>
 import WebDavSettings from '@/components/WebDavSettings.vue';
-
 </script>
 <style scoped></style>

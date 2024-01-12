@@ -28,13 +28,16 @@ export const useMusicLibraryStore = defineStore('musicLibrary', () => {
         if (music) {
             music.tag = tag;
         }
+    };
+    // 保存音乐库到本地
+    const saveMusicLibraryToLocal = async () => {
         try {
             await localforage.setItem(
                 'musicLibrary',
                 JSON.parse(JSON.stringify(musicLibrary.value))
             );
         } catch (error) {
-            console.error('failed to update music library', error);
+            console.error('failed to update musicLibrary', error);
         }
     };
     return {
@@ -42,5 +45,6 @@ export const useMusicLibraryStore = defineStore('musicLibrary', () => {
         addToMusicLibrary,
         loadMusicLibrary,
         addTagToMusic,
+        saveMusicLibraryToLocal,
     };
 });

@@ -23,7 +23,6 @@ const router = useRouter();
 // 引入musicLibraryStore中的变量和函数
 const musicLibraryStore = useMusicLibraryStore();
 const { musicLibrary } = storeToRefs(musicLibraryStore);
-const { loadMusicLibrary } = musicLibraryStore;
 
 // 组件挂载完执行
 onMounted(() => {

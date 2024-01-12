@@ -37,12 +37,18 @@ const props = defineProps({
 // 引入playerControllerStore中的变量和函数
 const playerControllerStore = usePlayerControllerStore();
 const { currentMusic } = storeToRefs(playerControllerStore);
-const { setCurrentPlayIndex, setPlaying } = playerControllerStore;
+const { setCurrentPlayIndex, setPlaying, setPlaylist } = playerControllerStore;
 const selectPlay = (index) => {
-  // loadMusic(props.list, index, true);
+  console.log('选择播放');
+  console.log(props.list[index].filename);
+  console.log('currentMusic.value', currentMusic.value);
   if (props.list[index].filename !== currentMusic.value.filename) {
+    setPlaylist(props.list);
+    console.log('要播放');
     setCurrentPlayIndex(index);
+    console.log('设置完播放索引');
     setPlaying(true);
+    console.log('设置播放');
   }
 };
 // 引入userSettingsStore中的变量和函数
@@ -50,7 +56,7 @@ const userSettingsStore = useUserSettingsStore();
 // const { userSettings } = storeToRefs(userSettingsStore);
 const { loadUserSettings } = userSettingsStore;
 onMounted(async () => {
-  // 加载用户设置
-  await loadUserSettings();
+  // // 加载用户设置
+  // await loadUserSettings();
 });
 </script>

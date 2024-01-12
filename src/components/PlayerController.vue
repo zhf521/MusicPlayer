@@ -92,7 +92,7 @@ const userSettingsStore = useUserSettingsStore();
 const { userSettings } = storeToRefs(userSettingsStore);
 // 引入musicLibraryStore中的变量
 const musicLibraryStore = useMusicLibraryStore();
-const { addTagToMusic } = musicLibraryStore;
+const { addTagToMusic, saveMusicLibraryToLocal } = musicLibraryStore;
 // 引入historyStore中的变量和函数
 const historyStore = useHistoryStore();
 const { addToHistory, saveHistoryToLocal } = historyStore;
@@ -229,6 +229,7 @@ const nextMusic = () => {
   }
 };
 watch(currentMusic, async (newMusic, oldMusic) => {
+  console.log(newMusic);
   console.log(oldMusic);
   if (!newMusic.filename) {
     // 歌词为空
@@ -246,6 +247,7 @@ watch(currentMusic, async (newMusic, oldMusic) => {
     const blob = new Blob([res]);
     const tag = await getTag(blob);
     await addTagToMusic(newMusic.filename, tag);
+    await saveMusicLibraryToLocal();
     audioElement.value.src = URL.createObjectURL(blob);
     audioElement.value.currentTime = 0;
     if (JSON.stringify(oldMusic) !== '{}') {

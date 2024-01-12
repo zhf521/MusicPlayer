@@ -43,7 +43,8 @@ const { loadHistory } = historyStore;
 const { history } = storeToRefs(historyStore);
 // 引入musicLibraryStore中的变量和函数
 const musicLibraryStore = useMusicLibraryStore();
-const { loadMusicLibrary } = musicLibraryStore;
+const { musicLibrary } = storeToRefs(musicLibraryStore);
+const { loadMusicLibrary  } = musicLibraryStore;
 
 const playerRef = ref(null);
 // 在组件挂载到DOM后执行的操作
@@ -55,8 +56,11 @@ onMounted(async () => {
   await loadMusicLibrary();
   // 加载历史记录
   await loadHistory();
-  setPlaylist(history.value[history.value.length - 1].playlist);
-  setCurrentPlayIndex(history.value[history.value.length - 1].index);
+  let historyTailItem = history.value[history.value.length - 1];
+  if (historyTailItem) {
+    setPlaylist(historyTailItem.playlist);
+    setCurrentPlayIndex(historyTailItem.index);
+  }
 });
 
 // 菜单选中

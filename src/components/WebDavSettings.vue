@@ -59,13 +59,13 @@ const saveSettings = async (formEl) => {
   await formEl.validate(async (valid, fields) => {
     if (valid) {
       try {
-        const client = createClient(webDavForm.url, {
-          username: webDavForm.username,
-          password: webDavForm.password,
-        });
-        await client.getDirectoryContents('/');
-        setUserSettings('webDavSettings', JSON.parse(JSON.stringify(webDavForm)));
-        await saveUserSettingsToLocal();
+        // const client = createClient(webDavForm.url, {
+        //   username: webDavForm.username,
+        //   password: webDavForm.password,
+        // });
+        // await client.getDirectoryContents('/');
+        // setUserSettings('webDavSettings', JSON.parse(JSON.stringify(webDavForm)));
+        // await saveUserSettingsToLocal();
         ElMessage({
           type: 'success',
           message: '保存成功',
