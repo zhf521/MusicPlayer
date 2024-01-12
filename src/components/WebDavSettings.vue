@@ -45,7 +45,7 @@ const { userSettings } = storeToRefs(userSettingsStore);
 const { setUserSettings, saveUserSettingsToLocal } = userSettingsStore;
 // 组件挂载成功后执行
 onMounted(() => {
-  const webDavSettings = userSettings.value.webDavSettings;
+  let webDavSettings = userSettings.value.webDavSettings;
   if (webDavSettings) {
     webDavForm.url = webDavSettings.url;
     webDavForm.username = webDavSettings.username;
@@ -59,13 +59,13 @@ const saveSettings = async (formEl) => {
   await formEl.validate(async (valid, fields) => {
     if (valid) {
       try {
-        // const client = createClient(webDavForm.url, {
-        //   username: webDavForm.username,
-        //   password: webDavForm.password,
-        // });
-        // await client.getDirectoryContents('/');
-        // setUserSettings('webDavSettings', JSON.parse(JSON.stringify(webDavForm)));
-        // await saveUserSettingsToLocal();
+        const client = createClient(webDavForm.url, {
+          username: webDavForm.username,
+          password: webDavForm.password,
+        });
+        await client.getDirectoryContents('/');
+        setUserSettings('webDavSettings', JSON.parse(JSON.stringify(webDavForm)));
+        await saveUserSettingsToLocal();
         ElMessage({
           type: 'success',
           message: '保存成功',

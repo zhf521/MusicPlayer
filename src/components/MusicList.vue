@@ -27,8 +27,6 @@
 <script setup>
 import { storeToRefs } from 'pinia';
 import { usePlayerControllerStore } from '../stores/playerController';
-import { useUserSettingsStore } from '../stores/userSettings';
-import { onMounted } from 'vue';
 
 // props参数
 const props = defineProps({
@@ -38,6 +36,7 @@ const props = defineProps({
 const playerControllerStore = usePlayerControllerStore();
 const { currentMusic } = storeToRefs(playerControllerStore);
 const { setCurrentPlayIndex, setPlaying, setPlaylist } = playerControllerStore;
+
 const selectPlay = (index) => {
   console.log('选择播放');
   console.log(props.list[index].filename);
@@ -51,12 +50,4 @@ const selectPlay = (index) => {
     console.log('设置播放');
   }
 };
-// 引入userSettingsStore中的变量和函数
-const userSettingsStore = useUserSettingsStore();
-// const { userSettings } = storeToRefs(userSettingsStore);
-const { loadUserSettings } = userSettingsStore;
-onMounted(async () => {
-  // // 加载用户设置
-  // await loadUserSettings();
-});
 </script>

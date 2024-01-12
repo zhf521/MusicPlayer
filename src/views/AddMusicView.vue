@@ -67,14 +67,11 @@ const { addToMusicLibrary, saveMusicLibraryToLocal } = musicLibraryStore;
 // 引入userSettingsStore中的变量和函数
 const userSettingsStore = useUserSettingsStore();
 const { userSettings } = storeToRefs(userSettingsStore);
-const { loadUserSettings } = userSettingsStore;
 
 import { ElMessage } from 'element-plus';
 
 // 组件挂载完成后执行
 onMounted(async () => {
-  // // 加载用户设置
-  // await loadUserSettings();
   loading.value = true;
   try {
     await getDirectory(decodeURIComponent(route.params.filename));

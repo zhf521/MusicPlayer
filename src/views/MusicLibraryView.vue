@@ -13,7 +13,6 @@
 <script setup>
 import { useMusicLibraryStore } from '@/stores/musicLibrary.js';
 import { storeToRefs } from 'pinia';
-import { onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import MusicList from '@/components/MusicList.vue';
 
@@ -23,12 +22,6 @@ const router = useRouter();
 // 引入musicLibraryStore中的变量和函数
 const musicLibraryStore = useMusicLibraryStore();
 const { musicLibrary } = storeToRefs(musicLibraryStore);
-
-// 组件挂载完执行
-onMounted(() => {
-  // 加载音乐库
-  // loadMusicLibrary();
-});
 
 // 去添加音乐
 const goToAddMusic = () => {

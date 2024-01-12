@@ -14,7 +14,7 @@ export const useUserSettingsStore = defineStore('userSettings', () => {
             console.error('failed to load user settings', error);
         }
     };
-    const setUserSettings = async (key, value) => {
+    const setUserSettings = (key, value) => {
         userSettings.value = { ...userSettings.value, [key]: value };
     };
     // 保存用户设置到本地

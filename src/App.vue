@@ -43,8 +43,7 @@ const { loadHistory } = historyStore;
 const { history } = storeToRefs(historyStore);
 // 引入musicLibraryStore中的变量和函数
 const musicLibraryStore = useMusicLibraryStore();
-const { musicLibrary } = storeToRefs(musicLibraryStore);
-const { loadMusicLibrary  } = musicLibraryStore;
+const { loadMusicLibrary } = musicLibraryStore;
 
 const playerRef = ref(null);
 // 在组件挂载到DOM后执行的操作
