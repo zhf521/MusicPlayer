@@ -1,5 +1,537 @@
 <template>
-  控制器
+  <!-- 播放控制器 -->
+  <div class="controller">
+    <div class="details">
+      <img class="music-cover" :src="currentMusicInfo ? getMusicCover(currentMusicInfo.picture) : '/default-cover.jpg'"
+        alt="音乐封面" @click="openImmersion">
+      <div class="music-info">
+        <div class="music-title">{{ currentMusicInfo && currentMusicInfo.title || '标题' }}</div>
+        <div class="music-artist">{{ currentMusicInfo && currentMusicInfo.artist || '艺术家' }}</div>
+      </div>
+    </div>
+    <div class="btns-progress">
+      <div class="btns">
+        <SvgIcon className="icon" :iconName="modeIconName" :title="modeIconTitle" @click="changePlayMode" />
+        <SvgIcon className="icon" iconName="icon-prev" title="上一曲" @click="prevMusic" />
+        <SvgIcon className="icon" :iconName="(isPlaying === false) ? 'icon-play' : 'icon-pause'"
+          :title="(isPlaying === false) ? '播放' : '暂停'" @click="toggleMusicPlay" />
+        <SvgIcon className="icon" iconName="icon-next" title="下一曲" @click="nextMusic" />
+        <SvgIcon className="icon" iconName="icon-volume" />
+      </div>
+      <!-- <div class="progress">
+        <ProgressBar :cTime="cTime" :dTime="dTime" :playedProgressWidth="playedProgressWidth" />
+      </div> -->
+    </div>
+    <div class="playlist">
+      <SvgIcon class="icon" iconName="icon-playlist" />
+    </div>
+  </div>
+  <!-- 沉浸模式 -->
+  <div class="immersion" v-show="isImmersion">
+    <!-- 左侧空白 -->
+    <div class="space"></div>
+    <!-- 音乐信息 -->
+    <div class="music">
+      <img class="music-cover" :src="currentMusicInfo ? getMusicCover(currentMusicInfo.picture) : '/default-cover.jpg'"
+        alt="音乐封面">
+      <div class="music-info">
+        <div class="music-title">{{ currentMusicInfo && currentMusicInfo.title || '标题' }}</div>
+        <div class="music-artist">{{ currentMusicInfo && currentMusicInfo.artist || '艺术家' }}</div>
+      </div>
+      <div class="music-controller">
+        <SvgIcon className="icon" :iconName="modeIconName" :title="modeIconTitle" @click="changePlayMode" />
+        <SvgIcon className="icon" iconName="icon-prev" title="上一曲" @click="prevMusic"></SvgIcon>
+        <SvgIcon className="icon" :iconName="(isPlaying === false) ? 'icon-play' : 'icon-pause'"
+          :title="(isPlaying === false) ? '播放' : '暂停'" @click="toggleMusicPlay"></SvgIcon>
+        <SvgIcon className="icon" iconName="icon-next" title="下一曲" @click="nextMusic"></SvgIcon>
+        <SvgIcon className="icon" iconName="icon-playlist"></SvgIcon>
+      </div>
+      <div class="progress">
+        <ProgressBar :cTime="cTime" :dTime="dTime" :playedProgressWidth="playedProgressWidth" />
+      </div>
+    </div>
+    <!-- 滚动歌词和播放列表 -->
+    <div class="lyric-or-playlist">
+      <div class="lrc-container" ref="lrcContainerRef">
+        <div class="lrc-list" ref="lrcListRef">
+          <div v-for="(lrcItem, index) in  lrcLines " :key="index"
+            :class="{ 'lrc-word': true, 'active': index === currentIndex }">
+            <div>{{ lrcItem.text }}</div>
+            <div v-show="isTranslate">{{ lrcItem.extendedLyrics[0] === '//' ? '' : lrcItem.extendedLyrics[0] }}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- 右侧按钮 -->
+    <div class="button">
+      <SvgIcon iconName="icon-close" className="icon" @click="closeImmersion" />
+      <SvgIcon iconName="icon-isTranslate" className="icon" @click="toggleTranslate" />
+    </div>
+  </div>
 </template>
-<script setup></script>
-<style scoped></style>
+<script setup>
+import { computed, nextTick, onMounted, ref, watch } from 'vue';
+import { usePlayerControllerStore } from '@/stores/playerController.js';
+import { storeToRefs } from 'pinia';
+import { getMusicCover } from '@/utils/getMusicCover.js';
+import ProgressBar from '@/components/ProgressBar.vue';
+import SvgIcon from '@/components/SvgIcon.vue';
+import Lyric from 'lrc-file-parser';
+import { randomShuffle } from '@/utils/randomShuffle';
+import { useMusicLibraryStore } from '@/stores/musicLibrary';
+import { useUserSettingsStore } from '@/stores/userSettings';
+import { getTag } from '@/utils/getTag';
+import { createClient } from 'webdav';
+import { useHistoryStore } from '../stores/history';
+// 引入playerControllerStore中的变量和函数
+const playerControllerStore = usePlayerControllerStore();
+const { audioElement, mode, currentMusic, isPlaying, currentPlayIndex, playlist, orderList, currentMusicInfo } = storeToRefs(playerControllerStore);
+const { setPlaying, setCurrentPlayIndex, setPlayMode } = playerControllerStore;
+// 引入userSettingsStore中的变量
+const userSettingsStore = useUserSettingsStore();
+const { userSettings } = storeToRefs(userSettingsStore);
+// 引入musicLibraryStore中的变量
+const musicLibraryStore = useMusicLibraryStore();
+const { addTagToMusic, saveMusicLibraryToLocal } = musicLibraryStore;
+// 引入historyStore中的变量和函数
+const historyStore = useHistoryStore();
+const { addToHistory, saveHistoryToLocal } = historyStore;
+// const musicReady = ref(false);//音乐是否准备好
+const currentTime = ref(0);// 当前播放时间
+
+// 组件挂载完后执行
+onMounted(() => {
+  nextTick(() => {
+    // audioElement.value.onended = () => {
+    //   console.log('onended触发');
+    //   if (mode.value === 1) {
+    //     // 单曲循环
+    //     audioElement.value.currentTime = 0; // 重新开始播放当前音频
+    //     audioElement.value.play(); // 继续播放
+    //   } else {
+    //     next();
+    //   }
+    // };
+    // audioElement.value.oncanplay = () => {
+    //   console.log('触发');
+    //   // 获取音频时长
+    //   dTime.value = audioElement.value.duration;
+    //   if (currentMusicInfo.value) {
+    //     lrc.setLyric(currentMusicInfo.value.lyrics.lyrics);
+    //   }
+    //   console.log(playlist.value);
+    //   addToHistory({ playlist: playlist.value, index: currentPlayIndex.value });
+    // };
+    // audioElement.value.ontimeupdate = () => {
+    //   // 获取音频时长
+    //   const musicTime = audioElement.value.duration;
+    //   // 获取当前播放的时间
+    //   cTime.value = audioElement.value.currentTime;
+    //   // 计算已播放进度条比例宽度
+    //   playedProgressWidth.value = `${(cTime.value / musicTime) * 100}%`;
+    //   // 滚动歌词
+    //   // setOffset();
+    //   lrc.play(cTime.value * 1000);
+    // };
+    // audioElement.value.onpause = () => {
+    //   lrc.pause();
+    // };
+
+
+    // audioElement.value.onplay = () => {
+    //   console.log('onplay');
+    //   let timer;
+    //   clearTimeout(timer);
+    //   timer = setTimeout(() => {
+    //     musicReady.value = true;
+    //   }, 100);
+    // };
+    // audioElement.value.onpause = () => {
+    //   setPlaying(false);
+    // };
+    audioElement.value.ontimeupdate = () => {
+      currentTime.value = audioElement.value.currentTime;
+    };
+    audioElement.value.oncanplay = async () => {
+      // 添加到历史记录
+      console.log('添加到历史记录中');
+      addToHistory(playlist.value, currentPlayIndex.value);
+      await saveHistoryToLocal();
+    };
+    audioElement.value.onended = () => {
+      console.log('播放结束');
+      if (mode.value === 1) {
+        // 单曲循环
+        audioElement.value.currentTime = 0; // 重新开始播放当前音频
+        audioElement.value.play(); // 继续播放
+        setPlaying(true);
+      } else {
+        console.log('播放结束，下一曲');
+        nextMusic();
+      };
+    };
+    audioElement.value.onerror = () => {
+      console.log('播放出错');
+    };
+  });
+});
+
+/**
+ * 播放控制器
+ */
+
+// // 音乐总时长
+// const dTime = ref();
+// // 已播放进度条宽度
+// const playedProgressWidth = ref();
+
+// 歌曲封面
+// 播放进度百分比
+// 获取播放模式iconName和iconTitle
+const playMode = ['list-loop', 'one-loop', 'random'];
+const modeIconName = computed(() => {
+  return `icon-${playMode[mode.value]}`;
+});
+const modeIconTitle = computed(() => {
+  const playModeTitle = ['列表循环', '单曲循环', '随机播放'];
+  return playModeTitle[mode.value];
+});
+// 切换播放暂停
+const toggleMusicPlay = () => {
+  setPlaying(!isPlaying.value);
+};
+watch(isPlaying, (newPlaying) => {
+  const audio = audioElement.value;
+  nextTick(() => {
+    newPlaying ? audio.play() : audio.pause();
+  });
+});
+// 上一曲、下一曲
+const prevMusic = () => {
+  let index = currentPlayIndex.value - 1;
+  if (index < 0) {
+    index = playlist.value.length - 1;
+  }
+  setCurrentPlayIndex(index);
+  if (!isPlaying.value) {
+    setPlaying(true);
+  }
+};
+const nextMusic = () => {
+  console.log('下一曲');
+  let index = currentPlayIndex.value + 1;
+  if (index > playlist.value.length - 1) {
+    index = 0;
+  }
+  setCurrentPlayIndex(index);
+  if (!isPlaying.value) {
+    setPlaying(true);
+  }
+};
+watch(currentMusic, async (newMusic, oldMusic) => {
+  console.log(newMusic);
+  console.log(oldMusic);
+  if (!newMusic.filename) {
+    // 歌词为空
+    return;
+  }
+  if (newMusic.filename === oldMusic.filename) {
+    return;
+  }
+  const webDavSettings = userSettings.value.webDavSettings;
+  try {
+    const res = await createClient(webDavSettings.url, {
+      username: webDavSettings.username,
+      password: webDavSettings.password,
+    }).getFileContents(newMusic.filename);
+    const blob = new Blob([res]);
+    const tag = await getTag(blob);
+    await addTagToMusic(newMusic.filename, tag);
+    await saveMusicLibraryToLocal();
+    audioElement.value.src = URL.createObjectURL(blob);
+    audioElement.value.currentTime = 0;
+    if (JSON.stringify(oldMusic) !== '{}') {
+      audioElement.value.play();
+    }
+  } catch (error) {
+    console.error('获取文件URL失败', error);
+  }
+  // 获取歌词
+});
+// 切换播放模式
+const changePlayMode = () => {
+  const newMode = (mode.value + 1) % 3;
+  setPlayMode(newMode);
+  if (newMode === 1) {
+    // 单曲循环
+    return;
+  } else {
+    let list = [];
+    switch (newMode) {
+      // 列表循环
+      case 0:
+        list = orderList.value;
+        break;
+      // 随机播放
+      case 2:
+        list = randomShuffle(orderList.value);
+        break;
+    }
+    // 获取当前歌曲在顺序列表中的索引
+    const index = list.findIndex(
+      (item) => item.filename === currentMusic.value.filename
+    );
+    setCurrentPlayIndex(index);
+    playlist.value = list;
+  }
+};
+
+/**
+ * 沉浸模式控制
+ */
+
+const isImmersion = ref(false);
+const openImmersion = () => {
+  isImmersion.value = true;
+};
+const closeImmersion = () => {
+  isImmersion.value = false;
+};
+
+/**
+ * 滚动歌词
+ */
+const lrcContainerRef = ref(null);
+const lrcListRef = ref(null);
+const currentIndex = ref(0);
+// 歌词列表
+const lrcLines = ref([]);
+let lrc = new Lyric({
+  onPlay: function (line, text) {
+    // line：当前播放行的索引，text：当前播放行的歌词
+    currentIndex.value = line;
+  },
+  onSetLyric: function (lines) {
+    // lines：歌词
+    lrcLines.value = lines;
+  },
+  // 偏移时间，默认为0ms
+  offset: 150,
+  // 播放速度，默认为1
+  playbackRate: 1,
+  // 是否去除空行：默认为true
+  isRemoveBlankLine: true
+});
+const isTranslate = ref(false);
+const toggleTranslate = () => {
+  isTranslate.value = !isTranslate.value;
+};
+
+// 设置offset
+// const setOffset = () => {
+//   currentIndex.value = findIndex(formatLyric(currentMusicInfo.value.lyrics.lyrics));
+//   // let offset = 0;
+//   // const currentLrcElement = lrcListRef.value.children[currentIndex.value];
+//   // offset = currentLrcElement.offsetTop - lrcContainerRef.value.clientHeight / 2 + currentLrcElement.clientHeight / 2;
+//   // lrcListRef.value.style.transform = `translateY(-${offset}px)`;
+// };
+</script>
+<style scoped lang="less">
+/* 播放控制器样式 */
+.controller {
+  height: 100%;
+  width: 100%;
+  display: flex;
+
+  .details {
+    display: flex;
+    align-items: center;
+    width: 30%;
+    padding: 0 10px;
+
+    .music-cover {
+      width: 64px;
+      height: 64px;
+      border-radius: 10%;
+      object-fit: cover;
+      box-shadow: var(--el-box-shadow);
+    }
+
+    .music-info {
+      margin-left: 10px;
+
+      .music-title {
+        font-size: 18px;
+        font-weight: 800;
+      }
+
+      .music-artist {
+        font-size: 12px;
+        margin: 4px 0 0;
+      }
+    }
+  }
+
+  .btns-progress {
+    width: 40%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    .btns {
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      padding: 5px 30px;
+
+      .icon {
+        width: 24px;
+        height: 24px;
+        transition: transform 0.3s ease;
+
+        &:hover {
+          transform: scale(1.2);
+        }
+      }
+    }
+  }
+
+  .playlist {
+    width: 30%;
+    padding: 0 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    .icon {
+      width: 24px;
+      height: 24px;
+      transition: transform 0.3s ease;
+
+      &:hover {
+        transform: scale(1.2);
+      }
+    }
+  }
+}
+
+/* 沉浸模式样式 */
+.immersion {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: white;
+  z-index: 9999;
+  display: flex;
+
+  /* 左侧空白 */
+  .space {
+    width: 10%;
+  }
+
+  /* 音乐信息 */
+  .music {
+    width: 40%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+
+    .music-cover {
+      width: 50%;
+      border-radius: 10%;
+      object-fit: cover;
+      box-shadow: var(--el-box-shadow);
+      align-self: center;
+    }
+
+    .music-info {
+      padding: 10px 20px;
+      align-self: center;
+
+      .music-title {
+        font-size: 20px;
+        font-weight: 800;
+        text-align: center;
+      }
+
+      .music-artist {
+        font-size: 16px;
+        margin: 4px 0 0;
+        text-align: center;
+      }
+    }
+
+    .music-controller {
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+
+      .icon {
+        width: 30px;
+        height: 30px;
+        transition: transform 0.3s ease;
+
+        &:hover {
+          transform: scale(1.2);
+        }
+      }
+    }
+
+    .progress {
+      padding: 0 20px;
+    }
+  }
+
+  /* 滚动歌词和播放列表 */
+  .lyric-or-playlist {
+    width: 40%;
+    // background-color: pink;
+
+    .lrc-container {
+      width: 100%;
+      height: 100%;
+      overflow-y: auto;
+      overflow-x: hidden;
+
+      .lrc-list {
+        padding: 50vh 20px;
+        text-align: center;
+        transition: 0.3s;
+
+        .lrc-word {
+          margin: 10px 0;
+          font-size: 16px;
+          transition: 0.3s;
+
+          &.active {
+            transform: scale(1.5);
+            color: greenyellow;
+          }
+        }
+      }
+    }
+  }
+
+  /* 右侧收起按钮 */
+  .button {
+    width: 10%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+
+    .icon {
+      width: 30px;
+      height: 30px;
+      margin: 60px 0;
+      transition: transform 0.3s ease;
+
+      &:hover {
+        transform: scale(1.2);
+      }
+    }
+  }
+}
+</style>

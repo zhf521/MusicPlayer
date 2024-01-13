@@ -9,49 +9,59 @@
       <router-view></router-view>
     </div>
     <div class="footer">
-      控制器
+      <PlayerController />
     </div>
   </div>
   <!-- 音频标签 -->
-  <audio ref="audioRef"></audio>
+  <audio ref="audioRef" src="../public/Call You Mine - The Chainsmokers、Bebe Rexha.mp3"></audio>
 </template>
 <script setup>
-import { onMounted } from 'vue';
+import { onMounted, ref } from 'vue';
 import { useUserSettingsStore } from './stores/userSettings';
 import { useMusicLibraryStore } from './stores/musicLibrary';
+import PlayerController from './components/PlayerController.vue';
+import { usePlayerControllerStore } from './stores/playerController';
 // 引入userSettingsStore中的函数
 const userSettingsStore = useUserSettingsStore();
 const { loadUserSettings } = userSettingsStore;
 // 引入musicLibraryStore中的函数
 const musicLibraryStore = useMusicLibraryStore();
 const { loadMusicLibrary } = musicLibraryStore;
+// 引入playerControllerStore中的变量和函数
+const playerControllerStore = usePlayerControllerStore();
+const { setAudioElement } = playerControllerStore;
+
+const audioRef = ref(null);
+
 onMounted(async () => {
   // 加载用户配置
   await loadUserSettings();
   // 加载音乐库
   await loadMusicLibrary();
+  // 设置音频标签
+  setAudioElement(audioRef.value);
 });
 </script>
 <style scoped lang="less">
 .container {
-  height: 100vh;
   width: 100vw;
+  height: 100vh;
 
   .header {
-    height: 60px;
     width: 100%;
+    height: 60px;
   }
 
   .main {
-    height: calc(100% - 60px - 105px);
     width: 100%;
+    height: calc(100% - 60px - 105px);
   }
 
   .footer {
-    height: 105px;
     width: 100%;
+    height: 105px;
     border-top: 1px solid var(--el-border-color);
-    padding: 10px 0;
+    padding: 5px 0;
   }
 }
 </style>
