@@ -34,8 +34,6 @@ onMounted(async () => {
 </script>
 <style scoped lang="less">
 .container {
-  display: flex;
-  flex-direction: column;
   height: 100vh;
   width: 100vw;
 
@@ -45,7 +43,8 @@ onMounted(async () => {
   }
 
   .main {
-    flex: 1;
+    height: calc(100% - 60px - 105px);
+    width: 100%;
   }
 
   .footer {
