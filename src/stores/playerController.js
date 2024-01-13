@@ -11,11 +11,27 @@ export const usePlayerControllerStore = defineStore('playerController', () => {
     const setPlaying = (state) => {
         isPlaying.value = state;
     };
-
+    // 设置播放列表
+    const playlist = ref([]);
+    const orderList = ref([]);
+    const setPlaylist = (list) => {
+        playlist.value = list;
+        orderList.value = list;
+    };
+    // 设置当前播放的索引
+    const currentPlayIndex = ref(-1);
+    const setCurrentPlayIndex = (index) => {
+        currentPlayIndex.value = index;
+    };
     return {
         audioElement,
         setAudioElement,
         isPlaying,
         setPlaying,
+        playlist,
+        orderList,
+        setPlaylist,
+        currentPlayIndex,
+        setCurrentPlayIndex,
     };
 });
