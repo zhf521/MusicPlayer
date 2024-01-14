@@ -17,7 +17,7 @@ export const useMusicLibraryStore = defineStore('musicLibrary', () => {
         }
     };
     // 添加到音乐库
-    const addToMusicLibrary = async (item) => {
+    const addToMusicLibrary = (item) => {
         console.log(item);
         item.forEach((item) => {
             if (
@@ -34,7 +34,7 @@ export const useMusicLibraryStore = defineStore('musicLibrary', () => {
         });
     };
     // 添加标签到音乐
-    const addTagsToMusic = async (filename, tags) => {
+    const addTagsToMusic = (filename, tags) => {
         const music = musicLibrary.value.find(
             (item) => item.filename === filename
         );

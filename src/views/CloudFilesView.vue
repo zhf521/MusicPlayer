@@ -97,6 +97,7 @@ watch(() => route.params.filename, async (newVal) => {
   loading.value = true;
   try {
     await getDirectory(newVal);
+    console.log(contents.value);
   } catch (error) {
     console.log(error);
   } finally {

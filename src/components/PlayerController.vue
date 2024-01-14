@@ -58,7 +58,7 @@ watch(currentMusic, async (newMusic, oldMusic) => {
     const blob = new Blob([res]);
     if (!newMusic.tags) {
       const tags = await getTags(blob);
-      await addTagsToMusic(newMusic.filename, tags);
+      addTagsToMusic(newMusic.filename, tags);
       await saveMusicLibraryToLocal();
     }
     audioElement.value.src = URL.createObjectURL(blob);
