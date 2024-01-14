@@ -1,9 +1,9 @@
 <template>
   <div class="container">
     <div class="header">
-      <a href="/music-library">音乐库</a>
-      <a href="/cloud-files/%2F">云端文件</a>
-      <a href="/settings">设置</a>
+      <router-link to="/music-library">音乐库</router-link>
+      <router-link to="/cloud-files/%2F">云端文件</router-link>
+      <router-link to="/settings">设置</router-link>
     </div>
     <div class="main">
       <router-view></router-view>
