@@ -59,7 +59,7 @@ const selectPlay = (index) => {
 
 onMounted(() => {
   // 初始化表格数据为前十条数据
-  tableData.value = props.list.slice(0, 15);
+  tableData.value = props.list.slice(0, 16);
 
   let dom = document.getElementById('table');
   let scrollDOM = dom?.querySelector('.el-scrollbar__wrap');
@@ -68,9 +68,9 @@ onMounted(() => {
     const scrollDistance = scrollDOM.scrollHeight - scrollDOM.scrollTop - scrollDOM.clientHeight;
     if (scrollDistance <= 1 && !isFetchingData) {
       isFetchingData = true;
-      // 获取接下来的10条数据
+      // 获取接下来的16条数据
       const startIndex = tableData.value.length;
-      const newData = props.list.slice(startIndex, startIndex + 15);
+      const newData = props.list.slice(startIndex, startIndex + 16);
       tableData.value = [...tableData.value, ...newData];
       isFetchingData = false;
     }
