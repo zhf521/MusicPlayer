@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 export const usePlayerControllerStore = defineStore('playerController', () => {
     // 设置audio元素
     const audioElement = ref(null);
@@ -23,6 +23,10 @@ export const usePlayerControllerStore = defineStore('playerController', () => {
     const setCurrentPlayIndex = (index) => {
         currentPlayIndex.value = index;
     };
+    // 当前音乐
+    const currentMusic = computed(() => {
+        return playlist.value[currentPlayIndex.value] || {};
+    });
     return {
         audioElement,
         setAudioElement,
@@ -33,5 +37,6 @@ export const usePlayerControllerStore = defineStore('playerController', () => {
         setPlaylist,
         currentPlayIndex,
         setCurrentPlayIndex,
+        currentMusic,
     };
 });

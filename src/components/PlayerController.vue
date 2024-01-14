@@ -28,10 +28,53 @@ import { storeToRefs } from 'pinia';
 import SvgIcon from '../components/SvgIcon.vue';
 import { usePlayerControllerStore } from '../stores/playerController';
 import { nextTick, watch } from 'vue';
+import { useUserSettingsStore } from '../stores/userSettings';
+import { createClient } from 'webdav';
+import { useHistoryStore } from '../stores/history';
+import { getTags } from '../utils/getTags';
+import { useMusicLibraryStore } from '../stores/musicLibrary';
 // 引入playerControllerStore中的变量和函数
 const playerControllerStore = usePlayerControllerStore();
-const { isPlaying, audioElement } = storeToRefs(playerControllerStore);
+const { isPlaying, audioElement, currentMusic, playlist, currentPlayIndex } = storeToRefs(playerControllerStore);
 const { setPlaying } = playerControllerStore;
+// 引入userSettingsStore中的变量
+const userSettingsStore = useUserSettingsStore();
+const { userSettings } = storeToRefs(userSettingsStore);
+// 引入historyStore中的变量和函数
+const historyStore = useHistoryStore();
+const { history } = storeToRefs(historyStore);
+const { addToHistory, saveHistoryToLocal } = historyStore;
+// 引入musicLibraryStore中的变量
+const musicLibraryStore = useMusicLibraryStore();
+const { addTagsToMusic, saveMusicLibraryToLocal } = musicLibraryStore;
+
+watch(currentMusic, async (newMusic, oldMusic) => {
+  let webDavSettings = userSettings.value.webDavSettings;
+  try {
+    const res = await createClient(webDavSettings.url, {
+      username: webDavSettings.username,
+      password: webDavSettings.password,
+    }).getFileContents(newMusic.filename);
+    const blob = new Blob([res]);
+    if (!newMusic.tags) {
+      const tags = await getTags(blob);
+      await addTagsToMusic(newMusic.filename, tags);
+      await saveMusicLibraryToLocal();
+    }
+    audioElement.value.src = URL.createObjectURL(blob);
+    audioElement.value.currentTime = 0;
+    if (JSON.stringify(oldMusic) !== '{}' || history.value.length === 0) {
+      // 加载完历史记录时不播放（即页面启动时）
+      // 没有历史记录，刚添加到音乐库，双击选择时播放
+      audioElement.value.play();
+      isPlaying.value = true;
+    }
+    addToHistory(playlist.value, currentPlayIndex.value);
+    await saveHistoryToLocal();
+  } catch (error) {
+    console.log("获取文件内容失败", error);
+  }
+});
 
 // 切换播放暂停
 const toggleMusicPlay = () => {

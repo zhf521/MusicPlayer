@@ -13,7 +13,7 @@
     </div>
   </div>
   <!-- 音频标签 -->
-  <audio ref="audioRef" src="../public/Call You Mine - The Chainsmokers、Bebe Rexha.mp3"></audio>
+  <audio ref="audioRef"></audio>
 </template>
 <script setup>
 import { onMounted, ref } from 'vue';
@@ -50,10 +50,12 @@ onMounted(async () => {
   await loadHistory();
   let historyTailItem = history.value[history.value.length - 1];
   if (historyTailItem) {
+    console.log('加载历史记录');
     setPlaylist(historyTailItem.playlist);
     setCurrentPlayIndex(historyTailItem.index);
   } else {
     // 禁用按钮
+    console.log('暂无历史记录');
   }
 });
 </script>

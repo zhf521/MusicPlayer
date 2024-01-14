@@ -34,12 +34,12 @@ export const useMusicLibraryStore = defineStore('musicLibrary', () => {
         });
     };
     // 添加标签到音乐
-    const addTagToMusic = async (filename, tag) => {
+    const addTagsToMusic = async (filename, tags) => {
         const music = musicLibrary.value.find(
             (item) => item.filename === filename
         );
         if (music) {
-            music.tag = tag;
+            music.tags = tags;
         }
     };
     // 保存音乐库到本地
@@ -58,7 +58,7 @@ export const useMusicLibraryStore = defineStore('musicLibrary', () => {
         musicLibrary,
         addToMusicLibrary,
         loadMusicLibrary,
-        addTagToMusic,
+        addTagsToMusic,
         saveMusicLibraryToLocal,
     };
 });
