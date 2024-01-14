@@ -18,7 +18,7 @@ export const useMusicLibraryStore = defineStore('musicLibrary', () => {
     };
     // 添加到音乐库
     const addToMusicLibrary = (item) => {
-        console.log(item);
+        // console.log(item);
         item.forEach((item) => {
             if (
                 !musicLibrary.value.some(
@@ -49,7 +49,7 @@ export const useMusicLibraryStore = defineStore('musicLibrary', () => {
                 'musicLibrary',
                 JSON.parse(JSON.stringify(musicLibrary.value))
             );
-            console.log('保存成功');
+            // console.log('保存成功');
         } catch (error) {
             console.error('failed to update musicLibrary', error);
         }
