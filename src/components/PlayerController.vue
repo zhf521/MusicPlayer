@@ -2,10 +2,10 @@
   <!-- 播放控制器 -->
   <div class="controller">
     <div class="details">
-      <img class="cover" src="/default-cover.jpg" alt="音乐封面">
+      <img class="cover" :src="getMusicCover(currentMusic.tags && currentMusic.tags.tags.picture || '')" alt="音乐封面">
       <div class="info">
-        <div class="title">标题</div>
-        <div class="artist">艺术家</div>
+        <div class="title">{{ currentMusic.tags && currentMusic.tags.tags.title || '标题' }}</div>
+        <div class="artist">{{ currentMusic.tags && currentMusic.tags.tags.artist || '艺术家' }}</div>
       </div>
     </div>
     <div class="btns-and-progress">
@@ -33,10 +33,11 @@ import { createClient } from 'webdav';
 import { useHistoryStore } from '../stores/history';
 import { getTags } from '../utils/getTags';
 import { useMusicLibraryStore } from '../stores/musicLibrary';
+import { getMusicCover } from '../utils/getMusicCover';
 // 引入playerControllerStore中的变量和函数
 const playerControllerStore = usePlayerControllerStore();
 const { isPlaying, audioElement, currentMusic, playlist, currentPlayIndex } = storeToRefs(playerControllerStore);
-const { setPlaying } = playerControllerStore;
+const { setPlaying, setCurrentPlayIndex } = playerControllerStore;
 // 引入userSettingsStore中的变量
 const userSettingsStore = useUserSettingsStore();
 const { userSettings } = storeToRefs(userSettingsStore);
@@ -87,7 +88,11 @@ watch(isPlaying, (newPlaying) => {
 });
 // 上一曲
 const prevMusic = () => {
-  console.log('上一曲');
+  let index = currentPlayIndex.value - 1;
+  if (index < 0) {
+    index = playlist.value.length - 1;
+  }
+  setCurrentPlayIndex(index);
 };
 </script>
 <style scoped>
