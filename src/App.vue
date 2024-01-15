@@ -13,7 +13,7 @@
     </div>
   </div>
   <!-- 音频标签 -->
-  <audio ref="audioRef"></audio>
+  <!-- <audio ref="audioRef" controls></audio> -->
 </template>
 <script setup>
 import { onMounted, ref } from 'vue';
@@ -37,21 +37,23 @@ const historyStore = useHistoryStore();
 const { loadHistory } = historyStore;
 const { history } = storeToRefs(historyStore);
 
-const audioRef = ref(null);
+// const audioRef = ref(null);
 
 onMounted(async () => {
+  // // 设置音频标签
+  // setAudioElement(audioRef.value);
   // 加载用户配置
   await loadUserSettings();
   // 加载音乐库
   await loadMusicLibrary();
-  // 设置音频标签
-  setAudioElement(audioRef.value);
+  // // 设置音频标签
+  // setAudioElement(audioRef.value);
   // 加载历史记录
   await loadHistory();
   let historyTailItem = history.value[history.value.length - 1];
   if (historyTailItem) {
-    console.log('加载历史记录');
-    console.log('历史记录末尾的播放列表：', historyTailItem.playlist);
+    // console.log('加载历史记录');
+    // console.log('历史记录末尾的播放列表：', historyTailItem.playlist);
     setPlaylist(historyTailItem.playlist);
     setCurrentPlayIndex(historyTailItem.index);
   } else {

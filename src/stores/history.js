@@ -17,23 +17,20 @@ export const useHistoryStore = defineStore('history', () => {
         }
     };
     // 添加到历史记录
-    const addToHistory = (playlistID, index) => {
-        console.log('添加到历史记录中的当前播放列表的ID:', playlistID);
+    const addToHistory = (playlist, index) => {
+        // console.log('添加到历史记录中的当前播放列表的:', playlist);
         if (history.value.length === 0) {
-            history.value.push({ playlistID: playlistID, index: index });
+            history.value.push({ playlist: playlist, index: index });
         } else {
             const tailItem = history.value[history.value.length - 1];
-            if (
-                tailItem.playlistID !== playlistID ||
-                tailItem.index !== index
-            ) {
-                history.value.push({ playlistID: playlistID, index: index });
+            if (tailItem.playlist !== playlist || tailItem.index !== index) {
+                history.value.push({ playlist: playlist, index: index });
             }
         }
         if (history.value.length > 20) {
             history.value.shift();
         }
-        console.log('添加完的历史记录:', history.value);
+        // console.log('添加完的历史记录:', history.value);
     };
     // 保存历史记录到本地
     const saveHistoryToLocal = async () => {

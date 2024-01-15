@@ -1,5 +1,5 @@
 export function getMusicCover(TagsPicture) {
-    console.log(TagsPicture);
+    // console.log(TagsPicture);
     if (TagsPicture) {
         const { data, format } = TagsPicture;
         let base64String = '';
