@@ -51,6 +51,7 @@ onMounted(async () => {
   let historyTailItem = history.value[history.value.length - 1];
   if (historyTailItem) {
     console.log('加载历史记录');
+    console.log('历史记录末尾的播放列表：', historyTailItem.playlist);
     setPlaylist(historyTailItem.playlist);
     setCurrentPlayIndex(historyTailItem.index);
   } else {

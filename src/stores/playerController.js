@@ -25,6 +25,7 @@ export const usePlayerControllerStore = defineStore('playerController', () => {
     };
     // 当前音乐
     const currentMusic = computed(() => {
+        console.log(playlist.value[currentPlayIndex.value] || {});
         return playlist.value[currentPlayIndex.value] || {};
     });
     return {

@@ -36,26 +36,7 @@ const { setPlaylist, setCurrentPlayIndex } = playerControllerStore;
 
 const props = defineProps({ list: Array });
 const tableData = ref([]);  // 初始化tableData为空数组
-const startIndex = ref(0);  // 记录已加载数据的起始索引
 let isFetchingData = false;   // 标记是否正在获取数据
-
-const selectPlay = (index) => {
-  // console.log(playlist.value);
-  // console.log(props.list);
-  // console.log(props.list[index].filename);
-  // console.log(currentMusic.value.filename);
-  if (props.list[index].filename !== currentMusic.value.filename) {
-    // console.log('点击歌曲与当前歌曲不同');
-    if (compareArrays(props.list, playlist.value)) {
-      // console.log('播放列表相同');
-      setCurrentPlayIndex(index);
-    } else {
-      // console.log('播放列表不相同');
-      setPlaylist(props.list);
-      setCurrentPlayIndex(index);
-    }
-  }
-};
 
 onMounted(() => {
   // 初始化表格数据为前十条数据
@@ -76,5 +57,25 @@ onMounted(() => {
     }
   };
 });
+
+const selectPlay = (index) => {
+  // console.log(playlist.value);
+  // console.log(props.list);
+  // console.log(props.list[index].filename);
+  // console.log(currentMusic.value.filename);
+  if (props.list[index].filename !== currentMusic.value.filename) {
+    // console.log('点击歌曲与当前歌曲不同');
+    if (compareArrays(props.list, playlist.value)) {
+      // console.log('播放列表相同');
+      setCurrentPlayIndex(index);
+    } else {
+      // console.log('播放列表不相同');
+      setPlaylist(props.list);
+      setCurrentPlayIndex(index);
+    }
+  }
+};
+
+
 </script >
 <style scoped></style>;

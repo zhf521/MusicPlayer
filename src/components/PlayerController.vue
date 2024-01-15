@@ -4,8 +4,8 @@
     <div class="details">
       <img class="cover" :src="getMusicCover(currentMusic.tags && currentMusic.tags.tags.picture || '')" alt="音乐封面">
       <div class="info">
-        <div class="title">{{ currentMusic.tags && currentMusic.tags.tags.title || '标题' }}</div>
-        <div class="artist">{{ currentMusic.tags && currentMusic.tags.tags.artist || '艺术家' }}</div>
+        <div class="title">{{ loading ? '加载中...' : (currentMusic.tags && currentMusic.tags.tags.title || '标题') }}</div>
+        <div class="artist">{{ loading ? '加载中...' : (currentMusic.tags && currentMusic.tags.tags.artist || '艺术家') }}</div>
       </div>
     </div>
     <div class="btns-and-progress">
@@ -27,7 +27,7 @@
 import { storeToRefs } from 'pinia';
 import SvgIcon from '../components/SvgIcon.vue';
 import { usePlayerControllerStore } from '../stores/playerController';
-import { nextTick, watch } from 'vue';
+import { nextTick, onMounted, ref, watch } from 'vue';
 import { useUserSettingsStore } from '../stores/userSettings';
 import { createClient } from 'webdav';
 import { useHistoryStore } from '../stores/history';
@@ -49,18 +49,24 @@ const { addToHistory, saveHistoryToLocal } = historyStore;
 const musicLibraryStore = useMusicLibraryStore();
 const { addTagsToMusic, saveMusicLibraryToLocal } = musicLibraryStore;
 
+const loading = ref(false);
 watch(currentMusic, async (newMusic, oldMusic) => {
+  console.log('currentMusic改变了');
   let webDavSettings = userSettings.value.webDavSettings;
   try {
+    loading.value = true;
     const res = await createClient(webDavSettings.url, {
       username: webDavSettings.username,
       password: webDavSettings.password,
     }).getFileContents(newMusic.filename);
     const blob = new Blob([res]);
+    console.log('新音乐：', newMusic);
+    console.log('新音乐的标签：', newMusic.tags);
     if (!newMusic.tags) {
       const tags = await getTags(blob);
       addTagsToMusic(newMusic.filename, tags);
       await saveMusicLibraryToLocal();
+      console.log(tags);
     }
     audioElement.value.src = URL.createObjectURL(blob);
     audioElement.value.currentTime = 0;
@@ -70,10 +76,12 @@ watch(currentMusic, async (newMusic, oldMusic) => {
       audioElement.value.play();
       isPlaying.value = true;
     }
-    addToHistory(playlist.value, currentPlayIndex.value);
-    await saveHistoryToLocal();
+    // addToHistory(playlist.value, currentPlayIndex.value);
+    // await saveHistoryToLocal();
   } catch (error) {
     console.log("获取文件内容失败", error);
+  } finally {
+    loading.value = false;
   }
 });
 
