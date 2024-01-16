@@ -2,7 +2,6 @@ import { defineStore } from 'pinia';
 import { ref, computed } from 'vue';
 import { useGetFileURL } from '../hooks/useGetFileURL';
 import { randomShuffle } from '../utils/randomShuffle';
-import { formatTimeToString } from '../utils/formatTime';
 
 export const usePlayerStore = defineStore('player', () => {
     const { fileURL, getFileURL } = useGetFileURL();
@@ -106,20 +105,21 @@ export const usePlayerStore = defineStore('player', () => {
             audio.play();
         }
     };
-    const musicDurationTime = ref('00:00'); // 音频总时间
+    const musicDurationTime = ref(0); // 音频总时间
     // 监听音频可以播放
     audio.oncanplay = () => {
         // console.log('音频可以播放');
-        musicDurationTime.value = formatTimeToString(audio.duration);
+        musicDurationTime.value = audio.duration;
     };
-    const musicCurrentTime = ref('00:00'); // 音频当前时间
-    const playProgress = ref('0%'); //播放进度
+    const musicCurrentTime = ref(0); // 音频当前时间
     // 监听音频时间变化
     audio.ontimeupdate = () => {
         // console.log('时间变化', audio.currentTime);
-        musicCurrentTime.value = formatTimeToString(audio.currentTime);
-        playProgress.value = `${(audio.currentTime / audio.duration) * 100}%`;
-        // console.log('播放进度：', playProgress.value);
+        musicCurrentTime.value = audio.currentTime;
+    };
+    // 设置当前播放时间
+    const setCurrentTime = (time) => {
+        audio.currentTime = time;
     };
     return {
         audio,
@@ -139,6 +139,6 @@ export const usePlayerStore = defineStore('player', () => {
         next,
         musicDurationTime,
         musicCurrentTime,
-        playProgress,
+        setCurrentTime,
     };
 });

@@ -10,9 +10,15 @@
       :title="(playMode === 0) ? '顺序播放' : '随机播放'" @click="togglePlayMode" />
   </div>
   <div class="progress">
-    <div class="time">{{ musicCurrentTime }}</div>
-    <SliderBar :filledPercentage="playProgress" />
-    <div class="time">{{ musicDurationTime }}</div>
+    <SliderBar :filledPercent="playProgress" @percent-change-end="handlePercentChangeEnd"
+      @percent-change="handlePercentChange" />
+    <div class="time">
+      <div class="cTime">
+        <div>{{ formatTimeToString(musicCurrentTime) }}</div>
+        <div class="onDrag" v-if="isDragging">{{ formatTimeToString(musicCurrentTimeOnDrag) }}</div>
+      </div>
+      <div class="dTime">{{ formatTimeToString(musicDurationTime) }}</div>
+    </div>
   </div>
 </template>
 <script setup>
@@ -20,10 +26,12 @@ import { usePlayerStore } from '../../stores/player';
 import { storeToRefs } from 'pinia';
 import { Play, PauseOne, GoStart, GoEnd, PlayOnce, PlayCycle, LoopOnce, ShuffleOne } from '@icon-park/vue-next';
 import SliderBar from '../SliderBar.vue';
+import { computed, ref } from 'vue';
+import { formatTimeToString } from '../../utils/formatTime';
 
 const playerStore = usePlayerStore();
-const { isPlaying, loopMode, playMode, musicDurationTime, musicCurrentTime, playProgress } = storeToRefs(playerStore);
-const { togglePlay, prev, setLoopMode, setPlayMode, next, } = playerStore;
+const { isPlaying, loopMode, playMode, musicDurationTime, musicCurrentTime, } = storeToRefs(playerStore);
+const { togglePlay, prev, setLoopMode, setPlayMode, next, setCurrentTime } = playerStore;
 
 // 切换音乐播放、暂停
 const toggleMusicPlay = () => {
@@ -46,6 +54,25 @@ const togglePlayMode = () => {
 const nextMusic = () => {
   next();
 };
+// 播放进度百分比
+const playProgress = computed(() => {
+  return `${(musicCurrentTime.value / musicDurationTime.value) * 100}%`;
+});
+const musicCurrentTimeOnDrag = ref(0);
+const isDragging = ref(false);
+// 进度条运动时触发
+const handlePercentChange = (percent) => {
+  isDragging.value = true;
+  musicCurrentTimeOnDrag.value = musicDurationTime.value * percent;
+};
+// 小圆点松开时触发
+const handlePercentChangeEnd = (percent) => {
+  // console.log('滑动条传递过来的百分比：', percent);
+  // 设置音乐当前播放时间
+  setCurrentTime(musicDurationTime.value * percent);
+  isDragging.value = false;
+}
+
 </script>
 <style scoped lang="less">
 .buttons {
@@ -65,11 +92,22 @@ const nextMusic = () => {
 }
 
 .progress {
-  display: flex;
-  align-items: center;
+  margin-top: 5px;
 
   .time {
-    margin: 0 10px;
+    display: flex;
+    justify-content: space-between;
+    margin-top: 5px;
+
+    .cTime {
+      display: flex;
+
+      .onDrag {
+        margin-left: 5px;
+        background-color: #d1d0d0;
+        border-radius: 10%;
+      }
+    }
   }
 }
 </style>
