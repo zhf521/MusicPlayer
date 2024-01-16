@@ -17,7 +17,7 @@ export const usePlayerStore = defineStore('player', () => {
         isPlaying.value = true;
     };
     const isPlaying = ref(false); // 播放状态
-    // 切换播放
+    // 切换播放、暂停
     const togglePlay = () => {
         isPlaying.value = !isPlaying.value;
         if (isPlaying.value) {
@@ -55,6 +55,11 @@ export const usePlayerStore = defineStore('player', () => {
         setCurrentPlayIndex(index);
         play(currentPlayMusic.value);
     };
+    const loopMode = ref(0); // 循环模式
+    // 设置循环模式
+    const setLoopMode = (mode) => {
+        loopMode.value = mode;
+    };
     const playMode = ref(0); // 播放模式
     // 设置播放模式
     const setPlayMode = (mode) => {
@@ -66,11 +71,10 @@ export const usePlayerStore = defineStore('player', () => {
         // console.log('当前播放模式：', playMode.value);
         switch (playMode.value) {
             case 0:
-            case 1:
                 list = orderList.value;
-                // console.log('顺序或单曲时的列表：', list);
+                // console.log('顺序时的列表：', list);
                 break;
-            case 2:
+            case 1:
                 list = randomShuffle(orderList.value);
                 // console.log('随机时的列表：', list);
                 break;
@@ -127,6 +131,8 @@ export const usePlayerStore = defineStore('player', () => {
         setCurrentPlayIndex,
         currentPlayMusic,
         prev,
+        loopMode,
+        setLoopMode,
         playMode,
         setPlayMode,
         next,

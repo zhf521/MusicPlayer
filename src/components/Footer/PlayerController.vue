@@ -1,23 +1,22 @@
 <template>
   <div class="buttons">
-    <button>是否单曲循环</button>
-    <SvgIcon className="icon" :iconName="modeIconName" :title="modeIconTitle" @click="changePlayMode" />
-    <SvgIcon className="icon" iconName="icon-prev" title="上一曲" @click="prevMusic" />
-    <SvgIcon className="icon" :iconName="(isPlaying === false) ? 'icon-play' : 'icon-pause'"
-      :title="(isPlaying === false) ? '播放' : '暂停'" @click="toggleMusicPlay" />
-    <SvgIcon className="icon" iconName="icon-next" title="下一曲" @click="nextMusic" />
-    <SvgIcon className="icon" :iconName="modeIconName" :title="modeIconTitle" @click="changePlayMode" />
-    <button>是否随机播放</button>
+    <Component :is="(loopMode === 0)?PlayCycle:PlayOnce" theme="filled" size="24" :strokeWidth="4" class="icon"
+      :title="(loopMode === 0) ? '列表循环' : '单曲循环'" @click="toggleLoopMode" />
+    <GoStart theme="filled" size="24" :strokeWidth="4" class="icon" title="上一曲" @click="prevMusic" />
+    <Component :is="isPlaying?PauseOne:Play" theme="filled" size="28" fill="#333" :strokeWidth="4" class="icon"
+      :title="isPlaying ? '暂停' : '播放'" @click="toggleMusicPlay" />
+    <GoEnd theme="filled" size="24" :strokeWidth="4" class="icon" title="下一曲" @click="nextMusic" />
+    <Component :is="(playMode === 0)?LoopOnce:ShuffleOne" theme="filled" size="24" :strokeWidth="4" class="icon"
+      :title="(playMode === 0) ? '顺序播放' : '随机播放'" @click="togglePlayMode" />
   </div>
 </template>
 <script setup>
-import SvgIcon from '../SvgIcon.vue';
 import { usePlayerStore } from '../../stores/player';
 import { storeToRefs } from 'pinia';
-import { computed } from 'vue';
+import { Play, PauseOne, GoStart, GoEnd, PlayOnce, PlayCycle, LoopOnce, ShuffleOne } from '@icon-park/vue-next';
 const playerStore = usePlayerStore();
-const { isPlaying, playMode } = storeToRefs(playerStore);
-const { togglePlay, prev, setPlayMode, next, } = playerStore;
+const { isPlaying, loopMode, playMode } = storeToRefs(playerStore);
+const { togglePlay, prev, setLoopMode, setPlayMode, next, } = playerStore;
 
 // 切换音乐播放、暂停
 const toggleMusicPlay = () => {
@@ -28,16 +27,13 @@ const toggleMusicPlay = () => {
 const prevMusic = () => {
   prev();
 };
-// 获取播放模式iconName和iconTitle
-const modeIconName = computed(() => {
-  return `icon-${['list-loop', 'one-loop', 'random'][playMode.value]}`;
-});
-const modeIconTitle = computed(() => {
-  return ['列表循环', '单曲循环', '随机播放'][playMode.value];
-});
+// 切换循环模式
+const toggleLoopMode = () => {
+  setLoopMode((loopMode.value + 1) % 2);
+};
 // 切换播放模式
-const changePlayMode = () => {
-  setPlayMode((playMode.value + 1) % 3);
+const togglePlayMode = () => {
+  setPlayMode((playMode.value + 1) % 2);
 };
 // 下一曲
 const nextMusic = () => {
@@ -52,12 +48,11 @@ const nextMusic = () => {
   padding: 5px 30px;
 
   .icon {
-    width: 24px;
-    height: 24px;
+    cursor: pointer;
     transition: transform 0.3s ease;
 
     &:hover {
-      transform: scale(1.2);
+      color: green;
     }
   }
 }
