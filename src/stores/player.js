@@ -93,33 +93,17 @@ export const usePlayerStore = defineStore('player', () => {
         setCurrentPlayIndex(index);
         play(currentPlayMusic.value);
     };
-
-    // // 设置播放状态
-    // const isPlaying = ref(false);
-    // const setPlaying = (state) => {
-    //     isPlaying.value = state;
-    // };
-    // // 设置播放列表
-
-    // const orderList = ref([]);
-    // const setPlaylist = (list) => {
-    //     playlist.value = list;
-    //     orderList.value = list;
-    // };
-    // // 设置当前播放的索引
-    // const currentPlayIndex = ref(-1);
-    // const setCurrentPlayIndex = (index) => {
-    //     currentPlayIndex.value = index;
-    // };
-    // // 当前音乐
-    // const currentMusic = computed(() => {
-    //     return playlist.value[currentPlayIndex.value] || {};
-    // });
-    // // 设置播放模式
-    // const mode = ref(0);
-    // const setPlayMode = (newMode) => {
-    //     mode.value = newMode;
-    // };
+    audio.onended = () => {
+        // console.log('播放结束');
+        if (loopMode.value === 0) {
+            // 列表循环
+            next();
+        } else {
+            // 单曲循环
+            audio.currentTime = 0;
+            audio.play();
+        }
+    };
     return {
         audio,
         play,
