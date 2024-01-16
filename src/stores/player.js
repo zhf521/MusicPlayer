@@ -113,10 +113,13 @@ export const usePlayerStore = defineStore('player', () => {
         musicDurationTime.value = formatTimeToString(audio.duration);
     };
     const musicCurrentTime = ref('00:00'); // 音频当前时间
+    const playProgress = ref('0%'); //播放进度
     // 监听音频时间变化
     audio.ontimeupdate = () => {
         // console.log('时间变化', audio.currentTime);
         musicCurrentTime.value = formatTimeToString(audio.currentTime);
+        playProgress.value = `${(audio.currentTime / audio.duration) * 100}%`;
+        // console.log('播放进度：', playProgress.value);
     };
     return {
         audio,
@@ -136,5 +139,6 @@ export const usePlayerStore = defineStore('player', () => {
         next,
         musicDurationTime,
         musicCurrentTime,
+        playProgress,
     };
 });
