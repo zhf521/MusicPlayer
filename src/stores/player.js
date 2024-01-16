@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia';
 import { ref, computed } from 'vue';
 import { useGetFileURL } from '../hooks/useGetFileURL';
+import { randomShuffle } from '../utils/randomShuffle';
 
 export const usePlayerStore = defineStore('player', () => {
     const { fileURL, getFileURL } = useGetFileURL();
@@ -26,10 +27,12 @@ export const usePlayerStore = defineStore('player', () => {
         }
     };
     const playlist = ref([]); // 播放列表
+    const orderList = ref([]); // 顺序列表
     // 设置播放列表
     const setPlaylist = (list) => {
         // console.log('传入到设置播放列表的列表：', list);
         playlist.value = list;
+        orderList.value = list;
         // console.log('设置完的播放列表：', playlist.value);
     };
     const currentPlayIndex = ref(-1); // 当前播放的索引
@@ -52,25 +55,41 @@ export const usePlayerStore = defineStore('player', () => {
         setCurrentPlayIndex(index);
         play(currentPlayMusic.value);
     };
+    const playMode = ref(0); // 播放模式
+    // 设置播放模式
+    const setPlayMode = (mode) => {
+        playMode.value = mode;
+    };
+    // 下一曲
+    const next = () => {
+        let list = [];
+        // console.log('当前播放模式：', playMode.value);
+        switch (playMode.value) {
+            case 0:
+            case 1:
+                list = orderList.value;
+                // console.log('顺序或单曲时的列表：', list);
+                break;
+            case 2:
+                list = randomShuffle(orderList.value);
+                // console.log('随机时的列表：', list);
+                break;
+        }
+        let newIndex = list.findIndex(
+            (item) => item === currentPlayMusic.value
+        );
+        // console.log('当前的索引：', newIndex);
+        setCurrentPlayIndex(newIndex);
+        setPlaylist(list);
+        let index = currentPlayIndex.value + 1;
+        if (index > playlist.value.length - 1) {
+            index = 0;
+        }
+        // console.log('点击下一曲获取到的索引：', index);
+        setCurrentPlayIndex(index);
+        play(currentPlayMusic.value);
+    };
 
-    // // 播放模式数组
-    // const playModes = [
-    //     {
-    //         id: 0,
-    //         iconTitle: '列表循环',
-    //         iconName: 'list-loop',
-    //     },
-    //     {
-    //         id: 1,
-    //         iconTitle: '单曲循环',
-    //         iconName: 'one-loop',
-    //     },
-    //     {
-    //         id: 2,
-    //         iconTitle: '随机播放',
-    //         iconName: 'random',
-    //     },
-    // ];
     // // 设置播放状态
     // const isPlaying = ref(false);
     // const setPlaying = (state) => {
@@ -108,5 +127,8 @@ export const usePlayerStore = defineStore('player', () => {
         setCurrentPlayIndex,
         currentPlayMusic,
         prev,
+        playMode,
+        setPlayMode,
+        next,
     };
 });
