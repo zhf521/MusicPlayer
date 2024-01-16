@@ -27,14 +27,14 @@
 import { storeToRefs } from 'pinia';
 import { usePlayerStore } from '../stores/player';
 import { compareArrays } from '../utils/compareArrays';
-import { onMounted, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 
 // 引入playerStore中的变量和函数
 const playerStore = usePlayerStore();
-// const { currentMusic, playlist } = storeToRefs(playerStore);
-const { play } = playerStore;
+const { playlist, currentPlayMusic } = storeToRefs(playerStore);
+const { play, setPlaylist, setCurrentPlayIndex } = playerStore;
 
-const props = defineProps({ list: Array });
+const props = defineProps({ list: { type: Array, default: [] } });
 const tableData = ref([]);  // 初始化tableData为空数组
 let isFetchingData = false;   // 标记是否正在获取数据
 
@@ -58,8 +58,28 @@ onMounted(() => {
   };
 });
 
+const musicList = computed(() => {
+  // console.log('音乐列表：', props.list.map(item => item.filename));
+  return props.list.map(item => item.filename);
+});
 const selectPlay = (index) => {
-  play(props.list[index].filename);
+  if (compareArrays(musicList.value, playlist.value)) {
+    // console.log('播放列表相同');
+    if (musicList.value[index] !== currentPlayMusic.value) {
+      // console.log('点击的不是当前播放的音乐');
+      setCurrentPlayIndex(index);
+      play(currentPlayMusic.value);
+    } else {
+      // console.log('点击的是当前播放的音乐');
+      return;
+    }
+  } else {
+    // console.log('播放列表不同');
+    setPlaylist(musicList.value);
+    setCurrentPlayIndex(index);
+    play(currentPlayMusic.value);
+  }
+
   // console.log(playlist.value);
   // console.log(props.list);
   // console.log(props.list[index].filename);

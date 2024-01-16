@@ -25,6 +25,23 @@ export const usePlayerStore = defineStore('player', () => {
             audio.pause();
         }
     };
+    const playlist = ref([]); // 播放列表
+    // 设置播放列表
+    const setPlaylist = (list) => {
+        // console.log('传入到设置播放列表的列表：', list);
+        playlist.value = list;
+        // console.log('设置完的播放列表：', playlist.value);
+    };
+    const currentPlayIndex = ref(-1); // 当前播放的索引
+    // 设置当前播放的索引
+    const setCurrentPlayIndex = (index) => {
+        currentPlayIndex.value = index;
+    };
+    // 当前播放的音乐
+    const currentPlayMusic = computed(() => {
+        // console.log('当前播放的音乐：', playlist.value[currentPlayIndex.value]);
+        return playlist.value[currentPlayIndex.value];
+    });
 
     // // 播放模式数组
     // const playModes = [
@@ -75,5 +92,10 @@ export const usePlayerStore = defineStore('player', () => {
         play,
         isPlaying,
         togglePlay,
+        playlist,
+        setPlaylist,
+        currentPlayIndex,
+        setCurrentPlayIndex,
+        currentPlayMusic,
     };
 });

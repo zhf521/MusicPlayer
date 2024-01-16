@@ -14,7 +14,7 @@ const { togglePlay } = playerStore;
 
 // 切换音乐播放、暂停
 const toggleMusicPlay = () => {
-  console.log('切换播放');
+  // console.log('切换播放、暂停');
   togglePlay();
 };
 </script>
