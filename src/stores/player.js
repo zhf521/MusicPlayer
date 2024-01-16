@@ -42,6 +42,16 @@ export const usePlayerStore = defineStore('player', () => {
         // console.log('当前播放的音乐：', playlist.value[currentPlayIndex.value]);
         return playlist.value[currentPlayIndex.value];
     });
+    // 上一曲
+    const prev = () => {
+        let index = currentPlayIndex.value - 1;
+        if (index < 0) {
+            index = playlist.value.length - 1;
+        }
+        // console.log('点击上一曲获取到的索引：', index);
+        setCurrentPlayIndex(index);
+        play(currentPlayMusic.value);
+    };
 
     // // 播放模式数组
     // const playModes = [
@@ -97,5 +107,6 @@ export const usePlayerStore = defineStore('player', () => {
         currentPlayIndex,
         setCurrentPlayIndex,
         currentPlayMusic,
+        prev,
     };
 });
