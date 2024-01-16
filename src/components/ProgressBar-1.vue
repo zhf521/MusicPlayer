@@ -31,8 +31,8 @@ onMounted(() => {
   // 监听宽度变化
   watch(() => props.playedProgressWidth, (newVal) => {
     // if (!isDragging.value) {
-      // 更新已播放进度的样式
-      playedProgressRef.value.style.width = newVal;
+    // 更新已播放进度的样式
+    playedProgressRef.value.style.width = newVal;
     // }
   });
 });

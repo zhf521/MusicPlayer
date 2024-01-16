@@ -33,7 +33,7 @@
 </template>
 <script setup>
 import { storeToRefs } from 'pinia';
-import SvgIcon from '../components/SvgIcon.vue';
+import SvgIcon from './SvgIcon.vue';
 import { usePlayerControllerStore } from '../stores/playerController';
 import { computed, nextTick, onMounted, ref, watch } from 'vue';
 import { useUserSettingsStore } from '../stores/userSettings';
@@ -43,13 +43,12 @@ import { getTags } from '../utils/getTags';
 import { useMusicLibraryStore } from '../stores/musicLibrary';
 import { getMusicCover } from '../utils/getMusicCover';
 import { randomShuffle } from '../utils/randomShuffle';
-import ProgressBar from './ProgressBar.vue';
+import ProgressBar from './ProgressBar-1.vue';
 
 // 引入playerControllerStore中的变量和函数
 const playerControllerStore = usePlayerControllerStore();
-const { isPlaying, currentMusic, playlist, currentPlayIndex, mode, orderList } = storeToRefs(playerControllerStore);
-const { audioElement } = playerControllerStore;
-const { setPlaying, setCurrentPlayIndex, setPlayMode } = playerControllerStore;
+const { isPlaying, currentMusic, playlist, currentPlayIndex, mode, orderList, audioElement } = storeToRefs(playerControllerStore);
+const { setPlaying, setCurrentPlayIndex, setPlayMode, } = playerControllerStore;
 // 引入userSettingsStore中的变量
 const userSettingsStore = useUserSettingsStore();
 const { userSettings } = storeToRefs(userSettingsStore);
@@ -64,25 +63,31 @@ const { addTagsToMusic, saveMusicLibraryToLocal } = musicLibraryStore;
 // 已播放进度条宽度
 const playedProgressWidth = ref();
 onMounted(() => {
-  audioElement.onended = () => {
-    // console.log('播放结束');
-    if (mode.value === 1) {
-      // 单曲循环
-      audioElement.currentTime = 0; // 重新开始播放当前音频
-      audioElement.play(); // 继续播放
-    } else {
-      // console.log('播放结束，下一曲');
-      nextMusic();
-    };
-  };
-  audioElement.oncanplay = async () => {
-    addToHistory(playlist.value, currentPlayIndex.value);
-    // console.log('保存到历史记录的播放列表：', playlist.value);
-    await saveHistoryToLocal();
-  };
-  audioElement.ontimeupdate = () => {
-    playedProgressWidth.value = `${(audioElement.currentTime / audioElement.duration) * 100}%`;
-  };
+  nextTick(() => {
+    if (audioElement.value) {
+      audioElement.value.onended = () => {
+        // console.log('播放结束');
+        if (mode.value === 1) {
+          // 单曲循环
+          audioElement.value.currentTime = 0; // 重新开始播放当前音频
+          audioElement.value.play(); // 继续播放
+        } else {
+          // console.log('播放结束，下一曲');
+          nextMusic();
+        };
+      };
+      audioElement.value.oncanplay = async () => {
+        addToHistory(playlist.value, currentPlayIndex.value);
+        // console.log('保存到历史记录的播放列表：', playlist.value);
+        await saveHistoryToLocal();
+      };
+      audioElement.value.ontimeupdate = () => {
+        console.log('时间变化');
+        console.log(playedProgressWidth.value);
+        playedProgressWidth.value = `${(audioElement.value.currentTime / audioElement.value.duration) * 100}%`;
+      };
+    }
+  });
 });
 
 const loading = ref(false);
@@ -105,12 +110,12 @@ watch(currentMusic, async (newMusic, oldMusic) => {
       // console.log(tags);
       // console.log('获取标签信息成功');
     }
-    audioElement.src = URL.createObjectURL(blob);
-    audioElement.currentTime = 0;
+    audioElement.value.src = URL.createObjectURL(blob);
+    audioElement.value.currentTime = 0;
     if (JSON.stringify(oldMusic) !== '{}' || history.value.length === 0) {
       // 加载完历史记录时不播放（即页面启动时）
       // 没有历史记录，刚添加到音乐库，双击选择时播放
-      audioElement.play();
+      audioElement.value.play();
       isPlaying.value = true;
     }
   } catch (error) {
@@ -125,7 +130,7 @@ const toggleMusicPlay = () => {
 };
 watch(isPlaying, (newPlaying) => {
   nextTick(() => {
-    newPlaying ? audioElement.play() : audioElement.pause();
+    newPlaying ? audioElement.value.play() : audioElement.value.pause();
   });
 });
 // 上一曲

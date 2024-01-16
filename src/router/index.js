@@ -5,22 +5,25 @@ const router = createRouter({
     routes: [
         {
             path: '/',
+            component: () => import('../views/Home.vue'),
             redirect: '/music-library',
-        },
-        {
-            path: '/music-library',
-            name: 'music-library',
-            component: () => import('@/views/MusicLibraryView.vue'),
-        },
-        {
-            path: '/cloud-files/:filename',
-            name: 'cloud-files',
-            component: () => import('@/views/CloudFilesView.vue'),
-        },
-        {
-            path: '/settings',
-            name: 'settings',
-            component: () => import('@/views/SettingsView.vue'),
+            children: [
+                {
+                    path: '/music-library',
+                    name: 'music-library',
+                    component: () => import('@/views/MusicLibraryView.vue'),
+                },
+                {
+                    path: '/cloud-files/:filename',
+                    name: 'cloud-files',
+                    component: () => import('@/views/CloudFilesView.vue'),
+                },
+                {
+                    path: '/settings',
+                    name: 'settings',
+                    component: () => import('@/views/SettingsView.vue'),
+                },
+            ],
         },
     ],
 });

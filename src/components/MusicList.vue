@@ -25,14 +25,14 @@
 </template>
 <script setup>
 import { storeToRefs } from 'pinia';
-import { usePlayerControllerStore } from '../stores/playerController';
+import { usePlayerStore } from '../stores/player';
 import { compareArrays } from '../utils/compareArrays';
 import { onMounted, ref } from 'vue';
 
-// 引入playerControllerStore中的变量和函数
-const playerControllerStore = usePlayerControllerStore();
-const { currentMusic, playlist } = storeToRefs(playerControllerStore);
-const { setPlaylist, setCurrentPlayIndex } = playerControllerStore;
+// 引入playerStore中的变量和函数
+const playerStore = usePlayerStore();
+// const { currentMusic, playlist } = storeToRefs(playerStore);
+const { play } = playerStore;
 
 const props = defineProps({ list: Array });
 const tableData = ref([]);  // 初始化tableData为空数组
@@ -59,21 +59,23 @@ onMounted(() => {
 });
 
 const selectPlay = (index) => {
+  play(props.list[index].filename);
   // console.log(playlist.value);
   // console.log(props.list);
   // console.log(props.list[index].filename);
   // console.log(currentMusic.value.filename);
-  if (props.list[index].filename !== currentMusic.value.filename) {
-    // console.log('点击歌曲与当前歌曲不同');
-    if (compareArrays(props.list, playlist.value)) {
-      // console.log('播放列表相同');
-      setCurrentPlayIndex(index);
-    } else {
-      // console.log('播放列表不相同');
-      setPlaylist(props.list);
-      setCurrentPlayIndex(index);
-    }
-  }
+  // if (props.list[index].filename !== currentMusic.value.filename) {
+  //   // console.log('点击歌曲与当前歌曲不同');
+  //   if (compareArrays(props.list, playlist.value)) {
+  //     // console.log('播放列表相同');
+  //     setCurrentPlayIndex(index);
+  //   } else {
+  //     // console.log('播放列表不相同');
+  //     setPlaylist(props.list);
+  //     setCurrentPlayIndex(index);
+  //   }
+  // }
+
 };
 
 
