@@ -79,23 +79,6 @@ const selectPlay = (index) => {
     setCurrentPlayIndex(index);
     play(currentPlayMusic.value);
   }
-
-  // console.log(playlist.value);
-  // console.log(props.list);
-  // console.log(props.list[index].filename);
-  // console.log(currentMusic.value.filename);
-  // if (props.list[index].filename !== currentMusic.value.filename) {
-  //   // console.log('点击歌曲与当前歌曲不同');
-  //   if (compareArrays(props.list, playlist.value)) {
-  //     // console.log('播放列表相同');
-  //     setCurrentPlayIndex(index);
-  //   } else {
-  //     // console.log('播放列表不相同');
-  //     setPlaylist(props.list);
-  //     setCurrentPlayIndex(index);
-  //   }
-  // }
-
 };
 
 
