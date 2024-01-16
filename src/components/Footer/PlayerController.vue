@@ -1,10 +1,13 @@
 <template>
   <div class="buttons">
+    <button>是否单曲循环</button>
     <SvgIcon className="icon" :iconName="modeIconName" :title="modeIconTitle" @click="changePlayMode" />
     <SvgIcon className="icon" iconName="icon-prev" title="上一曲" @click="prevMusic" />
     <SvgIcon className="icon" :iconName="(isPlaying === false) ? 'icon-play' : 'icon-pause'"
       :title="(isPlaying === false) ? '播放' : '暂停'" @click="toggleMusicPlay" />
     <SvgIcon className="icon" iconName="icon-next" title="下一曲" @click="nextMusic" />
+    <SvgIcon className="icon" :iconName="modeIconName" :title="modeIconTitle" @click="changePlayMode" />
+    <button>是否随机播放</button>
   </div>
 </template>
 <script setup>

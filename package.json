@@ -8,6 +8,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@icon-park/vue-next": "^1.4.2",
     "element-plus": "^2.5.0",
     "jsmediatags": "^3.9.7",
     "less": "^4.2.0",
