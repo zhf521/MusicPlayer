@@ -2,6 +2,7 @@ import { defineStore } from 'pinia';
 import { ref, computed } from 'vue';
 import { useGetFileURL } from '../hooks/useGetFileURL';
 import { randomShuffle } from '../utils/randomShuffle';
+import { formatTimeToString } from '../utils/formatTime';
 
 export const usePlayerStore = defineStore('player', () => {
     const { fileURL, getFileURL } = useGetFileURL();
@@ -93,6 +94,7 @@ export const usePlayerStore = defineStore('player', () => {
         setCurrentPlayIndex(index);
         play(currentPlayMusic.value);
     };
+    // 监听音频结束
     audio.onended = () => {
         // console.log('播放结束');
         if (loopMode.value === 0) {
@@ -103,6 +105,18 @@ export const usePlayerStore = defineStore('player', () => {
             audio.currentTime = 0;
             audio.play();
         }
+    };
+    const musicDurationTime = ref('00:00'); // 音频总时间
+    // 监听音频可以播放
+    audio.oncanplay = () => {
+        // console.log('音频可以播放');
+        musicDurationTime.value = formatTimeToString(audio.duration);
+    };
+    const musicCurrentTime = ref('00:00'); // 音频当前时间
+    // 监听音频时间变化
+    audio.ontimeupdate = () => {
+        // console.log('时间变化', audio.currentTime);
+        musicCurrentTime.value = formatTimeToString(audio.currentTime);
     };
     return {
         audio,
@@ -120,5 +134,7 @@ export const usePlayerStore = defineStore('player', () => {
         playMode,
         setPlayMode,
         next,
+        musicDurationTime,
+        musicCurrentTime,
     };
 });

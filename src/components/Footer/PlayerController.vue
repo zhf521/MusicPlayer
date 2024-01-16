@@ -9,13 +9,17 @@
     <Component :is="(playMode === 0)?LoopOnce:ShuffleOne" theme="filled" size="24" :strokeWidth="4" class="icon"
       :title="(playMode === 0) ? '顺序播放' : '随机播放'" @click="togglePlayMode" />
   </div>
+  <div class="progress">
+    <div class="time">{{ musicCurrentTime }}</div>
+    <div class="time">{{ musicDurationTime }}</div>
+  </div>
 </template>
 <script setup>
 import { usePlayerStore } from '../../stores/player';
 import { storeToRefs } from 'pinia';
 import { Play, PauseOne, GoStart, GoEnd, PlayOnce, PlayCycle, LoopOnce, ShuffleOne } from '@icon-park/vue-next';
 const playerStore = usePlayerStore();
-const { isPlaying, loopMode, playMode } = storeToRefs(playerStore);
+const { isPlaying, loopMode, playMode, musicDurationTime, musicCurrentTime } = storeToRefs(playerStore);
 const { togglePlay, prev, setLoopMode, setPlayMode, next, } = playerStore;
 
 // 切换音乐播放、暂停
@@ -54,6 +58,15 @@ const nextMusic = () => {
     &:hover {
       color: green;
     }
+  }
+}
+
+.progress {
+  display: flex;
+  align-items: center;
+
+  .time {
+    margin: 0 10px;
   }
 }
 </style>
