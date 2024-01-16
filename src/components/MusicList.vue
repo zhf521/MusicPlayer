@@ -83,4 +83,4 @@ const selectPlay = (index) => {
 
 
 </script >
-<style scoped></style>;
+<style scoped></style>
