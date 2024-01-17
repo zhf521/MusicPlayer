@@ -18,7 +18,7 @@ export const useHistoryStore = defineStore('history', () => {
     };
     // 添加到历史记录
     const addToHistory = (playlist, index) => {
-        // console.log('添加到历史记录中的当前播放列表的:', playlist);
+        // console.log('添加到历史记录中的当前播放列表:', playlist);
         if (history.value.length === 0) {
             history.value.push({ playlist: playlist, index: index });
         } else {

@@ -32,7 +32,7 @@ import { computed, onMounted, ref } from 'vue';
 // 引入playerStore中的变量和函数
 const playerStore = usePlayerStore();
 const { playlist, currentPlayMusic } = storeToRefs(playerStore);
-const { play, setPlaylist, setCurrentPlayIndex } = playerStore;
+const { loadMusic, play, setPlaylist, setCurrentPlayIndex, } = playerStore;
 
 const props = defineProps({ list: { type: Array, default: [] } });
 const tableData = ref([]);  // 初始化tableData为空数组
@@ -62,13 +62,14 @@ const musicList = computed(() => {
   // console.log('音乐列表：', props.list.map(item => item.filename));
   return props.list.map(item => item.filename);
 });
-const selectPlay = (index) => {
+const selectPlay = async (index) => {
   if (compareArrays(musicList.value, playlist.value)) {
     // console.log('播放列表相同');
     if (musicList.value[index] !== currentPlayMusic.value) {
       // console.log('点击的不是当前播放的音乐');
       setCurrentPlayIndex(index);
-      play(currentPlayMusic.value);
+      await loadMusic(currentPlayMusic.value);
+      play();
     } else {
       // console.log('点击的是当前播放的音乐');
       return;
@@ -77,7 +78,8 @@ const selectPlay = (index) => {
     // console.log('播放列表不同');
     setPlaylist(musicList.value);
     setCurrentPlayIndex(index);
-    play(currentPlayMusic.value);
+    await loadMusic(currentPlayMusic.value);
+    play();
   }
 };
 

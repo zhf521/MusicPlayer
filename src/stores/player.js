@@ -2,17 +2,21 @@ import { defineStore } from 'pinia';
 import { ref, computed } from 'vue';
 import { useGetFileURL } from '../hooks/useGetFileURL';
 import { randomShuffle } from '../utils/randomShuffle';
+import { useHistoryStore } from './history';
 
 export const usePlayerStore = defineStore('player', () => {
     const { fileURL, getFileURL } = useGetFileURL();
     const audio = new Audio(); // audio标签
-    // 播放
-    const play = async (filename) => {
+    // 加载音乐
+    const loadMusic = async (filename) => {
         // console.log('文件名:', filename);
         await getFileURL(filename);
-        // console.log('文件URL:',fileURL.value);
+        // console.log('文件URL:', fileURL.value);
         audio.src = fileURL.value;
         audio.currentTime = 0;
+    };
+    // 播放音乐
+    const play = () => {
         audio.play();
         isPlaying.value = true;
     };
@@ -28,12 +32,9 @@ export const usePlayerStore = defineStore('player', () => {
     };
     const playlist = ref([]); // 播放列表
     const orderList = ref([]); // 顺序列表
-    // 设置播放列表
     const setPlaylist = (list) => {
-        // console.log('传入到设置播放列表的列表：', list);
         playlist.value = list;
         orderList.value = list;
-        // console.log('设置完的播放列表：', playlist.value);
     };
     const currentPlayIndex = ref(-1); // 当前播放的索引
     // 设置当前播放的索引
@@ -46,14 +47,15 @@ export const usePlayerStore = defineStore('player', () => {
         return playlist.value[currentPlayIndex.value];
     });
     // 上一曲
-    const prev = () => {
+    const prev = async () => {
         let index = currentPlayIndex.value - 1;
         if (index < 0) {
             index = playlist.value.length - 1;
         }
         // console.log('点击上一曲获取到的索引：', index);
         setCurrentPlayIndex(index);
-        play(currentPlayMusic.value);
+        await loadMusic(currentPlayMusic.value);
+        play();
     };
     const loopMode = ref(0); // 循环模式
     // 设置循环模式
@@ -66,7 +68,7 @@ export const usePlayerStore = defineStore('player', () => {
         playMode.value = mode;
     };
     // 下一曲
-    const next = () => {
+    const next = async () => {
         let list = [];
         // console.log('当前播放模式：', playMode.value);
         switch (playMode.value) {
@@ -91,7 +93,8 @@ export const usePlayerStore = defineStore('player', () => {
         }
         // console.log('点击下一曲获取到的索引：', index);
         setCurrentPlayIndex(index);
-        play(currentPlayMusic.value);
+        await loadMusic(currentPlayMusic.value);
+        play();
     };
     // 监听音频结束
     audio.onended = () => {
@@ -106,10 +109,15 @@ export const usePlayerStore = defineStore('player', () => {
         }
     };
     const musicDurationTime = ref(0); // 音频总时间
+    const historyStore = useHistoryStore();
+    const { addToHistory, saveHistoryToLocal } = historyStore;
     // 监听音频可以播放
-    audio.oncanplay = () => {
+    audio.oncanplay = async () => {
         // console.log('音频可以播放');
         musicDurationTime.value = audio.duration;
+        // 添加到历史记录并保存到本地
+        addToHistory(playlist.value, currentPlayIndex.value);
+        await saveHistoryToLocal();
     };
     const musicCurrentTime = ref(0); // 音频当前时间
     // 监听音频时间变化
@@ -123,6 +131,7 @@ export const usePlayerStore = defineStore('player', () => {
     };
     return {
         audio,
+        loadMusic,
         play,
         isPlaying,
         togglePlay,
