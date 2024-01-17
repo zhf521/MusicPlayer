@@ -23,8 +23,8 @@
         <el-table-column label="名称">
           <template #default="scope">
             <div style="display:flex; align-items: center;">
-              <SvgIcon style="width: 4vh;height: 4vh;"
-                :iconName="scope.row.type === 'directory' ? 'icon-folder' : 'icon-music-file'" />
+              <Component :is="(scope.row.type === 'directory') ? FolderClose : AudioFile" theme="multi-color" size="32"
+                :fill="['#333', '#2F88FF', '#FFF', '#43CCF8']" :strokeWidth="3" />
               <span style="flex:1;overflow:hidden;text-overflow: ellipsis;margin-left: 1vw;">{{ scope.row.basename
               }}</span>
             </div>
@@ -48,7 +48,7 @@ import { computed, onMounted, ref, watch } from 'vue';
 import { useGetDirectory } from '../hooks/useGetDirectory';
 import { ElMessage } from 'element-plus';
 import { useMusicLibraryStore } from '../stores/musicLibrary';
-import SvgIcon from '../components/SvgIcon.vue';
+import { FolderClose, AudioFile } from '@icon-park/vue-next';
 
 // 引入userSettingsStore中的变量和函数
 const userSettingsStore = useUserSettingsStore();
