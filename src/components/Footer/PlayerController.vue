@@ -1,12 +1,12 @@
 <template>
   <div class="buttons">
-    <Component :is="(loopMode === 0)?PlayCycle:PlayOnce" theme="filled" size="24" :strokeWidth="4" class="icon"
+    <Component :is="(loopMode === 0)?ListLoopIcon:OneLoopIcon" theme="filled" size="24" :strokeWidth="4" class="icon"
       :title="(loopMode === 0) ? '列表循环' : '单曲循环'" @click="toggleLoopMode" />
-    <GoStart theme="filled" size="24" :strokeWidth="4" class="icon" title="上一曲" @click="prevMusic" />
-    <Component :is="isPlaying?PauseOne:Play" theme="filled" size="28" fill="#333" :strokeWidth="4" class="icon"
+    <PrevIcon theme="filled" size="24" :strokeWidth="4" class="icon" title="上一曲" @click="prevMusic" />
+    <Component :is="isPlaying?PauseIcon:PlayIcon" theme="filled" size="28" fill="#333" :strokeWidth="4" class="icon"
       :title="isPlaying ? '暂停' : '播放'" @click="toggleMusicPlay" />
-    <GoEnd theme="filled" size="24" :strokeWidth="4" class="icon" title="下一曲" @click="nextMusic" />
-    <Component :is="(playMode === 0)?LoopOnce:ShuffleOne" theme="filled" size="24" :strokeWidth="4" class="icon"
+    <NextIcon theme="filled" size="24" :strokeWidth="4" class="icon" title="下一曲" @click="nextMusic" />
+    <Component :is="(playMode === 0)?OrderPlayIcon:RandomPlayIcon" theme="filled" size="24" :strokeWidth="4" class="icon"
       :title="(playMode === 0) ? '顺序播放' : '随机播放'" @click="togglePlayMode" />
   </div>
   <div class="progress">
@@ -24,7 +24,7 @@
 <script setup>
 import { usePlayerStore } from '../../stores/player';
 import { storeToRefs } from 'pinia';
-import { Play, PauseOne, GoStart, GoEnd, PlayOnce, PlayCycle, LoopOnce, ShuffleOne } from '@icon-park/vue-next';
+import { Play as PlayIcon, PauseOne as PauseIcon, GoStart as PrevIcon, GoEnd as NextIcon, PlayOnce as OneLoopIcon, PlayCycle as ListLoopIcon, LoopOnce as OrderPlayIcon, ShuffleOne as RandomPlayIcon } from '@icon-park/vue-next';
 import SliderBar from '../SliderBar.vue';
 import { computed, ref } from 'vue';
 import { formatTimeToString } from '../../utils/formatTime';
@@ -66,7 +66,7 @@ const handlePercentChange = (percent) => {
   isDragging.value = true;
   musicCurrentTimeOnDrag.value = musicDurationTime.value * percent;
 };
-// 小圆点松开时触发
+// 进度条松开时触发
 const handlePercentChangeEnd = (percent) => {
   // console.log('滑动条传递过来的百分比：', percent);
   // 设置音乐当前播放时间

@@ -29,13 +29,14 @@ watch(() => props.filledPercent, (newVal) => {
 // 点击滑动条
 const clickSlider = (event) => {
   const sliderBar = sliderBarRef.value.getBoundingClientRect();// sliderBar的位置
-  let clickPercent = `${((event.clientX - sliderBar.left) / sliderBar.width) * 100}%`;
+  const clickX = event.clientX - sliderBar.left;
+  const clickPercent = `${(clickX / sliderBar.width) * 100}%`;
   // console.log('点击对应的百分比：', clickPercent);
   moveFilledBar(clickPercent);
-  let percent = (event.clientX - sliderBar.left) / sliderBar.width;
+  let percent = clickX / sliderBar.width;
   emit('percent-change-end', percent);
 };
-// 鼠标按下小圆点
+// 鼠标按下进度条
 const handleMouseDown = (event) => {
   isDragging.value = true;  // 设置正在拖动的标志为true
   // 阻止默认行为，比如拖动时选中文字
@@ -60,7 +61,7 @@ const handleMouseMove = (event) => {
   moveFilledBar(newWidth);
   emit('percent-change', percent);
 };
-// 鼠标松开事件处理函数
+// 鼠标松开进度条处理函数
 const handleMouseUp = (event) => {
   // 移除正在拖动的标志
   isDragging.value = false;
