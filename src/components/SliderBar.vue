@@ -6,8 +6,7 @@
   </div>
 </template>
 <script setup>
-import { onMounted, ref, watch } from 'vue';
-import { defineEmits } from 'vue';
+import { ref, watch } from 'vue';
 
 const sliderBarRef = ref(null);// 滑块条对象
 const filledBarRef = ref(null);// 已填充条对象
