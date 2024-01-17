@@ -23,6 +23,7 @@ const { getMusicTagsByFilename } = musicLibraryStore;
 // 当前音乐的标签
 const currentMusicTags = computed(() => {
   const musicTags = getMusicTagsByFilename(currentPlayMusic.value);
+  // console.log('当前音乐的标签：', musicTags);
   return musicTags ? musicTags : {};
 });
 

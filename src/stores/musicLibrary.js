@@ -35,7 +35,7 @@ export const useMusicLibraryStore = defineStore('musicLibrary', () => {
     };
     // 添加标签到音乐
     const addTagsToMusic = (filename, tags) => {
-        console.log('标签信息：', tags);
+        // console.log('标签信息：', tags);
         const music = musicLibrary.value.find(
             (item) => item.filename === filename
         );
