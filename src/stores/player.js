@@ -1,7 +1,6 @@
 import { defineStore } from 'pinia';
 import { ref, computed } from 'vue';
 import { useGetFileURL } from '../hooks/useGetFileURL';
-import { randomShuffle } from '../utils/randomShuffle';
 import { useHistoryStore } from './history';
 
 export const usePlayerStore = defineStore('player', () => {
@@ -31,10 +30,10 @@ export const usePlayerStore = defineStore('player', () => {
         }
     };
     const playlist = ref([]); // 播放列表
-    const orderList = ref([]); // 顺序列表
+    // 设置播放列表
     const setPlaylist = (list) => {
         playlist.value = list;
-        orderList.value = list;
+        // console.log('设置完的播放列表：', playlist.value);
     };
     const currentPlayIndex = ref(-1); // 当前播放的索引
     // 设置当前播放的索引
@@ -48,14 +47,21 @@ export const usePlayerStore = defineStore('player', () => {
     });
     // 上一曲
     const prev = async () => {
-        let index = currentPlayIndex.value - 1;
-        if (index < 0) {
-            index = playlist.value.length - 1;
+        if (playMode.value === 0) {
+            let index = currentPlayIndex.value - 1;
+            if (index < 0) {
+                index = playlist.value.length - 1;
+            }
+            // console.log('点击上一曲获取到的索引：', index);
+            setCurrentPlayIndex(index);
+            await loadMusic(currentPlayMusic.value);
+            play();
+        } else {
+            let index = Math.floor(Math.random() * playlist.value.length);
+            setCurrentPlayIndex(index);
+            await loadMusic(currentPlayMusic.value);
+            play();
         }
-        // console.log('点击上一曲获取到的索引：', index);
-        setCurrentPlayIndex(index);
-        await loadMusic(currentPlayMusic.value);
-        play();
     };
     const loopMode = ref(0); // 循环模式
     // 设置循环模式
@@ -69,32 +75,20 @@ export const usePlayerStore = defineStore('player', () => {
     };
     // 下一曲
     const next = async () => {
-        let list = [];
-        // console.log('当前播放模式：', playMode.value);
-        switch (playMode.value) {
-            case 0:
-                list = orderList.value;
-                // console.log('顺序时的列表：', list);
-                break;
-            case 1:
-                list = randomShuffle(orderList.value);
-                // console.log('随机时的列表：', list);
-                break;
+        if (playMode.value === 0) {
+            let index = currentPlayIndex.value + 1;
+            if (index > playlist.value.length - 1) {
+                index = 0;
+            }
+            setCurrentPlayIndex(index);
+            await loadMusic(currentPlayMusic.value);
+            play();
+        } else {
+            let index = Math.floor(Math.random() * playlist.value.length);
+            setCurrentPlayIndex(index);
+            await loadMusic(currentPlayMusic.value);
+            play();
         }
-        let newIndex = list.findIndex(
-            (item) => item === currentPlayMusic.value
-        );
-        // console.log('当前的索引：', newIndex);
-        setCurrentPlayIndex(newIndex);
-        setPlaylist(list);
-        let index = currentPlayIndex.value + 1;
-        if (index > playlist.value.length - 1) {
-            index = 0;
-        }
-        // console.log('点击下一曲获取到的索引：', index);
-        setCurrentPlayIndex(index);
-        await loadMusic(currentPlayMusic.value);
-        play();
     };
     // 监听音频结束
     audio.onended = () => {

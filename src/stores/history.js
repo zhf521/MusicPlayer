@@ -27,7 +27,7 @@ export const useHistoryStore = defineStore('history', () => {
                 history.value.push({ playlist: playlist, index: index });
             }
         }
-        if (history.value.length > 20) {
+        if (history.value.length > 10) {
             history.value.shift();
         }
         // console.log('添加完的历史记录:', history.value);
