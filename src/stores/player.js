@@ -13,10 +13,10 @@ export const usePlayerStore = defineStore('player', () => {
         await getFileURL(filename);
         // console.log('文件URL:', fileURL.value);
         audio.src = fileURL.value;
-        audio.currentTime = 0;
     };
     // 播放音乐
     const play = () => {
+        audio.currentTime = 0;
         audio.play();
         isPlaying.value = true;
     };
