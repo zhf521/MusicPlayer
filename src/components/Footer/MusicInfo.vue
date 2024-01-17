@@ -1,5 +1,5 @@
 <template>
-  <img class="cover" :src="currentMusicTags && getMusicCover(currentMusicTags.picture) || '/defaultCover.png'" alt="音乐封面">
+  <img class="cover" :src="currentMusicTags && getMusicCover(currentMusicTags.cover) || '/defaultCover.png'" alt="音乐封面">
   <div class="details">
     <div class="title">{{ currentMusicTags && currentMusicTags.title || '欢迎使用！' }}</div>
     <div class="artist">{{ currentMusicTags && currentMusicTags.artist || '嘻嘻嘻' }}</div>
@@ -23,7 +23,7 @@ const { getMusicTagsByFilename } = musicLibraryStore;
 // 当前音乐的标签
 const currentMusicTags = computed(() => {
   const musicTags = getMusicTagsByFilename(currentPlayMusic.value);
-  return musicTags ? musicTags.tags : {};
+  return musicTags ? musicTags : {};
 });
 
 </script>

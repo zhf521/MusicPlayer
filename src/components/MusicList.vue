@@ -7,18 +7,18 @@
     <el-table-column label="标题">
       <template #default="scope">
         <div @dblclick="selectPlay(scope.$index)" style="overflow: hidden; text-overflow: ellipsis;">
-          {{ scope.row.tags && scope.row.tags.tags.title || scope.row.basename }}
+          {{ scope.row.tags && scope.row.tags.title || scope.row.basename }}
         </div>
       </template>
     </el-table-column>
     <el-table-column label="艺术家">
       <template #default="scope">
-        {{ scope.row.tags && scope.row.tags.tags.artist || '未知艺术家' }}
+        {{ scope.row.tags && scope.row.tags.artist || '未知艺术家' }}
       </template>
     </el-table-column>
     <el-table-column prop="album" label="专辑">
       <template #default="scope">
-        {{ scope.row.tags && scope.row.tags.tags.album || '未知专辑' }}
+        {{ scope.row.tags && scope.row.tags.album || '未知专辑' }}
       </template>
     </el-table-column>
   </el-table>
