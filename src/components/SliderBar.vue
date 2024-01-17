@@ -1,8 +1,9 @@
 <template>
-  <div class="slider-bar" ref="sliderBarRef" @click="clickSlider">
-    <div class="filled-bar" ref="filledBarRef">
+  <div class="slider-bar-container">
+    <div class="slider-bar" ref="sliderBarRef" @click="clickSlider" @mousedown="handleMouseDown">
+      <div class="filled-bar" ref="filledBarRef">
+      </div>
     </div>
-    <div class="dot" @mousedown="handleMouseDown"></div>
   </div>
 </template>
 <script setup>
@@ -54,7 +55,7 @@ const handleMouseMove = (event) => {
     percent = 0;
   } else if (event.clientX > sliderBar.left + sliderBar.width) { // 超出右边界
     newWidth = '100%'; // 将宽度设为100%
-    percent = 100;
+    percent = 1;
   }
   moveFilledBar(newWidth);
   emit('percent-change', percent);
@@ -72,37 +73,25 @@ const handleMouseUp = (event) => {
 };
 </script>
 <style scoped lang="less">
-.slider-bar {
+.slider-bar-container {
   width: 100%;
   height: 5px;
-  background-color: #cbcbcb;
-  cursor: pointer;
-  border-radius: 10px;
-  display: flex;
-  align-items: center;
 
-  .filled-bar {
+  .slider-bar {
+    width: 100%;
     height: 100%;
-    background-color: #000;
+    background-color: #cbcbcb;
     cursor: pointer;
-    border-radius: 10px;
-  }
+    border-radius: 8px;
+    overflow: hidden;
 
-  .dot {
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    margin-left: -5px;
-    background-color: #000;
-    opacity: 0;
-
-    &:active {
-      opacity: 1;
+    .filled-bar {
+      height: 100%;
+      width: 0%;
+      background-color: #000;
+      cursor: pointer;
+      border-radius: 8px;
     }
-  }
-
-  &:hover .dot {
-    opacity: 1;
   }
 }
 </style>

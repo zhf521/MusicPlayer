@@ -19,8 +19,8 @@ import PlayerTool from './PlayerTool.vue';
 </script>
 <style scoped lang="less">
 .normal {
-  height: 100%;
   width: 100%;
+  height: 100%;
   display: flex;
 
   .music-info {
@@ -41,8 +41,8 @@ import PlayerTool from './PlayerTool.vue';
     width: 30%;
     padding: 0 10px;
     display: flex;
-    justify-content: center;
     align-items: center;
+    justify-content: space-between;
   }
 }
 

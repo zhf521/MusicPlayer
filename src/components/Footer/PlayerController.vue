@@ -94,6 +94,7 @@ const handlePercentChangeEnd = (percent) => {
 
 .progress {
   margin-top: 5px;
+  width: 100%;
 
   .time {
     display: flex;
