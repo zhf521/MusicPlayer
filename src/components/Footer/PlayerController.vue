@@ -29,6 +29,7 @@ import SliderBar from '../SliderBar.vue';
 import { computed, ref } from 'vue';
 import { formatTimeToString } from '../../utils/formatTime';
 
+// 引入playerStore中的变量
 const playerStore = usePlayerStore();
 const { isPlaying, loopMode, playMode, musicDurationTime, musicCurrentTime, } = storeToRefs(playerStore);
 const { togglePlay, prev, setLoopMode, setPlayMode, next, setCurrentTime } = playerStore;
@@ -58,8 +59,8 @@ const nextMusic = () => {
 const playProgress = computed(() => {
   return `${(musicCurrentTime.value / musicDurationTime.value) * 100}%`;
 });
-const musicCurrentTimeOnDrag = ref(0);
-const isDragging = ref(false);
+const musicCurrentTimeOnDrag = ref(0);//鼠标拖动时的当前播放时间
+const isDragging = ref(false);//鼠标是否在拖动
 // 进度条运动时触发
 const handlePercentChange = (percent) => {
   isDragging.value = true;

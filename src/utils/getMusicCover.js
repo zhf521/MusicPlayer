@@ -8,6 +8,6 @@ export function getMusicCover(TagsPicture) {
         }
         return `data:${data.format};base64,${window.btoa(base64String)}`;
     } else {
-        return '/default-cover.jpg';
+        return '/defaultCover.png';
     }
 }

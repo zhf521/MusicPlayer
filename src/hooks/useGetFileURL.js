@@ -1,8 +1,9 @@
-// import { useMusicLibraryStore } from '@/stores/musicLibrary';
-import { useUserSettingsStore } from '@/stores/userSettings';
+import { useMusicLibraryStore } from '../stores/musicLibrary';
+import { useUserSettingsStore } from '../stores/userSettings';
 import { storeToRefs } from 'pinia';
 import { ref } from 'vue';
 import { createClient } from 'webdav';
+import { getTags } from '../utils/getTags';
 
 export function useGetFileURL() {
     // 文件URL
@@ -10,9 +11,9 @@ export function useGetFileURL() {
     // 引入userSettingsStore中的变量
     const userSettingsStore = useUserSettingsStore();
     const { userSettings } = storeToRefs(userSettingsStore);
-    // // 引入musicLibraryStore中的变量
-    // const musicLibraryStore = useMusicLibraryStore();
-    // const { addTagToMusic } = musicLibraryStore;
+    // 引入musicLibraryStore中的变量
+    const musicLibraryStore = useMusicLibraryStore();
+    const { addTagsToMusic, saveMusicLibraryToLocal } = musicLibraryStore;
     // 定义获取文件URL的函数
     const getFileURL = async (filename) => {
         // 获取webDav设置
@@ -24,8 +25,9 @@ export function useGetFileURL() {
             }).getFileContents(filename);
             const blob = new Blob([res]);
             fileURL.value = URL.createObjectURL(blob);
-            // const tag = await getTag(blob);
-            // addTagToMusic(filename, tag);
+            const tags = await getTags(blob);
+            addTagsToMusic(filename, tags);
+            await saveMusicLibraryToLocal();
         } catch (error) {
             console.error('获取文件URL失败', error);
         }
