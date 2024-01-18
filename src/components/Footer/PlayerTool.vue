@@ -8,8 +8,8 @@
 </template>
 <script setup>
 import { MusicList as MusicListIcon } from '@icon-park/vue-next';
-import PlayList from '../PlayList.vue';
-import { onMounted, ref } from 'vue';
+import PlayList from './PlayList.vue';
+import { ref } from 'vue';
 import { usePlayerStore } from '../../stores/player';
 import { storeToRefs } from 'pinia';
 

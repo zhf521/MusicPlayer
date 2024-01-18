@@ -9,24 +9,11 @@
 <script setup>
 import { storeToRefs } from 'pinia';
 import { usePlayerStore } from '../../stores/player';
-import { useMusicLibraryStore } from '../../stores/musicLibrary';
-import { computed } from 'vue';
 
 // 引入playerStore中的变量和方法
 const playerStore = usePlayerStore();
-const { currentPlayMusic } = storeToRefs(playerStore);
+const { currentMusicTags } = storeToRefs(playerStore);
 const { setPure } = playerStore;
-
-// 引入musicLibraryStore中的变量和方法
-const musicLibraryStore = useMusicLibraryStore();
-const { getMusicTagsByFilename } = musicLibraryStore;
-
-// 当前音乐的标签
-const currentMusicTags = computed(() => {
-  const musicTags = getMusicTagsByFilename(currentPlayMusic.value);
-  // console.log('当前音乐的标签：', musicTags);
-  return musicTags ? musicTags : {};
-});
 
 // 打开沉浸模式
 const openPure = () => {

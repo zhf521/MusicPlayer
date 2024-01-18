@@ -5,13 +5,16 @@
   <div class="music-info">
     <MusicInfoPure />
   </div>
-  <div class="lyrics"></div>
+  <div class="lyrics">
+    <Lyrics />
+  </div>
   <div class="right-space"></div>
 </template>
 <script setup>
 import { Down as DownIcon } from '@icon-park/vue-next';
 import { usePlayerStore } from '../../stores/player';
 import MusicInfoPure from './MusicInfoPure.vue';
+import Lyrics from './Lyrics.vue';
 
 // 引入playerStore中的方法
 const playerStore = usePlayerStore();
@@ -21,7 +24,7 @@ const closePure = () => {
   setPure(false);
 };
 </script>
-<style scoped>
+<style scoped lang="less">
 .left-space {
   width: 10%;
   display: flex;
@@ -48,7 +51,7 @@ const closePure = () => {
 
 .lyrics {
   width: 40%;
-  background-color: pink;
+  height: 100%;
 }
 
 .right-space {

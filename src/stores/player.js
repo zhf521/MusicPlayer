@@ -2,6 +2,8 @@ import { defineStore } from 'pinia';
 import { ref, computed } from 'vue';
 import { useGetFileURL } from '../hooks/useGetFileURL';
 import { useHistoryStore } from './history';
+import Lyric from 'lrc-file-parser';
+import { useMusicLibraryStore } from './musicLibrary';
 
 export const usePlayerStore = defineStore('player', () => {
     const { fileURL, getFileURL } = useGetFileURL();
@@ -106,10 +108,18 @@ export const usePlayerStore = defineStore('player', () => {
     // 引入historyStore中的方法
     const historyStore = useHistoryStore();
     const { addToHistory, saveHistoryToLocal } = historyStore;
+    const currentMusicTags = ref({}); // 音乐标签
+    // 引入musicLibraryStore中的方法
+    const musicLibraryStore = useMusicLibraryStore();
+    const { getMusicTagsByFilename } = musicLibraryStore;
     // 监听音频可以播放
     audio.oncanplay = async () => {
         // console.log('音频可以播放');
         musicDurationTime.value = audio.duration;
+        // 获取音乐标签
+        currentMusicTags.value = getMusicTagsByFilename(currentPlayMusic.value);
+        // 设置歌词
+        lrc.setLyric(currentMusicTags.value.lyrics.lyrics);
         // 添加到历史记录并保存到本地
         addToHistory(playlist.value, currentPlayIndex.value);
         await saveHistoryToLocal();
@@ -119,6 +129,11 @@ export const usePlayerStore = defineStore('player', () => {
     audio.ontimeupdate = () => {
         // console.log('时间变化', audio.currentTime);
         musicCurrentTime.value = audio.currentTime;
+        lrc.play(audio.currentTime * 1000);
+    };
+    // 监听音频暂停
+    audio.onpause = () => {
+        lrc.pause();
     };
     // 设置当前播放时间
     const setCurrentTime = (time) => {
@@ -129,6 +144,26 @@ export const usePlayerStore = defineStore('player', () => {
     const setPure = (state) => {
         isPure.value = state;
     };
+    const currentLrcIndex = ref(0); // 当前歌词索引
+    const lrcLines = ref([]); // 歌词
+    // 歌词解析器
+    let lrc = new Lyric({
+        onPlay: function (line, text) {
+            // line：当前播放行的索引，text：当前播放行的歌词
+            currentLrcIndex.value = line;
+        },
+        onSetLyric: function (lines) {
+            // lines：歌词
+            lrcLines.value = lines;
+        },
+        // 偏移时间，默认为0ms
+        offset: 150,
+        // 播放速度，默认为1
+        playbackRate: 1,
+        // 是否去除空行：默认为true
+        isRemoveBlankLine: true,
+    });
+
     return {
         audio,
         loadMusic,
@@ -147,9 +182,13 @@ export const usePlayerStore = defineStore('player', () => {
         setPlayMode,
         next,
         musicDurationTime,
+        currentMusicTags,
         musicCurrentTime,
         setCurrentTime,
         isPure,
         setPure,
+        currentLrcIndex,
+        lrcLines,
+        lrc,
     };
 });
