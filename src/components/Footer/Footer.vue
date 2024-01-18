@@ -1,7 +1,7 @@
 <template>
   <div class="normal">
     <div class="music-info">
-      <MusicInfo />
+      <MusicInfoNormal />
     </div>
     <div class="player-controller">
       <PlayerController />
@@ -10,12 +10,21 @@
       <PlayerTool />
     </div>
   </div>
-  <div class="immersion" v-show="false">沉浸模式</div>
+  <div class="pure" v-show="isPure">
+    <Pure />
+  </div>
 </template>
 <script setup>
-import MusicInfo from './MusicInfo.vue';
+import { storeToRefs } from 'pinia';
+import { usePlayerStore } from '../../stores/player';
+import MusicInfoNormal from './MusicInfoNormal.vue';
 import PlayerController from './PlayerController.vue';
 import PlayerTool from './PlayerTool.vue';
+import Pure from './Pure.vue';
+
+// 引入playerStore中的变量和方法
+const playerStore = usePlayerStore();
+const { isPure } = storeToRefs(playerStore);
 </script>
 <style scoped lang="less">
 .normal {
@@ -46,12 +55,14 @@ import PlayerTool from './PlayerTool.vue';
   }
 }
 
-.immersion {
+.pure {
   position: fixed;
   top: 0;
   left: 0;
   width: 100vw;
-  height: 100vh;
+  height: calc(100vh - 105px);
   z-index: 9999;
+  background-color: #fff;
+  display: flex;
 }
 </style>

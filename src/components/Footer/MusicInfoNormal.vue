@@ -1,5 +1,6 @@
 <template>
-  <img class="cover" :src="currentMusicTags && currentMusicTags.cover || '/defaultCover.png'" alt="音乐封面">
+  <img class="cover" :src="currentMusicTags && currentMusicTags.cover || '/defaultCover.png'" alt="音乐封面"
+    @click="openPure">
   <div class="details">
     <div class="title">{{ currentMusicTags && currentMusicTags.title || '欢迎使用！' }}</div>
     <div class="artist">{{ currentMusicTags && currentMusicTags.artist || '嘻嘻嘻' }}</div>
@@ -11,9 +12,10 @@ import { usePlayerStore } from '../../stores/player';
 import { useMusicLibraryStore } from '../../stores/musicLibrary';
 import { computed } from 'vue';
 
-// 引入playerStore中的变量
+// 引入playerStore中的变量和方法
 const playerStore = usePlayerStore();
 const { currentPlayMusic } = storeToRefs(playerStore);
+const { setPure } = playerStore;
 
 // 引入musicLibraryStore中的变量和方法
 const musicLibraryStore = useMusicLibraryStore();
@@ -25,6 +27,11 @@ const currentMusicTags = computed(() => {
   // console.log('当前音乐的标签：', musicTags);
   return musicTags ? musicTags : {};
 });
+
+// 打开沉浸模式
+const openPure = () => {
+  setPure(true);
+}
 
 </script>
 <style scoped>

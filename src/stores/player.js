@@ -103,6 +103,7 @@ export const usePlayerStore = defineStore('player', () => {
         }
     };
     const musicDurationTime = ref(0); // 音频总时间
+    // 引入historyStore中的方法
     const historyStore = useHistoryStore();
     const { addToHistory, saveHistoryToLocal } = historyStore;
     // 监听音频可以播放
@@ -122,6 +123,11 @@ export const usePlayerStore = defineStore('player', () => {
     // 设置当前播放时间
     const setCurrentTime = (time) => {
         audio.currentTime = time;
+    };
+    const isPure = ref(false); // 是否开启纯净模式
+    // 设置纯净模式
+    const setPure = (state) => {
+        isPure.value = state;
     };
     return {
         audio,
@@ -143,5 +149,7 @@ export const usePlayerStore = defineStore('player', () => {
         musicDurationTime,
         musicCurrentTime,
         setCurrentTime,
+        isPure,
+        setPure,
     };
 });
