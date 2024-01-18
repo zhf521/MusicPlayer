@@ -123,12 +123,6 @@ export const usePlayerStore = defineStore('player', () => {
     const setCurrentTime = (time) => {
         audio.currentTime = time;
     };
-    const musicCurrentVolume = ref(audio.volume); // 音频当前音量
-    // 设置音量
-    const setVolume = (volume) => {
-        audio.volume = volume;
-        musicCurrentVolume.value = volume;
-    };
     return {
         audio,
         loadMusic,
@@ -149,7 +143,5 @@ export const usePlayerStore = defineStore('player', () => {
         musicDurationTime,
         musicCurrentTime,
         setCurrentTime,
-        musicCurrentVolume,
-        setVolume,
     };
 });

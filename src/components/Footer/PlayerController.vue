@@ -84,7 +84,6 @@ const handlePercentChangeEnd = (percent) => {
 
   .icon {
     cursor: pointer;
-    transition: transform 0.3s ease;
 
     &:hover {
       color: green;
