@@ -1,5 +1,5 @@
 <template>
-  <img class="cover" :src="currentMusicTags && getMusicCover(currentMusicTags.cover) || '/defaultCover.png'" alt="音乐封面">
+  <img class="cover" :src="currentMusicTags && currentMusicTags.cover || '/defaultCover.png'" alt="音乐封面">
   <div class="details">
     <div class="title">{{ currentMusicTags && currentMusicTags.title || '欢迎使用！' }}</div>
     <div class="artist">{{ currentMusicTags && currentMusicTags.artist || '嘻嘻嘻' }}</div>
@@ -10,7 +10,6 @@ import { storeToRefs } from 'pinia';
 import { usePlayerStore } from '../../stores/player';
 import { useMusicLibraryStore } from '../../stores/musicLibrary';
 import { computed } from 'vue';
-import { getMusicCover } from '../../utils/getMusicCover';
 
 // 引入playerStore中的变量
 const playerStore = usePlayerStore();

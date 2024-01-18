@@ -1,6 +1,7 @@
 import localforage from 'localforage';
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
+import { getMusicCover } from '../utils/getMusicCover';
 
 export const useMusicLibraryStore = defineStore('musicLibrary', () => {
     // 音乐库
@@ -40,11 +41,12 @@ export const useMusicLibraryStore = defineStore('musicLibrary', () => {
             (item) => item.filename === filename
         );
         if (music && !music.tags) {
+            console.log('添加标签');
             music.tags = {
                 title: tags.tags.title,
                 artist: tags.tags.artist,
                 album: tags.tags.album,
-                cover: tags.tags.picture,
+                cover: getMusicCover(tags.tags.picture),
                 lyrics: tags.tags.lyrics,
             };
         }
