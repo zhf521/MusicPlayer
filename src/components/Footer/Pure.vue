@@ -51,7 +51,7 @@ const closePure = () => {
 
 .lyrics {
   width: 40%;
-  height: 100%;
+  margin: 40px 0;
 }
 
 .right-space {

@@ -10,7 +10,7 @@
       <PlayerTool />
     </div>
   </div>
-  <div class="pure" v-show="isPure">
+  <div class="pure" v-if="isPure">
     <Pure />
   </div>
 </template>

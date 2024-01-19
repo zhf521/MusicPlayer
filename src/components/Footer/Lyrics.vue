@@ -1,52 +1,101 @@
 <template>
-  <div class="lyrics-container">
-    <div class="space"></div>
-    <div v-for="(lrcItem, index) in lrcLines" :key="index"
-      :class="{ 'lyrics-text': true, 'lrcItem-active': index === currentLrcIndex }">{{ lrcItem.text }}</div>
-    <div class="space"></div>
+  <div class="lyrics-container" ref="lyricsContainerRef">
+    <div class="lyrics-list" ref="lyricsListRef">
+      <div class="space" ref="spaceRef"></div>
+      <div v-for="(lrcItem, index) in lrcLines" :key="index"
+        :class="{ 'lyrics-text': true, 'lrcItem-active': index === currentLrcIndex }">
+        {{ lrcItem.text }}
+      </div>
+      <div class="space"></div>
+    </div>
   </div>
 </template>
 <script setup>
 import { storeToRefs } from 'pinia';
 import { usePlayerStore } from '../../stores/player';
+import { computed, ref, watch } from 'vue';
 
 // 引入playerStore中的变量
 const playerStore = usePlayerStore();
 const { lrcLines, currentLrcIndex } = storeToRefs(playerStore);
 
+// 歌词容器
+const lyricsContainerRef = ref(null);
+// 歌词容器高度
+const lyricsContainerHeight = computed(() => {
+  return lyricsContainerRef.value ? lyricsContainerRef.value.clientHeight : 0;
+});
+// 空白区域
+const spaceRef = ref(null);
+const spaceHeight = computed(() => {
+  return spaceRef.value ? spaceRef.value.clientHeight : 0;
+});
+// 歌词列表
+const lyricsListRef = ref(null);
+// 歌词文字高度数组
+const lyricsTextHeightArray = computed(() => {
+  const array = [];
+  if (lyricsListRef.value) {
+    const lyricsTextArray = lyricsListRef.value.querySelectorAll('.lyrics-text');
+    for (let i = 0; i < lyricsTextArray.length; i++) {
+      array.push({ index: i, height: lyricsTextArray[i].clientHeight });
+    }
+    return array;
+  }
+});
+watch(currentLrcIndex, () => {
+  setOffset();
+});
+
+const setOffset = () => {
+  let topHeight = spaceHeight.value;
+  for (let i = 0; i < currentLrcIndex.value; i++) {
+    topHeight += lyricsTextHeightArray.value[i].height;
+  }
+  let currentHeight = lyricsTextHeightArray.value[currentLrcIndex.value].height / 2;
+  let offset = topHeight + currentHeight - lyricsContainerHeight.value / 2;
+  lyricsListRef.value.style.transform = `translateY(-${offset}px)`;
+};
 </script>
 <style scoped lang="less">
 .lyrics-container {
   width: 100%;
   height: 100%;
   overflow-x: hidden;
-  overflow-y: auto;
+  overflow-y: hidden;
   scrollbar-width: none;
+  // background-color: green;
 
   &::-webkit-scrollbar {
-    display: none;
+    // display: none;
   }
 
-  .space {
-    height: 50%;
-  }
+  .lyrics-list {
+    width: 100%;
+    height: 100%;
+    transition: 0.3s;
 
-  .lyrics-text {
-    font-size: 30px;
-    font-weight: 500;
-    text-align: center;
-    color: #000;
-    border-radius: 10px;
-    padding: 20px;
-    cursor: pointer;
-
-    &:hover {
-      background-color: #f5f5f5;
+    .space {
+      height: 50%;
     }
-  }
 
-  .lrcItem-active {
-    color: green;
+    .lyrics-text {
+      font-size: 30px;
+      font-weight: 500;
+      color: #000;
+      border-radius: 10px;
+      padding: 20px;
+      cursor: pointer;
+      transition: 0.3s;
+
+      &:hover {
+        background-color: #f5f5f5;
+      }
+
+      &.lrcItem-active {
+        color: green;
+      }
+    }
   }
 }
 </style>
