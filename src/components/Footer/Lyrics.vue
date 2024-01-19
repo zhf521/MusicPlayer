@@ -62,7 +62,7 @@ const setOffset = () => {
   width: 100%;
   height: 100%;
   overflow-x: hidden;
-  overflow-y: hidden;
+  overflow-y: auto;
   scrollbar-width: none;
   // background-color: green;
 
