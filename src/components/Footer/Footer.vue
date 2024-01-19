@@ -10,7 +10,7 @@
       <PlayerTool />
     </div>
   </div>
-  <div class="pure" v-if="isPure">
+  <div class="pure">
     <Pure />
   </div>
 </template>
@@ -62,6 +62,7 @@ const { isPure } = storeToRefs(playerStore);
   width: 100vw;
   height: calc(100vh - 105px);
   z-index: 9999;
+  //  transform:scale(0);
   background-color: #fff;
   display: flex;
 }
