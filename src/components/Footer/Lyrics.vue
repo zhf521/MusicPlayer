@@ -54,7 +54,7 @@ const setOffset = () => {
   }
   let currentHeight = lyricsTextHeightArray.value[currentLrcIndex.value].height / 2;
   let offset = topHeight + currentHeight - lyricsContainerHeight.value / 2;
-  lyricsListRef.value.style.transform = `translateY(-${offset}px)`;
+  lyricsContainerRef.value.scrollTop = offset;
 };
 </script>
 <style scoped lang="less">
