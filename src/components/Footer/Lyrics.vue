@@ -42,6 +42,16 @@ watch(lrcLines, () => {
   });
 });
 
+onMounted(() => {
+  lyricsContainerRef.value.addEventListener('scroll', () => {
+    isScrolling.value = true;
+    clearTimeout(scrollTimer.value);
+    scrollTimer.value = setTimeout(() => {
+      isScrolling.value = false;
+    }, 3000);
+  });
+});
+
 // onMounted(() => {
 //   nextTick(() => {
 //     // setTimeout(() => {
@@ -66,8 +76,13 @@ const spaceRef = ref(null);
 const spaceHeight = computed(() => {
   return spaceRef.value ? spaceRef.value.clientHeight : 0;
 });
+let isScrolling = ref(false);
+let scrollTimer = ref(null);
 // 滚动
 const setOffset = () => {
+  if (isScrolling.value) {
+    return;
+  }
   let topHeight = spaceHeight.value;
   for (let i = 0; i < currentLrcIndex.value; i++) {
     topHeight += lyricsTextHeightArray.value[i].height;
