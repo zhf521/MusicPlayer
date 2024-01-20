@@ -114,7 +114,14 @@ watch(showTranslate, () => {
   overflow-x: hidden;
   overflow-y: auto;
   scrollbar-width: none;
-  scroll-behavior: smooth;
+  // scroll-behavior: smooth;
+  mask-image: linear-gradient(to bottom,
+      rgba(255, 255, 255, 0) 0,
+      rgba(255, 255, 255, 0.6) 15%,
+      rgba(255, 255, 255, 1) 25%,
+      rgba(255, 255, 255, 1) 75%,
+      rgba(255, 255, 255, 0.6) 85%,
+      rgba(255, 255, 255, 0) 100%);
 
   &::-webkit-scrollbar {
     display: none;
