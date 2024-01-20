@@ -107,7 +107,7 @@ const jumpToTime = (time) => {
   // scroll-behavior: smooth;
 
   &::-webkit-scrollbar {
-    // display: none;
+    display: none;
   }
 
   .lyrics-list {
