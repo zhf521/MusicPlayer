@@ -4,16 +4,22 @@
       <div class="space" ref="spaceRef"></div>
       <div v-for="(lrcItem, index) in lrcLines" :key="index"
         :class="{ 'lyrics-text': true, 'lrcItem-active': index === currentLrcIndex }" @click="jumpToTime(lrcItem.time)">
-        {{ lrcItem.text }}
+        <div>{{ lrcItem.text }}</div>
+        <div v-show="showTranslate">{{ lrcItem.extendedLyrics[0] }}</div>
       </div>
       <div class="space"></div>
     </div>
+  </div>
+  <div class="translateButton">
+    <TranslateIcon v-show="lrcLines[0] && lrcLines[0].extendedLyrics[0]" theme="outline" size="32"
+      @click="toggleShowTranslate" />
   </div>
 </template>
 <script setup>
 import { storeToRefs } from 'pinia';
 import { usePlayerStore } from '../../stores/player';
 import { computed, nextTick, onMounted, onUpdated, ref, watch } from 'vue';
+import { Translate as TranslateIcon } from '@icon-park/vue-next';
 
 // 引入playerStore中的变量
 const playerStore = usePlayerStore();
@@ -35,7 +41,7 @@ const getLyricsTextHeightArray = () => {
 };
 // 监听当前歌词变化
 watch(lrcLines, () => {
-  console.log('lrcLines更新,lrcLines:', lrcLines.value);
+  // console.log('lrcLines更新,lrcLines:', lrcLines.value);
   nextTick(() => {
     getLyricsTextHeightArray();
     // console.log('lrcLines更新,lyricsTextHeightArray:', lyricsTextHeightArray.value);
@@ -87,6 +93,19 @@ const jumpToTime = (time) => {
   // console.log('跳转到对应时间：', time);
   setCurrentTime(time / 1000);
 };
+// 显示翻译
+const showTranslate = ref(false);
+const toggleShowTranslate = () => {
+  showTranslate.value = !showTranslate.value;
+};
+// 监听翻译显示
+watch(showTranslate, () => {
+  console.log('翻译显示,lrcLines:', lrcLines.value);
+  nextTick(() => {
+    getLyricsTextHeightArray();
+    // console.log('lrcLines更新,lyricsTextHeightArray:', lyricsTextHeightArray.value);
+  });
+});
 </script>
 <style scoped lang="less">
 .lyrics-container {
@@ -95,7 +114,7 @@ const jumpToTime = (time) => {
   overflow-x: hidden;
   overflow-y: auto;
   scrollbar-width: none;
-  // scroll-behavior: smooth;
+  scroll-behavior: smooth;
 
   &::-webkit-scrollbar {
     display: none;
@@ -122,9 +141,15 @@ const jumpToTime = (time) => {
       }
 
       &.lrcItem-active {
+        font-weight: 700;
         color: green;
       }
     }
   }
+}
+
+.translateButton {
+  display: flex;
+  flex-direction: row-reverse;
 }
 </style>
