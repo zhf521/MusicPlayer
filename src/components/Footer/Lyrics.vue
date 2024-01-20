@@ -23,67 +23,58 @@ const { lrcLines, currentLrcIndex, musicCurrentTime } = storeToRefs(playerStore)
 const lyricsListRef = ref(null);
 // 歌词文字高度数组
 const lyricsTextHeightArray = ref([]);
-watch(lrcLines, () => {
-  // console.log('lrcLines更新', lrcLines.value);
+// 获取歌词文字高度数组
+const getLyricsTextHeightArray = () => {
   const lyricsTextArray = lyricsListRef.value.querySelectorAll('.lyrics-text');
   const array = [];
   for (let i = 0; i < lyricsTextArray.length; i++) {
     array.push({ index: i, height: lyricsTextArray[i].clientHeight });
   }
   lyricsTextHeightArray.value = array;
-  console.log('lrcLines更新,lyricsTextHeightArray:', lyricsTextHeightArray.value);
-});
-
-onMounted(() => {
+};
+// 监听当前歌词变化
+watch(lrcLines, () => {
+  // console.log('lrcLines更新', lrcLines.value);
   nextTick(() => {
-
-
-
-  setTimeout(() => {
-    const lyricsTextArray = lyricsListRef.value.querySelectorAll('.lyrics-text');
-    console.log('mounted', lyricsTextArray);
-    const array = [];
-    for (let i = 0; i < lyricsTextArray.length; i++) {
-      array.push({ index: i, height: lyricsTextArray[i].clientHeight });
-    }
-    lyricsTextHeightArray.value = array;
-    console.log('mounted:', lyricsTextHeightArray.value);
-  }, 0);
+    getLyricsTextHeightArray();
+    console.log('lrcLines更新,lyricsTextHeightArray:', lyricsTextHeightArray.value);
   });
-
 });
 
-// onUpdated(() => {
-//   console.log('更新');
-//   console.log('lrcLines', lrcLines.value);
+// onMounted(() => {
+//   nextTick(() => {
+//     // setTimeout(() => {
+//       getLyricsTextHeightArray();
+//       console.log('组件挂载,lyricsTextHeightArray:', lyricsTextHeightArray.value);
+//     // }, 100);
+//   });
 // });
+watch(musicCurrentTime, () => {
+  setOffset();
+});
 
-// // 歌词容器
-// const lyricsContainerRef = ref(null);
-// // 歌词容器高度
-// const lyricsContainerHeight = computed(() => {
-//   return lyricsContainerRef.value ? lyricsContainerRef.value.clientHeight : 0;
-// });
-// // 空白区域
-// const spaceRef = ref(null);
-// const spaceHeight = computed(() => {
-//   return spaceRef.value ? spaceRef.value.clientHeight : 0;
-// });
-
-
-// watch([musicCurrentTime, lyricsListRef], () => {
-//   setOffset();
-// });
-
-// const setOffset = () => {
-//   let topHeight = spaceHeight.value;
-//   for (let i = 0; i < currentLrcIndex.value; i++) {
-//     topHeight += lyricsTextHeightArray.value[i].height;
-//   }
-//   let currentHeight = lyricsTextHeightArray.value[currentLrcIndex.value].height / 2;
-//   let offset = topHeight + currentHeight - lyricsContainerHeight.value / 2;
-//   lyricsContainerRef.value.scrollTop = offset;
-// };
+// 歌词容器
+const lyricsContainerRef = ref(null);
+// 歌词容器高度
+const lyricsContainerHeight = computed(() => {
+  return lyricsContainerRef.value ? lyricsContainerRef.value.clientHeight : 0;
+});
+// 空白区域
+const spaceRef = ref(null);
+// 空白区域高度
+const spaceHeight = computed(() => {
+  return spaceRef.value ? spaceRef.value.clientHeight : 0;
+});
+// 滚动
+const setOffset = () => {
+  let topHeight = spaceHeight.value;
+  for (let i = 0; i < currentLrcIndex.value; i++) {
+    topHeight += lyricsTextHeightArray.value[i].height;
+  }
+  let currentHeight = lyricsTextHeightArray.value[currentLrcIndex.value].height / 2;
+  let offset = topHeight + currentHeight - lyricsContainerHeight.value / 2;
+  lyricsContainerRef.value.scrollTop = offset;
+};
 </script>
 <style scoped lang="less">
 .lyrics-container {
@@ -92,8 +83,7 @@ onMounted(() => {
   overflow-x: hidden;
   overflow-y: auto;
   scrollbar-width: none;
-
-  // background-color: green;
+  // scroll-behavior: smooth;
 
   &::-webkit-scrollbar {
     // display: none;
@@ -102,7 +92,6 @@ onMounted(() => {
   .lyrics-list {
     width: 100%;
     height: 100%;
-    transition: 0.3s;
 
     .space {
       height: 50%;
@@ -115,7 +104,6 @@ onMounted(() => {
       border-radius: 10px;
       padding: 20px;
       cursor: pointer;
-      transition: 0.3s;
 
       &:hover {
         background-color: #f5f5f5;

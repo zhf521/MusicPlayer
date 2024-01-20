@@ -10,7 +10,7 @@
       <PlayerTool />
     </div>
   </div>
-  <div class="pure">
+  <div :class="{ 'pure': true, 'show': isPure }">
     <Pure />
   </div>
 </template>
@@ -31,6 +31,9 @@ const { isPure } = storeToRefs(playerStore);
   width: 100%;
   height: 100%;
   display: flex;
+  background-color: #fff;
+  z-index: 9999;
+  position: relative;
 
   .music-info {
     display: flex;
@@ -57,13 +60,18 @@ const { isPure } = storeToRefs(playerStore);
 
 .pure {
   position: fixed;
-  top: 0;
   left: 0;
+  top: calc(100vh - 105px);
   width: 100vw;
   height: calc(100vh - 105px);
-  z-index: 9999;
-  //  transform:scale(0);
+  z-index: 9998;
   background-color: #fff;
   display: flex;
+  transition: top 0.5s ease;
+
+  &.show {
+    top: 0;
+    transition: top 0.5s ease;
+  }
 }
 </style>
