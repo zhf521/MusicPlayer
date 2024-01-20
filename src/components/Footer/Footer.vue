@@ -30,6 +30,7 @@ const { isPure } = storeToRefs(playerStore);
 .normal {
   width: 100%;
   height: 100%;
+  border-top: 1px solid var(--el-border-color);
   display: flex;
   background-color: #fff;
   z-index: 9999;
@@ -67,11 +68,11 @@ const { isPure } = storeToRefs(playerStore);
   z-index: 9998;
   background-color: #fff;
   display: flex;
-  transition: top 0.5s ease;
+  transition: top 0.3s ease;
 
   &.show {
     top: 0;
-    transition: top 0.5s ease;
+    transition: top 0.3 ease;
   }
 }
 </style>

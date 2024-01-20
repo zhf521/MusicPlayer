@@ -33,7 +33,6 @@ import Footer from '../components/Footer/Footer.vue';
   .footer {
     width: 100%;
     height: 105px;
-    border-top: 1px solid var(--el-border-color);
   }
 }
 </style>
