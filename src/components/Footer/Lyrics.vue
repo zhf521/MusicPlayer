@@ -3,7 +3,7 @@
     <div class="lyrics-list" ref="lyricsListRef">
       <div class="space" ref="spaceRef"></div>
       <div v-for="(lrcItem, index) in lrcLines" :key="index"
-        :class="{ 'lyrics-text': true, 'lrcItem-active': index === currentLrcIndex }">
+        :class="{ 'lyrics-text': true, 'lrcItem-active': index === currentLrcIndex }" @click="jumpToTime(lrcItem.time)">
         {{ lrcItem.text }}
       </div>
       <div class="space"></div>
@@ -18,6 +18,7 @@ import { computed, nextTick, onMounted, onUpdated, ref, watch } from 'vue';
 // 引入playerStore中的变量
 const playerStore = usePlayerStore();
 const { lrcLines, currentLrcIndex, musicCurrentTime } = storeToRefs(playerStore);
+const { setCurrentTime } = playerStore;
 
 // 歌词列表
 const lyricsListRef = ref(null);
@@ -34,7 +35,7 @@ const getLyricsTextHeightArray = () => {
 };
 // 监听当前歌词变化
 watch(lrcLines, () => {
-  // console.log('lrcLines更新', lrcLines.value);
+  console.log('lrcLines更新,lrcLines:', lrcLines.value);
   nextTick(() => {
     getLyricsTextHeightArray();
     console.log('lrcLines更新,lyricsTextHeightArray:', lyricsTextHeightArray.value);
@@ -74,6 +75,11 @@ const setOffset = () => {
   let currentHeight = lyricsTextHeightArray.value[currentLrcIndex.value].height / 2;
   let offset = topHeight + currentHeight - lyricsContainerHeight.value / 2;
   lyricsContainerRef.value.scrollTop = offset;
+};
+// 跳转到对应时间
+const jumpToTime = (time) => {
+  // console.log('跳转到对应时间：', time);
+  setCurrentTime(time / 1000);
 };
 </script>
 <style scoped lang="less">
