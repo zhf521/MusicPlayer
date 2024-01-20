@@ -38,12 +38,13 @@ watch(lrcLines, () => {
   console.log('lrcLines更新,lrcLines:', lrcLines.value);
   nextTick(() => {
     getLyricsTextHeightArray();
-    console.log('lrcLines更新,lyricsTextHeightArray:', lyricsTextHeightArray.value);
+    // console.log('lrcLines更新,lyricsTextHeightArray:', lyricsTextHeightArray.value);
   });
 });
 
 onMounted(() => {
-  lyricsContainerRef.value.addEventListener('scroll', () => {
+  lyricsContainerRef.value.addEventListener('wheel', () => {
+    // console.log('鼠标在滚动');
     isScrolling.value = true;
     clearTimeout(scrollTimer.value);
     scrollTimer.value = setTimeout(() => {
@@ -51,17 +52,10 @@ onMounted(() => {
     }, 3000);
   });
 });
-
-// onMounted(() => {
-//   nextTick(() => {
-//     // setTimeout(() => {
-//       getLyricsTextHeightArray();
-//       console.log('组件挂载,lyricsTextHeightArray:', lyricsTextHeightArray.value);
-//     // }, 100);
-//   });
-// });
 watch(musicCurrentTime, () => {
-  setOffset();
+  if (!isScrolling.value) {
+    setOffset();
+  }
 });
 
 // 歌词容器
@@ -80,9 +74,6 @@ let isScrolling = ref(false);
 let scrollTimer = ref(null);
 // 滚动
 const setOffset = () => {
-  if (isScrolling.value) {
-    return;
-  }
   let topHeight = spaceHeight.value;
   for (let i = 0; i < currentLrcIndex.value; i++) {
     topHeight += lyricsTextHeightArray.value[i].height;
