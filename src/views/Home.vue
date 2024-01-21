@@ -1,16 +1,14 @@
 <template>
   <div class="container">
-    <div class="aside-header-main">
+    <div class="header">
+      <Header />
+    </div>
+    <div class="aside-main">
       <div class="aside">
         <Aside />
       </div>
-      <div class="header-main">
-        <div class="header">
-          <Header />
-        </div>
-        <div class="main">
-          <router-view></router-view>
-        </div>
+      <div class="main">
+        <router-view></router-view>
       </div>
     </div>
     <div class="footer">
@@ -30,35 +28,28 @@ import Footer from '../components/Footer/Footer.vue';
   display: flex;
   flex-direction: column;
 
-  .aside-header-main {
+  .header {
+    width: 100%;
+    height: 70px;
+    background-color: skyblue;
+  }
+
+  .aside-main {
     display: flex;
     width: 100%;
-    height: calc(100% - 105px);
+    height: calc(100% - 175px);
 
     .aside {
       width: 200px;
       height: 100%;
-      // background-color: pink;
+      background-color: pink;
     }
 
-    .header-main {
-      display: flex;
-      flex-direction: column;
+    .main {
       width: calc(100% - 200px);
       height: 100%;
-
-      .header {
-        width: 100%;
-        height: 70px;
-        // background-color: skyblue;
-      }
-
-      .main {
-        width: 100%;
-        height: calc(100% - 70px);
-        // background-color: green;
-        padding: 10px;
-      }
+      background-color: green;
+      padding: 10px;
     }
   }
 
