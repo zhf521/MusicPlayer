@@ -7,4 +7,14 @@
 </template>
 <script setup>
 </script>
-<style scoped></style>
+<style scoped>
+.header {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+
+  a {
+    text-decoration: none;
+  }
+}
+</style>
