@@ -14,7 +14,7 @@
     <Pure />
   </div>
   <div :class="{ 'playlist': true, 'show': showPlaylist }">
-    <Playlist />
+    <Playlist :list="playlist" />
   </div>
 </template>
 <script setup>
@@ -28,7 +28,7 @@ import Playlist from './Playlist.vue';
 
 // 引入playerStore中的变量和方法
 const playerStore = usePlayerStore();
-const { isPure, showPlaylist } = storeToRefs(playerStore);
+const { isPure, showPlaylist, playlist } = storeToRefs(playerStore);
 </script>
 <style scoped lang="less">
 .normal {
