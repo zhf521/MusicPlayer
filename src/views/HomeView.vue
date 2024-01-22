@@ -18,8 +18,8 @@
 </template>
 <script setup>
 import Aside from '../components/Aside.vue';
-import Header from '../components/Header.vue';
-import Footer from '../components/Footer/Footer.vue';
+import Header from '../components/header.vue';
+import Footer from '../components/footer/footer.vue';
 </script>
 <style scoped lang="less">
 .container {
@@ -41,14 +41,11 @@ import Footer from '../components/Footer/Footer.vue';
     .aside {
       width: 200px;
       height: 100%;
-      background-color: pink;
     }
 
     .main {
       width: calc(100% - 200px);
       height: 100%;
-      background-color: green;
-      padding: 10px;
     }
   }
 
