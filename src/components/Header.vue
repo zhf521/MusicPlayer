@@ -1,20 +1,42 @@
 <template>
-  <div class="header">
-    <router-link to="/music-library">音乐库</router-link>
-    <router-link to="/cloud-files/%2F">云端文件</router-link>
-    <router-link to="/settings">设置</router-link>
+  <div class="header-container">
+    <div class="burger-logo">
+      <HamburgerIcon class="hamburger" theme="outline" size="32" />
+      <div class="logo"></div>
+    </div>
+    <div>
+      <!-- title -->
+    </div>
+    <div>
+      <!-- tool -->
+    </div>
   </div>
 </template>
 <script setup>
+import { HamburgerButton as HamburgerIcon } from '@icon-park/vue-next';
 </script>
 <style scoped>
-.header {
+.header-container {
+  width: 100%;
+  height: 100%;
   display: flex;
-  justify-content: space-evenly;
-  align-items: center;
+  /* background-color: skyblue; */
 
-  a {
-    text-decoration: none;
+  .burger-logo {
+    width: 200px;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    .hamburger {
+      margin: 0 25px;
+    }
+
+    .logo {
+      height: 100%;
+      line-height: 100%;
+    }
   }
 }
 </style>
