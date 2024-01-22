@@ -30,14 +30,13 @@ import Footer from '../components/Footer/Footer.vue';
 
   .header {
     width: 100%;
-    height: 70px;
-    background-color: skyblue;
+    height: 60px;
   }
 
   .aside-main {
     display: flex;
     width: 100%;
-    height: calc(100% - 175px);
+    height: calc(100% - 165px);
 
     .aside {
       width: 200px;
