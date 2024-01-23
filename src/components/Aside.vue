@@ -59,9 +59,15 @@ const handleClick = (item) => {
     display: flex;
     align-items: center;
     border-radius: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
 
     .icon {
       margin: 0 10px;
+    }
+
+    &:hover {
+      background-color: #f2f2f2f2;
     }
 
     &.active {
