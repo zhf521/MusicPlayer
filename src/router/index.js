@@ -14,6 +14,11 @@ const router = createRouter({
                     component: () => import('@/views/MusicLibraryView.vue'),
                 },
                 {
+                    path: '/song-list',
+                    name: 'song-list',
+                    component: () => import('@/views/SongListView.vue'),
+                },
+                {
                     path: '/cloud-files/:filename',
                     name: 'cloud-files',
                     component: () => import('@/views/CloudFilesView.vue'),
