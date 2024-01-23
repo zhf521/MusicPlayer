@@ -31,7 +31,7 @@ const closePure = () => {
   width: 100%;
   height: 100%;
   display: flex;
-  background-color: #fff;
+  background-color: #948282;
 
   .left-space {
     width: 10%;

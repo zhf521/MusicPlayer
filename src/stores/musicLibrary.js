@@ -41,12 +41,13 @@ export const useMusicLibraryStore = defineStore('musicLibrary', () => {
             (item) => item.filename === filename
         );
         if (music && !music.tags) {
-            console.log('添加标签');
+            // console.log('添加标签');
             music.tags = {
                 title: tags.tags.title,
                 artist: tags.tags.artist,
                 album: tags.tags.album,
                 cover: getMusicCover(tags.tags.picture),
+                mainColor: tags.tags.mainColor,
                 lyrics: tags.tags.lyrics,
             };
         }

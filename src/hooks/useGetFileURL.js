@@ -4,6 +4,7 @@ import { storeToRefs } from 'pinia';
 import { ref } from 'vue';
 import { createClient } from 'webdav';
 import { getTags } from '../utils/getTags';
+import { getMainColor } from '../utils/getMainColor';
 
 export function useGetFileURL() {
     // 文件URL
@@ -26,6 +27,8 @@ export function useGetFileURL() {
             const blob = new Blob([res]);
             fileURL.value = URL.createObjectURL(blob);
             const tags = await getTags(blob);
+            const mainColor = await getMainColor(tags.tags.picture);
+            tags.tags.mainColor = mainColor;
             addTagsToMusic(filename, tags);
             await saveMusicLibraryToLocal();
         } catch (error) {
