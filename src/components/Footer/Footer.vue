@@ -18,9 +18,9 @@ import Normal from './Normal.vue';
 import Pure from './Pure.vue';
 import Playlist from './Playlist.vue';
 
-// 引入playerStore中的变量和方法
+// 引入playerStore中的变量
 const playerStore = usePlayerStore();
-const { isPure, showPlaylist, playlist } = storeToRefs(playerStore);
+const { isPure, showPlaylist, playlist, currentMusicTags } = storeToRefs(playerStore);
 </script>
 <style scoped lang="less">
 .footer-container {
@@ -32,7 +32,8 @@ const { isPure, showPlaylist, playlist } = storeToRefs(playerStore);
     width: 100%;
     height: 100%;
     position: absolute;
-    z-index: 2;
+    z-index: 99;
+    background-color: #fff;
   }
 
   .pure {
@@ -41,8 +42,9 @@ const { isPure, showPlaylist, playlist } = storeToRefs(playerStore);
     top: 100vh;
     width: 100vw;
     height: calc(100vh - 105px);
-    z-index: 1;
+    z-index: 98;
     transition: top 0.3s ease;
+    background-color: #fff;
 
     &.show {
       top: 0;
@@ -56,7 +58,7 @@ const { isPure, showPlaylist, playlist } = storeToRefs(playerStore);
     left: 100vw;
     width: 450px;
     height: calc(100vh - 105px);
-    z-index: 2;
+    z-index: 99;
     transition: left 0.3s ease;
 
     &.show {

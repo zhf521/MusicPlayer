@@ -1,5 +1,6 @@
 <template>
-  <div class="pure-container">
+  <div class="pure-container"
+    :style="{ backgroundColor: `rgba(${currentMusicTags.mainColor && currentMusicTags.mainColor[0]}, ${currentMusicTags.mainColor && currentMusicTags.mainColor[1]}, ${currentMusicTags.mainColor && currentMusicTags.mainColor[2]}, 0.5)` }">
     <div class="left-space">
       <DownIcon class="icon" theme="outline" size="32" @click="closePure" />
     </div>
@@ -17,9 +18,11 @@ import { Down as DownIcon } from '@icon-park/vue-next';
 import { usePlayerStore } from '../../stores/player';
 import MusicInfoPure from './MusicInfoPure.vue';
 import Lyrics from './Lyrics.vue';
+import { storeToRefs } from 'pinia';
 
 // 引入playerStore中的方法
 const playerStore = usePlayerStore();
+const { currentMusicTags } = storeToRefs(playerStore);
 const { setPure } = playerStore;
 // 关闭纯净模式
 const closePure = () => {
@@ -31,7 +34,6 @@ const closePure = () => {
   width: 100%;
   height: 100%;
   display: flex;
-  background-color: #948282;
 
   .left-space {
     width: 10%;
