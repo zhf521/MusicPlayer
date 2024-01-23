@@ -21,15 +21,15 @@ const menuItems = {
     text: '音乐库',
     route: '/music-library',
   },
-  cloudFiles: {
-    icon: CloudFilesIcon,
-    text: '云文件',
-    route: '/cloud-files/%2F',
-  },
   songList: {
     icon: SongListIcon,
     text: '歌单',
     route: '/song-list',
+  },
+  cloudFiles: {
+    icon: CloudFilesIcon,
+    text: '云文件',
+    route: '/cloud-files/%2F',
   },
   settings: {
     icon: SettingsIcon,
