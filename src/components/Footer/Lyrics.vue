@@ -114,7 +114,7 @@ watch(showTranslate, () => {
   overflow-x: hidden;
   overflow-y: auto;
   scrollbar-width: none;
-  // scroll-behavior: smooth;
+  scroll-behavior: smooth;
   mask-image: linear-gradient(to bottom,
       rgba(255, 255, 255, 0) 0,
       rgba(255, 255, 255, 0.6) 15%,
@@ -142,6 +142,8 @@ watch(showTranslate, () => {
       border-radius: 10px;
       padding: 20px;
       cursor: pointer;
+      opacity: 0.5;
+      transition: all 0.3s ease;
 
       &:hover {
         background-color: #f5f5f5;
@@ -149,7 +151,8 @@ watch(showTranslate, () => {
 
       &.lrcItem-active {
         font-weight: 700;
-        color: green;
+        opacity: 1;
+        transition: all 0.3s ease;
       }
     }
   }
