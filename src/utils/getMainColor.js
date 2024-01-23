@@ -12,7 +12,7 @@ export function getMainColor(pic) {
     return new Promise((resolve, reject) => {
         image.onload = () => {
             // 获取图片的主色
-            const color = colorThief.getColor(image, 10);
+            const color = colorThief.getPalette(image, 3);
             // // 将RGB颜色转换为Hex颜色
             // const hexColor = rgbToHex(color[0], color[1], color[2]);
             resolve(color);

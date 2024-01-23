@@ -60,6 +60,7 @@ const { isPure, showPlaylist, playlist, currentMusicTags } = storeToRefs(playerS
     height: calc(100vh - 105px);
     z-index: 99;
     transition: left 0.3s ease;
+    background-color: #fff;
 
     &.show {
       left: calc(100vw - 450px);

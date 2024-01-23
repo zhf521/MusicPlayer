@@ -57,10 +57,11 @@ export const useMusicLibraryStore = defineStore('musicLibrary', () => {
         const music = musicLibrary.value.find(
             (item) => item.filename === filename
         );
-        if (music) {
+        if (music.tags) {
             return music.tags;
+        } else {
+            return {};
         }
-        return [];
     };
     // 保存音乐库到本地
     const saveMusicLibraryToLocal = async () => {
