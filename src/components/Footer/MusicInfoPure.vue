@@ -19,7 +19,6 @@ const { currentMusicTags } = storeToRefs(playerStore);
   width: 50%;
   border-radius: 10%;
   object-fit: cover;
-  box-shadow: var(--el-box-shadow);
   align-self: center;
 }
 

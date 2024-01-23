@@ -27,7 +27,6 @@ const openPure = () => {
   height: 64px;
   border-radius: 10%;
   object-fit: cover;
-  box-shadow: var(--el-box-shadow);
 }
 
 .details {

@@ -1,20 +1,22 @@
 <template>
-  <div class="normal">
-    <div class="music-info">
-      <MusicInfoNormal />
+  <div class="footer-container">
+    <div class="normal">
+      <div class="music-info">
+        <MusicInfoNormal />
+      </div>
+      <div class="player-controller">
+        <PlayerController />
+      </div>
+      <div class="player-tool">
+        <PlayerTool />
+      </div>
     </div>
-    <div class="player-controller">
-      <PlayerController />
+    <div :class="{ 'pure': true, 'show': isPure }">
+      <Pure />
     </div>
-    <div class="player-tool">
-      <PlayerTool />
+    <div :class="{ 'playlist': true, 'show': showPlaylist }">
+      <Playlist :list="playlist" />
     </div>
-  </div>
-  <div :class="{ 'pure': true, 'show': isPure }">
-    <Pure />
-  </div>
-  <div :class="{ 'playlist': true, 'show': showPlaylist }">
-    <Playlist :list="playlist" />
   </div>
 </template>
 <script setup>
@@ -31,69 +33,75 @@ const playerStore = usePlayerStore();
 const { isPure, showPlaylist, playlist } = storeToRefs(playerStore);
 </script>
 <style scoped lang="less">
-.normal {
+.footer-container {
   width: 100%;
   height: 100%;
-  border-top: 1px solid var(--el-border-color);
-  display: flex;
-  background-color: #fff;
-  z-index: 9999;
   position: relative;
 
-  .music-info {
+  .normal {
+    width: 100%;
+    height: 100%;
+    border-top: 1px solid #dedede;
     display: flex;
-    align-items: center;
-    width: 30%;
-    padding: 0 10px;
+    z-index: 2;
+    position: absolute;
+    background-color: #fff;
+
+
+    .music-info {
+      display: flex;
+      align-items: center;
+      width: 30%;
+      padding: 0 10px;
+    }
+
+    .player-controller {
+      width: 40%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .player-tool {
+      width: 30%;
+      padding: 0 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
   }
 
-  .player-controller {
-    width: 40%;
+  .pure {
+    position: fixed;
+    left: 0;
+    top: 100vh;
+    width: 100vw;
+    height: calc(100vh - 105px);
+    z-index: 1;
+    background-color: #fff;
     display: flex;
-    flex-direction: column;
-    justify-content: center;
+    transition: top 0.3s ease;
+
+    &.show {
+      top: 0;
+      transition: top 0.3 ease;
+    }
   }
 
-  .player-tool {
-    width: 30%;
-    padding: 0 10px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-}
-
-.pure {
-  position: fixed;
-  left: 0;
-  top: calc(100vh - 105px);
-  width: 100vw;
-  height: calc(100vh - 105px);
-  z-index: 9998;
-  background-color: #fff;
-  display: flex;
-  transition: top 0.3s ease;
-
-  &.show {
+  .playlist {
+    position: fixed;
     top: 0;
-    transition: top 0.3 ease;
-  }
-}
-
-.playlist {
-  position: fixed;
-  top: 0;
-  left: 100vw;
-  bottom: 105px;
-  width: 450px;
-  background-color: #fff;
-  z-index: 9999;
-  box-shadow: var(--box-shadow);
-  transition: left 0.3s ease;
-
-  &.show {
-    left: calc(100vw - 450px);
+    left: 100vw;
+    bottom: 105px;
+    width: 450px;
+    background-color: #fff;
+    z-index: 2;
     transition: left 0.3s ease;
+
+    &.show {
+      left: calc(100vw - 450px);
+      transition: left 0.3s ease;
+    }
   }
 }
 </style>
