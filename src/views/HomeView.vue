@@ -49,7 +49,7 @@ const { showAside } = storeToRefs(asideStore);
       transition: width 0.3s ease;
 
       &.hide {
-        width: 54px;
+        width: 64px;
       }
     }
 
@@ -59,7 +59,7 @@ const { showAside } = storeToRefs(asideStore);
       transition: width 0.3s ease;
 
       &.hide {
-        width: calc(100% - 54px);
+        width: calc(100% - 64px);
       }
     }
   }
