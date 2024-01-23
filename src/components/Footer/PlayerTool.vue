@@ -1,7 +1,9 @@
 <template>
-  <div class="other">
+  <div class="player-tool-container">
+    <div class="other">
+    </div>
+    <MusicListIcon class="icon" theme="outline" size="32" :strokeWidth="3" @click="toggleShowPlaylist" />
   </div>
-  <MusicListIcon class="icon" theme="outline" size="32" :strokeWidth="3" @click="toggleShowPlaylist" />
 </template>
 <script setup>
 import { MusicList as MusicListIcon } from '@icon-park/vue-next';
@@ -17,11 +19,20 @@ const toggleShowPlaylist = () => {
 };
 </script>
 <style scoped>
-.icon {
-  cursor: pointer;
+.player-tool-container {
+  width: 100%;
+  height: 100%;
+  padding: 0 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 
-  &:hover {
-    color: green;
+  .icon {
+    cursor: pointer;
+
+    &:hover {
+      color: green;
+    }
   }
 }
 </style>

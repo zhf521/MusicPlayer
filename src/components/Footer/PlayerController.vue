@@ -1,23 +1,25 @@
 <template>
-  <div class="buttons">
-    <Component :is="(loopMode === 0)?ListLoopIcon:OneLoopIcon" theme="filled" size="24" :strokeWidth="4" class="icon"
-      :title="(loopMode === 0) ? '列表循环' : '单曲循环'" @click="toggleLoopMode" />
-    <PrevIcon theme="filled" size="24" :strokeWidth="4" class="icon" title="上一曲" @click="prevMusic" />
-    <Component :is="isPlaying?PauseIcon:PlayIcon" theme="filled" size="28" fill="#333" :strokeWidth="4" class="icon"
-      :title="isPlaying ? '暂停' : '播放'" @click="toggleMusicPlay" />
-    <NextIcon theme="filled" size="24" :strokeWidth="4" class="icon" title="下一曲" @click="nextMusic" />
-    <Component :is="(playMode === 0)?OrderPlayIcon:RandomPlayIcon" theme="filled" size="24" :strokeWidth="4" class="icon"
-      :title="(playMode === 0) ? '顺序播放' : '随机播放'" @click="togglePlayMode" />
-  </div>
-  <div class="progress">
-    <SliderBar :filledPercent="playProgress" @percent-change-end="handlePercentChangeEnd"
-      @percent-change="handlePercentChange" />
-    <div class="time">
-      <div class="cTime">
-        <div>{{ formatTimeToString(musicCurrentTime) }}</div>
-        <div class="onDrag" v-if="isDragging">{{ formatTimeToString(musicCurrentTimeOnDrag) }}</div>
+  <div class="player-controller-container">
+    <div class="buttons">
+      <Component :is="(loopMode === 0)?ListLoopIcon:OneLoopIcon" theme="filled" size="24" :strokeWidth="4" class="icon"
+        :title="(loopMode === 0) ? '列表循环' : '单曲循环'" @click="toggleLoopMode" />
+      <PrevIcon theme="filled" size="24" :strokeWidth="4" class="icon" title="上一曲" @click="prevMusic" />
+      <Component :is="isPlaying?PauseIcon:PlayIcon" theme="filled" size="28" fill="#333" :strokeWidth="4" class="icon"
+        :title="isPlaying ? '暂停' : '播放'" @click="toggleMusicPlay" />
+      <NextIcon theme="filled" size="24" :strokeWidth="4" class="icon" title="下一曲" @click="nextMusic" />
+      <Component :is="(playMode === 0)?OrderPlayIcon:RandomPlayIcon" theme="filled" size="24" :strokeWidth="4"
+        class="icon" :title="(playMode === 0) ? '顺序播放' : '随机播放'" @click="togglePlayMode" />
+    </div>
+    <div class="progress">
+      <SliderBar :filledPercent="playProgress" @percent-change-end="handlePercentChangeEnd"
+        @percent-change="handlePercentChange" />
+      <div class="time">
+        <div class="cTime">
+          <div>{{ formatTimeToString(musicCurrentTime) }}</div>
+          <div class="onDrag" v-if="isDragging">{{ formatTimeToString(musicCurrentTimeOnDrag) }}</div>
+        </div>
+        <div class="dTime">{{ formatTimeToString(musicDurationTime) }}</div>
       </div>
-      <div class="dTime">{{ formatTimeToString(musicDurationTime) }}</div>
     </div>
   </div>
 </template>
@@ -76,37 +78,45 @@ const handlePercentChangeEnd = (percent) => {
 
 </script>
 <style scoped lang="less">
-.buttons {
+.player-controller-container {
+  width: 100%;
+  height: 100%;
   display: flex;
-  align-items: center;
-  justify-content: space-around;
-  padding: 5px 30px;
+  flex-direction: column;
+  justify-content: center;
 
-  .icon {
-    cursor: pointer;
+  .buttons {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    padding: 5px 30px;
 
-    &:hover {
-      color: green;
+    .icon {
+      cursor: pointer;
+
+      &:hover {
+        color: green;
+      }
     }
   }
-}
 
-.progress {
-  margin-top: 5px;
-  width: 100%;
-
-  .time {
-    display: flex;
-    justify-content: space-between;
+  .progress {
     margin-top: 5px;
+    width: 100%;
 
-    .cTime {
+    .time {
       display: flex;
+      justify-content: space-between;
+      margin-top: 5px;
 
-      .onDrag {
-        margin-left: 5px;
-        background-color: #d1d0d0;
-        border-radius: 10%;
+      .cTime {
+        display: flex;
+
+        .onDrag {
+          margin-left: 5px;
+          background-color: #d1d1d1;
+          border-radius: 10%;
+        }
       }
     }
   }

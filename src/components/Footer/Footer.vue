@@ -49,25 +49,18 @@ const { isPure, showPlaylist, playlist } = storeToRefs(playerStore);
 
 
     .music-info {
-      display: flex;
-      align-items: center;
       width: 30%;
-      padding: 0 10px;
+      height: 100%;
     }
 
     .player-controller {
       width: 40%;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
+      height: 100%;
     }
 
     .player-tool {
       width: 30%;
-      padding: 0 10px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
+      height: 100%;
     }
   }
 

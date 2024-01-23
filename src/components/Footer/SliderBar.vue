@@ -81,7 +81,7 @@ const handleMouseUp = (event) => {
   .slider-bar {
     width: 100%;
     height: 100%;
-    background-color: #cbcbcb;
+    background-color: #e5e5e5;
     cursor: pointer;
     border-radius: 8px;
     overflow: hidden;
