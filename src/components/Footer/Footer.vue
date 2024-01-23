@@ -1,15 +1,7 @@
 <template>
   <div class="footer-container">
     <div class="normal">
-      <div class="music-info">
-        <MusicInfoNormal />
-      </div>
-      <div class="player-controller">
-        <PlayerController />
-      </div>
-      <div class="player-tool">
-        <PlayerTool />
-      </div>
+      <Normal />
     </div>
     <div :class="{ 'pure': true, 'show': isPure }">
       <Pure />
@@ -22,9 +14,7 @@
 <script setup>
 import { storeToRefs } from 'pinia';
 import { usePlayerStore } from '../../stores/player';
-import MusicInfoNormal from './MusicInfoNormal.vue';
-import PlayerController from './PlayerController.vue';
-import PlayerTool from './PlayerTool.vue';
+import Normal from './Normal.vue';
 import Pure from './Pure.vue';
 import Playlist from './Playlist.vue';
 
@@ -41,27 +31,8 @@ const { isPure, showPlaylist, playlist } = storeToRefs(playerStore);
   .normal {
     width: 100%;
     height: 100%;
-    border-top: 1px solid #dedede;
-    display: flex;
-    z-index: 2;
     position: absolute;
-    background-color: #fff;
-
-
-    .music-info {
-      width: 30%;
-      height: 100%;
-    }
-
-    .player-controller {
-      width: 40%;
-      height: 100%;
-    }
-
-    .player-tool {
-      width: 30%;
-      height: 100%;
-    }
+    z-index: 2;
   }
 
   .pure {
@@ -71,8 +42,6 @@ const { isPure, showPlaylist, playlist } = storeToRefs(playerStore);
     width: 100vw;
     height: calc(100vh - 105px);
     z-index: 1;
-    background-color: #fff;
-    display: flex;
     transition: top 0.3s ease;
 
     &.show {
@@ -85,9 +54,8 @@ const { isPure, showPlaylist, playlist } = storeToRefs(playerStore);
     position: fixed;
     top: 0;
     left: 100vw;
-    bottom: 105px;
     width: 450px;
-    background-color: #fff;
+    height: calc(100vh - 105px);
     z-index: 2;
     transition: left 0.3s ease;
 

@@ -1,14 +1,16 @@
 <template>
-  <div class="left-space">
-    <DownIcon class="icon" theme="outline" size="32" @click="closePure" />
+  <div class="pure-container">
+    <div class="left-space">
+      <DownIcon class="icon" theme="outline" size="32" @click="closePure" />
+    </div>
+    <div class="music-info">
+      <MusicInfoPure />
+    </div>
+    <div class="lyrics">
+      <Lyrics />
+    </div>
+    <div class="right-space"></div>
   </div>
-  <div class="music-info">
-    <MusicInfoPure />
-  </div>
-  <div class="lyrics">
-    <Lyrics />
-  </div>
-  <div class="right-space"></div>
 </template>
 <script setup>
 import { Down as DownIcon } from '@icon-park/vue-next';
@@ -25,36 +27,40 @@ const closePure = () => {
 };
 </script>
 <style scoped lang="less">
-.left-space {
-  width: 10%;
+.pure-container {
+  width: 100%;
+  height: 100%;
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: space-between;
+  background-color: #fff;
 
-  .icon {
-    margin-top: 30px;
-    cursor: pointer;
+  .left-space {
+    width: 10%;
+    height: 100%;
+    display: flex;
 
-    &:hover {
-      color: green;
+    .icon {
+      margin-top: 30px;
+      margin-left: 26px;
+      cursor: pointer;
+
+      &:hover {
+        color: green;
+      }
     }
   }
-}
 
-.music-info {
-  width: 40%;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-evenly;
-}
+  .music-info {
+    width: 40%;
+    height: 100%;
+  }
 
-.lyrics {
-  width: 40%;
-  margin: 40px 0;
-}
+  .lyrics {
+    width: 40%;
+    margin: 50px 0;
+  }
 
-.right-space {
-  width: 10%;
+  .right-space {
+    width: 10%;
+  }
 }
 </style>

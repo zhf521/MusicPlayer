@@ -1,8 +1,10 @@
 <template>
-  <img class="cover" :src="currentMusicTags && currentMusicTags.cover || '/defaultCover.png'" alt="音乐封面">
-  <div class="details">
-    <div class="title">{{ currentMusicTags && currentMusicTags.title || '欢迎使用！' }}</div>
-    <div class="artist">{{ currentMusicTags && currentMusicTags.artist || '嘻嘻嘻' }}</div>
+  <div class="music-pure-container">
+    <img class="cover" :src="currentMusicTags && currentMusicTags.cover || '/defaultCover.png'" alt="音乐封面">
+    <div class="details">
+      <div class="title">{{ currentMusicTags && currentMusicTags.title || '欢迎使用！' }}</div>
+      <div class="artist">{{ currentMusicTags && currentMusicTags.artist || '嘻嘻嘻' }}</div>
+    </div>
   </div>
 </template>
 <script setup>
@@ -15,24 +17,32 @@ const { currentMusicTags } = storeToRefs(playerStore);
 
 </script>
 <style scoped>
-.cover {
-  width: 50%;
-  border-radius: 10%;
-  object-fit: cover;
-  align-self: center;
-}
+.music-pure-container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
 
-.details {
-  .title {
-    font-size: 20px;
-    font-weight: 800;
-    text-align: center;
+  .cover {
+    width: 50%;
+    border-radius: 10%;
+    object-fit: cover;
+    align-self: center;
   }
 
-  .artist {
-    font-size: 16px;
-    margin-top: 4px;
-    text-align: center;
+  .details {
+    .title {
+      font-size: 20px;
+      font-weight: 800;
+      text-align: center;
+    }
+
+    .artist {
+      font-size: 16px;
+      margin-top: 4px;
+      text-align: center;
+    }
   }
 }
 </style>

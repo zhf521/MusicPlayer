@@ -136,7 +136,7 @@ watch(showTranslate, () => {
     }
 
     .lyrics-text {
-      font-size: 30px;
+      font-size: 24px;
       font-weight: 500;
       color: #000;
       border-radius: 10px;
