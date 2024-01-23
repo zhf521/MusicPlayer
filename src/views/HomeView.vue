@@ -4,10 +4,10 @@
       <Header />
     </div>
     <div class="aside-main">
-      <div class="aside">
+      <div :class="{ 'aside': true, 'hide': !showAside }">
         <Aside />
       </div>
-      <div class="main">
+      <div :class="{ 'main': true, 'hide': !showAside }">
         <router-view></router-view>
       </div>
     </div>
@@ -20,6 +20,11 @@
 import Aside from '../components/Aside.vue';
 import Header from '../components/header.vue';
 import Footer from '../components/footer/footer.vue';
+import { useAsideStore } from '../stores/aside';
+import { storeToRefs } from 'pinia';
+// 引入asideStore中的变量和方法
+const asideStore = useAsideStore();
+const { showAside } = storeToRefs(asideStore);
 </script>
 <style scoped lang="less">
 .container {
@@ -41,11 +46,21 @@ import Footer from '../components/footer/footer.vue';
     .aside {
       width: 200px;
       height: 100%;
+      transition: width 0.3s ease;
+
+      &.hide {
+        width: 54px;
+      }
     }
 
     .main {
       width: calc(100% - 200px);
       height: 100%;
+      transition: width 0.3s ease;
+
+      &.hide {
+        width: calc(100% - 54px);
+      }
     }
   }
 

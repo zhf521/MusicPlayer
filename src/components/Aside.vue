@@ -5,7 +5,7 @@
       <div class="icon">
         <Component :is="item.icon" theme="outline" size="24" />
       </div>
-      <div>
+      <div :class="{ 'text': true, 'hide': !showAside }">
         {{ item.text }}
       </div>
     </div>
@@ -14,6 +14,11 @@
 <script setup>
 import { Record as MusicLibraryIcon, CloudStorage as CloudFilesIcon, MusicMenu as SongListIcon, SettingTwo as SettingsIcon } from '@icon-park/vue-next';
 import { useRoute, useRouter } from 'vue-router';
+import { useAsideStore } from '../stores/aside';
+import { storeToRefs } from 'pinia';
+// 引入asideStore中的变量和方法
+const asideStore = useAsideStore();
+const { showAside } = storeToRefs(asideStore);
 // 菜单项
 const menuItems = {
   musicLibrary: {
@@ -64,6 +69,16 @@ const handleClick = (item) => {
 
     .icon {
       margin: 0 10px;
+    }
+
+    .text {
+      transition: opacity 0.3s ease;
+      white-space: nowrap;
+      opacity: 1;
+
+      &.hide {
+        opacity: 0;
+      }
     }
 
     &:hover {

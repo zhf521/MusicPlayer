@@ -1,8 +1,8 @@
 <template>
   <div class="header-container">
-    <div class="burger-logo">
-      <HamburgerIcon class="hamburger" theme="outline" size="32" />
-      <div class="logo"></div>
+    <div class="logo"></div>
+    <div>
+      <HamburgerIcon class="hamburger" theme="outline" size="32" @click="toggleAsideShow" />
     </div>
     <div>
       <!-- title -->
@@ -14,29 +14,34 @@
 </template>
 <script setup>
 import { HamburgerButton as HamburgerIcon } from '@icon-park/vue-next';
+import { useAsideStore } from '../stores/aside';
+import { storeToRefs } from 'pinia';
+// 引入asideStore中的变量和方法
+const asideStore = useAsideStore();
+const { showAside } = storeToRefs(asideStore);
+const { setShowAside } = asideStore;
+// 切换侧边栏显示
+const toggleAsideShow = () => {
+  setShowAside(!showAside.value);
+};
 </script>
 <style scoped>
 .header-container {
   width: 100%;
   height: 100%;
   display: flex;
+  align-items: center;
   /* background-color: skyblue; */
-
-  .burger-logo {
+  .logo {
     width: 200px;
     height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+    /* background-color: skyblue; */
+  }
 
-    .hamburger {
-      margin: 0 25px;
-    }
-
-    .logo {
-      height: 100%;
-      line-height: 100%;
-    }
+  .hamburger {
+    margin: 0 10px;
+    cursor: pointer;
+    display: block;
   }
 }
 </style>
