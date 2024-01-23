@@ -23,7 +23,7 @@ import { Translate as TranslateIcon } from '@icon-park/vue-next';
 
 // 引入playerStore中的变量
 const playerStore = usePlayerStore();
-const { lrcLines, currentLrcIndex, musicCurrentTime } = storeToRefs(playerStore);
+const { lrcLines, currentLrcIndex } = storeToRefs(playerStore);
 const { setCurrentTime } = playerStore;
 
 // 歌词列表
@@ -58,7 +58,7 @@ onMounted(() => {
     }, 3000);
   });
 });
-watch(musicCurrentTime, () => {
+watch(currentLrcIndex, () => {
   if (!isScrolling.value) {
     setOffset();
   }
@@ -86,7 +86,7 @@ const setOffset = () => {
   }
   let currentHeight = lyricsTextHeightArray.value[currentLrcIndex.value].height / 2;
   let offset = topHeight + currentHeight - lyricsContainerHeight.value / 2;
-  lyricsContainerRef.value.scrollTop = offset;
+  lyricsContainerRef.value.scrollTo({ top: offset, behavior: 'smooth' });
 };
 // 跳转到对应时间
 const jumpToTime = (time) => {
@@ -114,7 +114,6 @@ watch(showTranslate, () => {
   overflow-x: hidden;
   overflow-y: auto;
   scrollbar-width: none;
-  scroll-behavior: smooth;
   mask-image: linear-gradient(to bottom,
       rgba(255, 255, 255, 0) 0,
       rgba(255, 255, 255, 0.6) 15%,

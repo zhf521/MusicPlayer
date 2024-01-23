@@ -12,7 +12,7 @@ import { storeToRefs } from 'pinia';
 
 // 引入playerStore中的变量和函数
 const playerStore = usePlayerStore();
-const { playlist, showPlaylist } = storeToRefs(playerStore);
+const { showPlaylist } = storeToRefs(playerStore);
 const { setShowPlaylist } = playerStore;
 const toggleShowPlaylist = () => {
   setShowPlaylist(!showPlaylist.value);
