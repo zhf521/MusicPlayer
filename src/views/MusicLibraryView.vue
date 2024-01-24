@@ -1,10 +1,10 @@
 <template>
   <div class="music-library-container">
     <div class="empty">
-      音乐库
+      空空如也~
     </div>
     <div class="music-list">
-      
+
     </div>
   </div>
 </template>
