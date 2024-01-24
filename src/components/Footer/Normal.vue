@@ -1,6 +1,6 @@
 <template>
   <div class="normal-container"
-    :style="{ backgroundColor: `rgba(${currentMusicTags.mainColor && currentMusicTags.mainColor[0]}, ${currentMusicTags.mainColor && currentMusicTags.mainColor[1]}, ${currentMusicTags.mainColor && currentMusicTags.mainColor[2]}, 0.5)` }">
+    :style="{ background: !isPure ? '#fff' : `repeating-linear-gradient(to right bottom, ${currentMusicTags.mainColor && currentMusicTags.mainColor[0]}, ${currentMusicTags.mainColor && currentMusicTags.mainColor[1]})` }">
     <div class="music-info">
       <MusicInfoNormal />
     </div>

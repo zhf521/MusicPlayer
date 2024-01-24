@@ -14,12 +14,12 @@ import { usePlayerStore } from '../../stores/player';
 
 // 引入playerStore中的变量和方法
 const playerStore = usePlayerStore();
-const { currentMusicTags } = storeToRefs(playerStore);
-const { setPure } = playerStore;
+const { currentMusicTags, isPure } = storeToRefs(playerStore);
+const { setPure, } = playerStore;
 
 // 打开沉浸模式
 const openPure = () => {
-  setPure(true);
+  setPure(!isPure.value);
 }
 
 </script>

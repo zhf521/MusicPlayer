@@ -1,6 +1,6 @@
 <template>
   <div class="pure-container"
-    :style="{ background: `repeating-linear-gradient(135deg, ${currentMusicTags.mainColor && currentMusicTags.mainColor[0]}, ${currentMusicTags.mainColor && currentMusicTags.mainColor[1]})` }">
+    :style="{ background: `repeating-linear-gradient(to right bottom, ${currentMusicTags.mainColor && currentMusicTags.mainColor[0]}, ${currentMusicTags.mainColor && currentMusicTags.mainColor[1]})` }">
     <div class="left-space">
       <DownIcon class="icon" theme="outline" size="32" @click="closePure" />
     </div>
