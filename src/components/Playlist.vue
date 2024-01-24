@@ -75,7 +75,7 @@ const tableRowClassName = ({
   }
 };
 </script >
-<style scoped>
+<style scoped lang="less">
 .el-table .success-row {
   --el-table-tr-bg-color: skyblue;
 }

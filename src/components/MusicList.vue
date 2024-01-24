@@ -85,4 +85,3 @@ const selectPlay = async (index) => {
 
 
 </script >
-<style scoped></style>

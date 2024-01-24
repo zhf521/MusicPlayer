@@ -18,7 +18,7 @@ const toggleShowPlaylist = () => {
   setShowPlaylist(!showPlaylist.value);
 };
 </script>
-<style scoped>
+<style scoped lang="less">
 .player-tool-container {
   width: 100%;
   height: 100%;

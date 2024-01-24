@@ -16,7 +16,7 @@ const playerStore = usePlayerStore();
 const { currentMusicTags } = storeToRefs(playerStore);
 
 </script>
-<style scoped>
+<style scoped lang="less">
 .music-pure-container {
   width: 100%;
   height: 100%;

@@ -101,4 +101,3 @@ const resetForm = (formEl) => {
 };
 
 </script>
-<style scoped></style>

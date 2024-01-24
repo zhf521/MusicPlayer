@@ -23,7 +23,7 @@ const openPure = () => {
 }
 
 </script>
-<style scoped>
+<style scoped lang="less">
 .music-info-container {
   width: 100%;
   height: 100%;
