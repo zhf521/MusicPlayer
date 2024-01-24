@@ -6,7 +6,7 @@
         点击添加音乐
       </button>
     </div>
-    <div class="music-library">
+    <div class="music-library" v-else>
       音乐库
     </div>
   </div>
@@ -49,6 +49,10 @@ const goToCloudFiles = () => {
       box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
       background-color: skyblue;
       border-radius: 4px;
+
+      &:hover {
+        scale: 1.05;
+      }
 
       &:active {
         scale: 0.95;
