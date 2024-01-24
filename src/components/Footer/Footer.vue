@@ -32,7 +32,7 @@ const { isPure, showPlaylist, playlist, currentMusicTags } = storeToRefs(playerS
     width: 100%;
     height: 100%;
     position: absolute;
-    z-index: 99;
+    z-index: 10;
     background-color: #fff;
   }
 
@@ -42,7 +42,7 @@ const { isPure, showPlaylist, playlist, currentMusicTags } = storeToRefs(playerS
     top: 100vh;
     width: 100vw;
     height: calc(100vh - 105px);
-    z-index: 98;
+    z-index: 9;
     transition: top 0.3s ease;
     background-color: #fff;
 
@@ -58,7 +58,7 @@ const { isPure, showPlaylist, playlist, currentMusicTags } = storeToRefs(playerS
     left: 100vw;
     width: 450px;
     height: calc(100vh - 105px);
-    z-index: 99;
+    z-index: 999;
     transition: left 0.3s ease;
     background-color: #fff;
 

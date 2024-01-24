@@ -1,6 +1,5 @@
 <template>
   <div class="header-container">
-    <div class="logo"></div>
     <div>
       <HamburgerIcon class="hamburger" theme="outline" size="32" @click="toggleAsideShow" />
     </div>
@@ -25,21 +24,15 @@ const toggleAsideShow = () => {
   setShowAside(!showAside.value);
 };
 </script>
-<style scoped>
+<style scoped lang="less">
 .header-container {
   width: 100%;
   height: 100%;
   display: flex;
   align-items: center;
-  /* background-color: skyblue; */
-  .logo {
-    width: 200px;
-    height: 100%;
-    /* background-color: skyblue; */
-  }
 
   .hamburger {
-    margin: 0 10px;
+    margin: 0 15px;
     cursor: pointer;
     display: block;
   }
