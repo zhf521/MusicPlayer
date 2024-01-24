@@ -15,9 +15,9 @@
 </template>
 <script setup>
 import { Down as DownIcon } from '@icon-park/vue-next';
-import { usePlayerStore } from '../../stores/player';
-import MusicInfoPure from './MusicInfoPure.vue';
-import Lyrics from './Lyrics.vue';
+import { usePlayerStore } from '../stores/player';
+import MusicInfoPure from './Footer/MusicInfoPure.vue';
+import Lyrics from './Footer/Lyrics.vue';
 import { storeToRefs } from 'pinia';
 
 // 引入playerStore中的方法

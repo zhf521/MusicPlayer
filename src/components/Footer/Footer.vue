@@ -1,71 +1,47 @@
 <template>
-  <div class="footer-container">
-    <div class="normal">
-      <Normal />
+  <div class="footer-container"
+    :style="{ background: !isPure ? '#fff' : `repeating-linear-gradient(to right bottom, ${currentMusicTags.mainColor && currentMusicTags.mainColor[0]}, ${currentMusicTags.mainColor && currentMusicTags.mainColor[1]})` }">
+    <div class="music-info">
+      <MusicInfoNormal />
     </div>
-    <div :class="{ 'pure': true, 'show': isPure }">
-      <Pure />
+    <div class="player-controller">
+      <PlayerController />
     </div>
-    <div :class="{ 'playlist': true, 'show': showPlaylist }">
-      <Playlist :list="playlist" />
+    <div class="player-tool">
+      <PlayerTool />
     </div>
   </div>
 </template>
 <script setup>
-import { storeToRefs } from 'pinia';
 import { usePlayerStore } from '../../stores/player';
-import Normal from './Normal.vue';
-import Pure from './Pure.vue';
-import Playlist from './Playlist.vue';
+import MusicInfoNormal from './MusicInfoNormal.vue';
+import PlayerController from './PlayerController.vue';
+import PlayerTool from './PlayerTool.vue';
+import { storeToRefs } from 'pinia';
 
-// 引入playerStore中的变量
+// 引入playerStore中的方法
 const playerStore = usePlayerStore();
-const { isPure, showPlaylist, playlist, currentMusicTags } = storeToRefs(playerStore);
+const { currentMusicTags, isPure } = storeToRefs(playerStore);
 </script>
 <style scoped lang="less">
 .footer-container {
   width: 100%;
   height: 100%;
-  position: relative;
+  display: flex;
 
-  .normal {
-    width: 100%;
+  .music-info {
+    width: 30%;
     height: 100%;
-    position: absolute;
-    z-index: 10;
-    background-color: #fff;
   }
 
-  .pure {
-    position: fixed;
-    left: 0;
-    top: 100vh;
-    width: 100vw;
-    height: calc(100vh - 105px);
-    z-index: 9;
-    transition: top 0.3s ease;
-    background-color: #fff;
-
-    &.show {
-      top: 0;
-      transition: top 0.3 ease;
-    }
+  .player-controller {
+    width: 40%;
+    height: 100%;
   }
 
-  .playlist {
-    position: fixed;
-    top: 0;
-    left: 100vw;
-    width: 450px;
-    height: calc(100vh - 105px);
-    z-index: 999;
-    transition: left 0.3s ease;
-    background-color: #fff;
-
-    &.show {
-      left: calc(100vw - 450px);
-      transition: left 0.3s ease;
-    }
+  .player-tool {
+    width: 30%;
+    height: 100%;
   }
 }
 </style>

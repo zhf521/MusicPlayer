@@ -16,9 +16,9 @@
 </template>
 <script setup>
 import { storeToRefs } from 'pinia';
-import { usePlayerStore } from '../../stores/player';
+import { usePlayerStore } from '../stores/player';
 import { computed, onMounted, ref } from 'vue';
-import { useMusicLibraryStore } from '../../stores/musicLibrary';
+import { useMusicLibraryStore } from '../stores/musicLibrary';
 
 // 引入playerStore中的变量和函数
 const playerStore = usePlayerStore();
