@@ -30,8 +30,8 @@ export function useGetFileURL() {
             if (JSON.stringify(getMusicTagsByFilename(filename)) === '{}') {
                 const tags = await getTags(blob);
                 const mainColor = await getMainColor(tags.tags.picture);
-                console.log(mainColor);
-                // tags.tags.mainColor = mainColor;
+                // console.log(mainColor);
+                tags.tags.mainColor = mainColor;
                 addTagsToMusic(filename, tags);
                 await saveMusicLibraryToLocal();
             }

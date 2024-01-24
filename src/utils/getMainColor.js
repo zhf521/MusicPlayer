@@ -12,10 +12,11 @@ export function getMainColor(pic) {
     return new Promise((resolve, reject) => {
         image.onload = () => {
             // 获取图片的主色
-            const color = colorThief.getPalette(image, 3);
-            // // 将RGB颜色转换为Hex颜色
-            // const hexColor = rgbToHex(color[0], color[1], color[2]);
-            resolve(color);
+            const color = colorThief.getPalette(image, 2);
+            const color1 = `rgba(${color[0][0]}, ${color[0][1]}, ${color[0][2]}, 0.3)`;
+            const color2 = `rgba(${color[1][0]}, ${color[1][1]}, ${color[1][2]}, 0.3)`;
+            const mainColor = [color1, color2];
+            resolve(mainColor);
         };
         image.onerror = (err) => {
             reject('获取图片主色失败：', err);
