@@ -109,7 +109,7 @@ const selectPlay = async (index) => {
       }
 
       .artist-album {
-        color: #CCCCCC;
+        color: #CFCFCF;
       }
 
       .more {
