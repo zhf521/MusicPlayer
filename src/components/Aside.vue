@@ -87,7 +87,8 @@ const handleClick = (item) => {
     }
 
     &.active {
-      background-color: skyblue;
+      background-color: #3780CE;
+      color: #FFFFFF;
     }
   }
 }

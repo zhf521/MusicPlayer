@@ -1,12 +1,14 @@
 <template>
   <div class="music-list-container">
-    <div class="list-item" v-for="(item, index) in list" :key="item.filename" @dblclick="selectPlay(index)">
+    <div :class="{ 'list-item': true, 'active': currentPlayMusic === item.filename }" v-for="(item, index) in list"
+      :key="item.filename" @dblclick="selectPlay(index)">
       <img :src="item.tags ? item.tags.cover : '/defaultCover.png'" alt="音乐封面" class="cover">
       <div class="details">
         <div class="title">{{ item.tags ? item.tags.title : item.basename }}</div>
         <div class="artist-album">
-          <span>{{ item.tags ? item.tags.artist : '未知艺术家' }}</span> - <span>{{ item.tags ? item.tags.album : '未知专辑'
-          }}</span>
+          <div class="artist">{{ item.tags ? item.tags.artist : '未知艺术家' }}</div> - <div class="album">{{ item.tags ?
+            item.tags.album : '未知专辑'
+          }}</div>
         </div>
       </div>
       <div class="more">
@@ -92,11 +94,26 @@ const selectPlay = async (index) => {
       .artist-album {
         font-size: 14px;
         color: #777777;
+
+        .artist,
+        .album {
+          display: inline;
+        }
       }
     }
 
     .more {
       margin-left: auto;
+    }
+
+    &.active {
+      background-color: #3780CE;
+      color: #FFFFFF;
+
+      .title,
+      .artist-album {
+        color: #FFFFFF;
+      }
     }
   }
 }
