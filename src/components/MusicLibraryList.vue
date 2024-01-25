@@ -6,9 +6,9 @@
       <div class="details">
         <div class="title">{{ item.tags ? item.tags.title : item.basename }}</div>
         <div class="artist-album">
-          <div class="artist">{{ item.tags ? item.tags.artist : '未知艺术家' }}</div> - <div class="album">{{ item.tags ?
+          <span>{{ item.tags ? item.tags.artist : '未知艺术家' }}</span> - <span>{{ item.tags ?
             item.tags.album : '未知专辑'
-          }}</div>
+          }}</span>
         </div>
       </div>
       <div class="more">
@@ -94,11 +94,6 @@ const selectPlay = async (index) => {
       .artist-album {
         font-size: 14px;
         color: #777777;
-
-        .artist,
-        .album {
-          display: inline;
-        }
       }
     }
 
@@ -108,10 +103,16 @@ const selectPlay = async (index) => {
 
     &.active {
       background-color: #3780CE;
-      color: #FFFFFF;
 
-      .title,
+      .title {
+        color: #FFFFFF;
+      }
+
       .artist-album {
+        color: #CCCCCC;
+      }
+
+      .more {
         color: #FFFFFF;
       }
     }
