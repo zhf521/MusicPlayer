@@ -56,7 +56,7 @@ const handleClick = (item) => {
   width: 100%;
   height: 100%;
   padding: 5px;
-  background-color: #F0F0F0;
+  background-color: #F2F3F5;
 
   .menu-item {
     width: 100%;
@@ -83,7 +83,7 @@ const handleClick = (item) => {
     }
 
     &:hover {
-      background-color: #ddd;
+      background-color: #E5E6EB;
     }
 
     &.active {

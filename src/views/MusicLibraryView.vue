@@ -7,7 +7,7 @@
       </button>
     </div>
     <div class="music-library" v-else>
-      <MusicList :musicList="musicLibrary" />
+      <MusicLibraryList :list="musicLibrary" />
     </div>
   </div>
 </template>
@@ -15,7 +15,7 @@
 import { useRouter } from 'vue-router';
 import { useMusicLibraryStore } from '../stores/musicLibrary.js';
 import { storeToRefs } from 'pinia';
-import MusicList from '../components/MusicList.vue';
+import MusicLibraryList from '../components/MusicLibraryList.vue';
 
 // 引入musicLibraryStore中的变量
 const musicLibraryStore = useMusicLibraryStore();
