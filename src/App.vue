@@ -30,12 +30,12 @@ onMounted(async () => {
   await loadMusicLibrary();
   // 加载历史记录
   await loadHistory();
-  let historyTail = history.value[history.value.length - 1];
-  if (historyTail) {
+  let historyHead = history.value[0];
+  if (historyHead) {
     // 设置播放列表
-    setPlaylist(historyTail.playlist);
+    setPlaylist(historyHead.playlist);
     // 设置当前播放索引
-    setCurrentPlayIndex(historyTail.index);
+    setCurrentPlayIndex(historyHead.index);
     // 加载音乐
     await loadMusic(currentPlayMusic.value);
   } else {

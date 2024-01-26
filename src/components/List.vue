@@ -6,10 +6,10 @@
     </div>
     <div class="list-content">
       <div class="playlist" v-if="showPlaylist">
-        <Playlist :list="playlist" />
+        <Playlist />
       </div>
       <div class="history" v-else>
-        历史记录
+        <HistoryList />
       </div>
     </div>
   </div>
@@ -17,12 +17,7 @@
 <script setup>
 import { ref } from 'vue';
 import Playlist from './Playlist.vue';
-import { usePlayerStore } from '../stores/player';
-import { storeToRefs } from 'pinia';
-
-// 引入playerStore中的变量和函数
-const playerStore = usePlayerStore();
-const { playlist } = storeToRefs(playerStore);
+import HistoryList from './HistoryList.vue';
 
 // 是否展示播放列表
 const showPlaylist = ref(true);

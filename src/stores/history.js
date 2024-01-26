@@ -20,15 +20,15 @@ export const useHistoryStore = defineStore('history', () => {
     const addToHistory = (playlist, index) => {
         // console.log('添加到历史记录中的当前播放列表:', playlist);
         if (history.value.length === 0) {
-            history.value.push({ playlist: playlist, index: index });
+            history.value.unshift({ playlist: playlist, index: index });
         } else {
-            const tailItem = history.value[history.value.length - 1];
-            if (tailItem.playlist !== playlist || tailItem.index !== index) {
-                history.value.push({ playlist: playlist, index: index });
+            const headItem = history.value[0];
+            if (headItem.playlist !== playlist || headItem.index !== index) {
+                history.value.unshift({ playlist: playlist, index: index });
             }
         }
         if (history.value.length > 10) {
-            history.value.shift();
+            history.value.pop();
         }
         // console.log('添加完的历史记录:', history.value);
     };
