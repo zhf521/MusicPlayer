@@ -17,8 +17,8 @@
     <div :class="{ 'pure': true, 'show': isPure }">
       <Pure />
     </div>
-    <div :class="{ 'playlist': true, 'show': showPlaylist }">
-      <Playlist :list="playlist" />
+    <div :class="{ 'list': true, 'show': showList }">
+      <List />
     </div>
   </div>
 </template>
@@ -27,7 +27,7 @@ import Aside from '../components/Aside.vue';
 import Header from '../components/header.vue';
 import Footer from '../components/Footer/Footer.vue';
 import Pure from '../components/Pure.vue';
-import Playlist from '../components/Playlist.vue';
+import List from '../components/List.vue';
 import { useAsideStore } from '../stores/aside';
 import { storeToRefs } from 'pinia';
 import { usePlayerStore } from '../stores/player';
@@ -36,7 +36,7 @@ const asideStore = useAsideStore();
 const { showAside } = storeToRefs(asideStore);
 // 引入playerStore中的变量
 const playerStore = usePlayerStore();
-const { isPure, showPlaylist, playlist } = storeToRefs(playerStore);
+const { isPure, showList } = storeToRefs(playerStore);
 </script>
 <style scoped lang="less">
 .container {
@@ -82,7 +82,7 @@ const { isPure, showPlaylist, playlist } = storeToRefs(playerStore);
   .footer {
     width: 100%;
     height: 105px;
-    z-index: 11;
+    z-index: 12;
     position: relative;
     box-shadow: 0px -2px 4px rgba(0, 0, 0, 0.2);
     background-color: #fff;
@@ -104,7 +104,7 @@ const { isPure, showPlaylist, playlist } = storeToRefs(playerStore);
     }
   }
 
-  .playlist {
+  .list {
     position: fixed;
     top: 0;
     left: 100vw;
@@ -112,6 +112,7 @@ const { isPure, showPlaylist, playlist } = storeToRefs(playerStore);
     height: calc(100vh - 105px);
     z-index: 11;
     transition: left 0.3s ease;
+    box-shadow: -2px 0px 4px rgba(0, 0, 0, 0.2);
     background-color: #fff;
 
     &.show {

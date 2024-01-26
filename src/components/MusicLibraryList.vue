@@ -73,7 +73,7 @@ const selectPlay = async (index) => {
     padding: 10px;
 
     &:hover {
-      background-color: #F2F3F5;
+      background-color: #F2F3F4;
     }
 
     .cover {

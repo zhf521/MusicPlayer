@@ -163,10 +163,10 @@ export const usePlayerStore = defineStore('player', () => {
         // 是否去除空行：默认为true
         isRemoveBlankLine: true,
     });
-    const showPlaylist = ref(false); // 是否显示播放列表
+    const showList = ref(false); // 是否显示播放列表
     // 设置显示播放列表
-    const setShowPlaylist = (state) => {
-        showPlaylist.value = state;
+    const setShowList = (state) => {
+        showList.value = state;
     };
     return {
         audio,
@@ -194,7 +194,7 @@ export const usePlayerStore = defineStore('player', () => {
         currentLrcIndex,
         lrcLines,
         lrc,
-        showPlaylist,
-        setShowPlaylist,
+        showList,
+        setShowList,
     };
 });
