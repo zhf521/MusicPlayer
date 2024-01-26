@@ -100,7 +100,7 @@ const toggleShowTranslate = () => {
 };
 // 监听翻译显示
 watch(showTranslate, () => {
-  console.log('翻译显示,lrcLines:', lrcLines.value);
+  // console.log('翻译显示,lrcLines:', lrcLines.value);
   nextTick(() => {
     getLyricsTextHeightArray();
     // console.log('lrcLines更新,lyricsTextHeightArray:', lyricsTextHeightArray.value);
