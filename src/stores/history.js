@@ -32,6 +32,10 @@ export const useHistoryStore = defineStore('history', () => {
         }
         // console.log('添加完的历史记录:', history.value);
     };
+    // 清空历史记录
+    const clearHistory = () => {
+        history.value = [];
+    };
     // 保存历史记录到本地
     const saveHistoryToLocal = async () => {
         try {
@@ -47,6 +51,7 @@ export const useHistoryStore = defineStore('history', () => {
         history,
         loadHistory,
         addToHistory,
+        clearHistory,
         saveHistoryToLocal,
     };
 });

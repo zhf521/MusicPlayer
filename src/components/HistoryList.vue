@@ -2,7 +2,7 @@
   <div class="history-list-container">
     <div class="header">
       <div class="total">共{{ list.length }}首</div>
-      <div class="clear" @click="clearList">清空列表</div>
+      <div class="clear" @click="clearList">清空历史</div>
     </div>
     <div class="history-list-content">
       <div class="list-item" v-for="(item, index) in list" :key="item.filename" @dblclick="selectPlay(index)">
@@ -34,16 +34,19 @@ import { useHistoryStore } from '../stores/history';
 const playerStore = usePlayerStore();
 const { playlist, currentPlayMusic, currentPlayIndex } = storeToRefs(playerStore);
 const { loadMusic, play, setPlaylist, setCurrentPlayIndex, } = playerStore;
-// 引入musicLibraryStore中的函数
+// 引入musicLibraryStore中的方法
 const musicLibraryStore = useMusicLibraryStore();
 const { getMusicTagsByFilename } = musicLibraryStore;
-// 引入historyStore中的变量
+// 引入historyStore中的变量和方法
 const historyStore = useHistoryStore();
 const { history } = storeToRefs(historyStore);
+const { clearHistory, saveHistoryToLocal } = historyStore;
 
-// 清空列表
+// 清空历史列表
 const clearList = () => {
-  console.log('清空历史列表');
+  // console.log('清空历史列表');
+  clearHistory();
+  saveHistoryToLocal();
 };
 // 列表
 const list = computed(() => {
