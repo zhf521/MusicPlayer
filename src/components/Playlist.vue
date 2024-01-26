@@ -41,7 +41,6 @@ const { getMusicTagsByFilename } = musicLibraryStore;
 // 清空列表
 const clearList = () => {
   setPlaylist([]);
-  setCurrentPlayIndex(-1);
 };
 // 列表
 const list = computed(() => {
