@@ -4,7 +4,7 @@
       :key="item.filename" @dblclick="selectPlay(index)">
       <img :src="item.tags ? item.tags.cover : '/defaultCover.png'" alt="音乐封面" class="cover">
       <div class="details">
-        <div class="title">{{ item.tags ? item.tags.title : item.basename }}</div>
+        <div class="title">{{ item.tags ? item.tags.title : item.basename.split('.').slice(0, -1).join('.') }}</div>
         <div class="artist-album">
           <span>{{ item.tags ? item.tags.artist : '未知艺术家' }}</span> - <span>{{ item.tags ?
             item.tags.album : '未知专辑'

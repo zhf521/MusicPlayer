@@ -5,14 +5,14 @@
       <div class="clear" @click="clearList">清空列表</div>
     </div>
     <div class="playlist-content">
-      <div :class="{ 'list-item': true, 'active': currentPlayMusic === item.filename }" v-for="(item, index) in list"
+      <div :class="{ 'list-item': true, 'active': index === currentPlayIndex }" v-for="(item, index) in list"
         :key="item.filename" @dblclick="selectPlay(index)">
-        <img :src="item.tags ? item.tags.cover : '/defaultCover.png'" alt="音乐封面" class="cover">
+        <img :src="item.cover ? item.cover : '/defaultCover.png'" alt="音乐封面" class="cover">
         <div class="details">
-          <div class="title">{{ item.tags ? item.tags.title : item.basename }}</div>
+          <div class="title">{{ item.title ? item.title : item }}</div>
           <div class="artist-album">
-            <span>{{ item.tags ? item.tags.artist : '未知艺术家' }}</span> - <span>{{ item.tags ?
-              item.tags.album : '未知专辑'
+            <span>{{ item.artist ? item.artist : '未知艺术家' }}</span> - <span>{{ item.album ?
+              item.album : '未知专辑'
             }}</span>
           </div>
         </div>
@@ -26,14 +26,17 @@
 <script setup>
 import { MoreOne as MoreIcon } from '@icon-park/vue-next';
 import { computed } from 'vue';
-import { compareArrays } from '../utils/compareArrays';
 import { usePlayerStore } from '../stores/player';
 import { storeToRefs } from 'pinia';
+import { useMusicLibraryStore } from '../stores/musicLibrary';
 
 // 引入playerStore中的变量和函数
 const playerStore = usePlayerStore();
-const { playlist, currentPlayMusic } = storeToRefs(playerStore);
+const { playlist, currentPlayMusic, currentPlayIndex } = storeToRefs(playerStore);
 const { loadMusic, play, setPlaylist, setCurrentPlayIndex, } = playerStore;
+// 引入musicLibraryStore中的函数
+const musicLibraryStore = useMusicLibraryStore();
+const { getMusicTagsByFilename } = musicLibraryStore;
 
 const props = defineProps(['list']);
 // 清空列表
@@ -41,30 +44,35 @@ const clearList = () => {
   setPlaylist([]);
   setCurrentPlayIndex(-1);
 };
-// 音乐列表
-const musicList = computed(() => {
-  // console.log('音乐列表：', props.list.map(item => item.filename));
-  return props.list.map(item => item.filename);
+// 列表
+const list = computed(() => {
+  // console.log('playlist', playlist.value);
+  // console.log('list', props.list.map(item => {
+  //   if (JSON.stringify(getMusicTagsByFilename(item)) === '{}') {
+  //     return item.split('/').pop().split('.').slice(0, -1).join('.');
+  //   } else {
+  //     return getMusicTagsByFilename(item);
+  //   }
+  // }));
+  return props.list.map(item => {
+    if (JSON.stringify(getMusicTagsByFilename(item)) === '{}') {
+      return item.split('/').pop().split('.').slice(0, -1).join('.');
+    } else {
+      return getMusicTagsByFilename(item);
+    }
+  });
 });
 // 选择播放
 const selectPlay = async (index) => {
-  if (compareArrays(musicList.value, playlist.value)) {
-    // console.log('播放列表相同');
-    if (musicList.value[index] !== currentPlayMusic.value) {
-      // console.log('点击的不是当前播放的音乐');
-      setCurrentPlayIndex(index);
-      await loadMusic(currentPlayMusic.value);
-      play();
-    } else {
-      // console.log('点击的是当前播放的音乐');
-      return;
-    }
-  } else {
-    // console.log('播放列表不同');
-    setPlaylist(musicList.value);
+  // console.log('当前播放的音乐', currentPlayMusic.value);
+  if (playlist.value[index] !== currentPlayMusic.value) {
+    // console.log('点击的不是当前播放的音乐');
     setCurrentPlayIndex(index);
     await loadMusic(currentPlayMusic.value);
     play();
+  } else {
+    // console.log('点击的是当前播放的音乐');
+    return;
   }
 };
 </script>
