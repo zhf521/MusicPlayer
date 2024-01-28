@@ -1,10 +1,10 @@
 <template>
   <div class="song-list-container">
     <div class="song-list-item" v-for="i in 31">
-      {{ i }}
+      <div style="background-color: green;">123</div>
     </div>
     <div class="create-song-list">
-      <PlusIcon theme="outline" size="100" fill="#333" />
+      <PlusIcon theme="outline" size="100" fill="#333" class="icon" />
     </div>
   </div>
 </template>
@@ -16,30 +16,45 @@ import { Plus as PlusIcon } from '@icon-park/vue-next';
   width: 100%;
   height: 100%;
   padding: 20px 20px 0;
-  display: flex;
-  gap: 20px;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 10px;
   overflow: auto;
-  align-items: center;
-  justify-content: space-evenly;
 
   .song-list-item {
-    width: 150px;
-    height: 150px;
-    border-radius: 10px;
-    background-color: pink;
-    cursor: pointer;
+    position: relative;
+
+    &::before {
+      content: "";
+      display: block;
+      padding-bottom: 100%;
+      background-color: pink;
+    }
+
+    &>div {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
   }
 
   .create-song-list {
-    width: 150px;
-    height: 150px;
-    border-radius: 10px;
-    background-color: #F2F3F4;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
+    position: relative;
+
+    &::before {
+      content: "";
+      display: block;
+      padding-bottom: 100%;
+      background-color: #F2F3F4;
+    }
+
+    .icon {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
   }
 }
 </style>
