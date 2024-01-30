@@ -1,5 +1,5 @@
 <template>
-  <div class="music-library-container">
+  <div class="music-library-view-container">
     <div class="empty" v-if="musicLibrary.length === 0">
       空空如也~
       <button @click="goToCloudFiles">
@@ -29,10 +29,10 @@ const goToCloudFiles = () => {
 };
 </script>
 <style scoped lang="less">
-.music-library-container {
+.music-library-view-container {
   width: 100%;
   height: 100%;
-  padding: 0 20px;
+  padding: 20px 20px 0;
 
   .empty {
     width: 100%;
