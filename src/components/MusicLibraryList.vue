@@ -1,7 +1,7 @@
 <template>
   <div class="music-list-container">
-    <div :class="{ 'list-item': true, 'active': currentPlayMusic === item.filename }" v-for="(item, index) in list"
-      :key="item.filename" @dblclick="selectPlay(index)">
+    <div :class="{ 'list-item': true, 'active': currentPlayMusic === item.filename }"
+      v-for="(item, index) in musicLibrary" :key="item.filename" @dblclick="selectPlay(index)">
       <img :src="item.tags ? item.tags.cover : '/defaultCover.png'" alt="音乐封面" class="cover">
       <div class="details">
         <div class="title">{{ item.tags ? item.tags.title : item.basename.split('.').slice(0, -1).join('.') }}</div>
@@ -23,18 +23,21 @@ import { computed } from 'vue';
 import { compareArrays } from '../utils/compareArrays';
 import { usePlayerStore } from '../stores/player';
 import { storeToRefs } from 'pinia';
+import { useMusicLibraryStore } from '../stores/musicLibrary';
 
 // 引入playerStore中的变量和函数
 const playerStore = usePlayerStore();
 const { playlist, currentPlayMusic } = storeToRefs(playerStore);
 const { loadMusic, play, setPlaylist, setCurrentPlayIndex, } = playerStore;
 
-const props = defineProps(['list']);
+// 引入musicLibraryStore中的变量
+const musicLibraryStore = useMusicLibraryStore();
+const { musicLibrary } = storeToRefs(musicLibraryStore);
 
 // 音乐列表
 const musicList = computed(() => {
-  // console.log('音乐列表：', props.list.map(item => item.filename));
-  return props.list.map(item => item.filename);
+  // console.log('音乐列表：', musicLibrary.value.map(item => item.filename));
+  return musicLibrary.value.map(item => item.filename);
 });
 // 选择播放
 const selectPlay = async (index) => {

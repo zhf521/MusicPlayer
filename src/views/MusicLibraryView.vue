@@ -7,7 +7,7 @@
       </button>
     </div>
     <div class="music-library" v-else>
-      <MusicLibraryList :list="musicLibrary" />
+      <MusicLibraryList />
     </div>
   </div>
 </template>

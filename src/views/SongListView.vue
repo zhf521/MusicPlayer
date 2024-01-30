@@ -21,6 +21,13 @@ import SongList from '../components/SongList.vue';
     height: 70px;
     border-radius: 7px;
     background-color: green;
+    margin-bottom: 20px;
+  }
+
+  .song-list {
+    width: 100%;
+    height: calc(100% - 90px);
+    background-color: yellow;
   }
 }
 </style>
