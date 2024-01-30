@@ -69,7 +69,7 @@ const selectPlay = async (index) => {
     height: 70px;
     display: flex;
     align-items: center;
-    border-radius: 8px;
+    border-radius: 7px;
     padding: 10px;
 
     &:hover {
@@ -79,7 +79,7 @@ const selectPlay = async (index) => {
     .cover {
       width: 50px;
       height: 50px;
-      border-radius: 10%;
+      border-radius: 5px;
       object-fit: cover;
     }
 
