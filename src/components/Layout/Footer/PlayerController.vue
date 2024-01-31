@@ -24,12 +24,12 @@
   </div>
 </template>
 <script setup>
-import { usePlayerStore } from '../../stores/player';
+import { usePlayerStore } from '@/stores/player';
 import { storeToRefs } from 'pinia';
 import { Play as PlayIcon, PauseOne as PauseIcon, GoStart as PrevIcon, GoEnd as NextIcon, PlayOnce as OneLoopIcon, PlayCycle as ListLoopIcon, LoopOnce as OrderPlayIcon, ShuffleOne as RandomPlayIcon } from '@icon-park/vue-next';
 import SliderBar from './SliderBar.vue';
 import { computed, ref } from 'vue';
-import { formatTimeToString } from '../../utils/formatTime';
+import { formatTimeToString } from '@/utils/formatTime';
 
 // 引入playerStore中的变量
 const playerStore = usePlayerStore();

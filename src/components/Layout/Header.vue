@@ -13,7 +13,7 @@
 </template>
 <script setup>
 import { HamburgerButton as HamburgerIcon } from '@icon-park/vue-next';
-import { useAsideStore } from '../stores/aside';
+import { useAsideStore } from '../../stores/aside';
 import { storeToRefs } from 'pinia';
 // 引入asideStore中的变量和方法
 const asideStore = useAsideStore();

@@ -14,7 +14,7 @@
 <script setup>
 import { Record as MusicLibraryIcon, CloudStorage as CloudFilesIcon, MusicMenu as SongListIcon, SettingTwo as SettingsIcon } from '@icon-park/vue-next';
 import { useRoute, useRouter } from 'vue-router';
-import { useAsideStore } from '../stores/aside';
+import { useAsideStore } from '../../stores/aside';
 import { storeToRefs } from 'pinia';
 // 引入asideStore中的变量和方法
 const asideStore = useAsideStore();

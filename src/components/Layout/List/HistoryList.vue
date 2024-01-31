@@ -1,12 +1,11 @@
 <template>
-  <div class="playlist-container">
+  <div class="history-list-container">
     <div class="header">
       <div class="total">共{{ list.length }}首</div>
-      <div class="clear" @click="clearList">清空列表</div>
+      <div class="clear" @click="clearList">清空历史</div>
     </div>
-    <div class="playlist-content">
-      <div :class="{ 'list-item': true, 'active': index === currentPlayIndex }" v-for="(item, index) in list"
-        :key="item.filename" @dblclick="selectPlay(index)">
+    <div class="history-list-content">
+      <div class="list-item" v-for="(item, index) in list" :key="item.filename" @dblclick="selectPlay(index)">
         <img :src="item.cover ? item.cover : '/defaultCover.png'" alt="音乐封面" class="cover">
         <div class="details">
           <div class="title">{{ item.title ? item.title : item }}</div>
@@ -26,33 +25,39 @@
 <script setup>
 import { MoreOne as MoreIcon } from '@icon-park/vue-next';
 import { computed } from 'vue';
-import { usePlayerStore } from '../stores/player';
+import { usePlayerStore } from '../../../stores/player';
 import { storeToRefs } from 'pinia';
-import { useMusicLibraryStore } from '../stores/musicLibrary';
+import { useMusicLibraryStore } from '../../../stores/musicLibrary';
+import { useHistoryStore } from '../../../stores/history';
 
 // 引入playerStore中的变量和函数
 const playerStore = usePlayerStore();
 const { playlist, currentPlayMusic, currentPlayIndex } = storeToRefs(playerStore);
 const { loadMusic, play, setPlaylist, setCurrentPlayIndex, } = playerStore;
-// 引入musicLibraryStore中的函数
+// 引入musicLibraryStore中的方法
 const musicLibraryStore = useMusicLibraryStore();
 const { getMusicTagsByFilename } = musicLibraryStore;
+// 引入historyStore中的变量和方法
+const historyStore = useHistoryStore();
+const { history } = storeToRefs(historyStore);
+const { clearHistory, saveHistoryToLocal } = historyStore;
 
-// 清空列表
+// 清空历史列表
 const clearList = () => {
-  setPlaylist([]);
+  // console.log('清空历史列表');
+  clearHistory();
+  saveHistoryToLocal();
 };
 // 列表
 const list = computed(() => {
-  // console.log('playlist', playlist.value);
-  // console.log('list', props.list.map(item => {
+  // console.log('历史记录', props.history.map(item => item.playlist[item.index]).map(item => {
   //   if (JSON.stringify(getMusicTagsByFilename(item)) === '{}') {
   //     return item.split('/').pop().split('.').slice(0, -1).join('.');
   //   } else {
   //     return getMusicTagsByFilename(item);
   //   }
   // }));
-  return playlist.value.map(item => {
+  return history.value.map(item => item.playlist[item.index]).map(item => {
     if (JSON.stringify(getMusicTagsByFilename(item)) === '{}') {
       return item.split('/').pop().split('.').slice(0, -1).join('.');
     } else {
@@ -62,20 +67,20 @@ const list = computed(() => {
 });
 // 选择播放
 const selectPlay = async (index) => {
-  // console.log('当前播放的音乐', currentPlayMusic.value);
-  if (playlist.value[index] !== currentPlayMusic.value) {
-    // console.log('点击的不是当前播放的音乐');
-    setCurrentPlayIndex(index);
+  // console.log('选择播放', index);
+  // console.log(history.value[index]);
+  if (history.value[index].playlist[history.value[index].index] !== currentPlayMusic.value) {
+    setPlaylist(history.value[index].playlist);
+    setCurrentPlayIndex(history.value[index].index);
     await loadMusic(currentPlayMusic.value);
     play();
   } else {
-    // console.log('点击的是当前播放的音乐');
     return;
   }
 };
 </script>
 <style scoped lang="less">
-.playlist-container {
+.history-list-container {
   width: 100%;
   height: 100%;
   padding-top: 5px;
@@ -106,7 +111,7 @@ const selectPlay = async (index) => {
     }
   }
 
-  .playlist-content {
+  .history-list-content {
     width: 100%;
     height: calc(100% - 35px);
     overflow: auto;
@@ -146,22 +151,6 @@ const selectPlay = async (index) => {
 
       .more {
         margin-left: auto;
-      }
-
-      &.active {
-        background-color: #3780CE;
-
-        .title {
-          color: #FFFFFF;
-        }
-
-        .artist-album {
-          color: #CFCFCF;
-        }
-
-        .more {
-          color: #FFFFFF;
-        }
       }
     }
   }

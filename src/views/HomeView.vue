@@ -23,11 +23,11 @@
   </div>
 </template>
 <script setup>
-import Aside from '../components/Aside.vue';
-import Header from '../components/header.vue';
-import Footer from '../components/Footer/Footer.vue';
-import Pure from '../components/Pure.vue';
-import List from '../components/List.vue';
+import Aside from '../components/Layout/Aside.vue';
+import Header from '../components/Layout/Header.vue';
+import Footer from '../components/Layout/Footer/Footer.vue';
+import Pure from '../components/Layout/Pure/Pure.vue';
+import List from '../components/Layout/List/List.vue';
 import { useAsideStore } from '../stores/aside';
 import { storeToRefs } from 'pinia';
 import { usePlayerStore } from '../stores/player';

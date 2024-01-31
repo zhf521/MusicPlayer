@@ -13,7 +13,7 @@
   </div>
 </template>
 <script setup>
-import { usePlayerStore } from '../../stores/player';
+import { usePlayerStore } from '@/stores/player';
 import MusicInfoNormal from './MusicInfoNormal.vue';
 import PlayerController from './PlayerController.vue';
 import PlayerTool from './PlayerTool.vue';

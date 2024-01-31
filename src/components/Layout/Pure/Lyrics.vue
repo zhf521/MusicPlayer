@@ -17,8 +17,8 @@
 </template>
 <script setup>
 import { storeToRefs } from 'pinia';
-import { usePlayerStore } from '../../stores/player';
-import { computed, nextTick, onMounted, onUpdated, ref, watch } from 'vue';
+import { usePlayerStore } from '@/stores/player';
+import { computed, nextTick, onMounted, ref, watch } from 'vue';
 import { Translate as TranslateIcon } from '@icon-park/vue-next';
 
 // 引入playerStore中的变量

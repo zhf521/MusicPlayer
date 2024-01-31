@@ -10,7 +10,7 @@
 </template>
 <script setup>
 import { storeToRefs } from 'pinia';
-import { usePlayerStore } from '../../stores/player';
+import { usePlayerStore } from '@/stores/player';
 
 // 引入playerStore中的变量和方法
 const playerStore = usePlayerStore();

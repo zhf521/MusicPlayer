@@ -7,7 +7,7 @@
 </template>
 <script setup>
 import { MusicList as ListIcon } from '@icon-park/vue-next';
-import { usePlayerStore } from '../../stores/player';
+import { usePlayerStore } from '@/stores/player';
 import { storeToRefs } from 'pinia';
 
 // 引入playerStore中的变量和函数
