@@ -1,25 +1,26 @@
 <template>
-  <div class="song-list-view-container">
+  <div class="song-list-view-container" v-show="$route.meta.showFather">
     <div class="create" @click="create">新建歌单</div>
     <div class="song-list">
       <SongList />
     </div>
+    <MyDialog ref="dialogRef">
+      <template #header>
+        新建歌单
+      </template>
+      <template #main>
+        <div class="input-container">
+          <input required type="text" class="input" v-model="inputValue">
+          <label class="label">歌单名</label>
+        </div>
+      </template>
+      <template #footer>
+        <button @click="cancelCreate">取消</button>
+        <button @click="confirmCreate">提交</button>
+      </template>
+    </MyDialog>
   </div>
-  <MyDialog ref="dialogRef">
-    <template #header>
-      新建歌单
-    </template>
-    <template #main>
-      <div class="input-container">
-        <input required type="text" class="input" v-model="inputValue">
-        <label class="label">歌单名</label>
-      </div>
-    </template>
-    <template #footer>
-      <button @click="cancelCreate">取消</button>
-      <button @click="confirmCreate">提交</button>
-    </template>
-  </MyDialog>
+  <router-view />
 </template>
 <script setup>
 import SongList from '@/components/SongList.vue';

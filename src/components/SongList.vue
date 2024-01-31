@@ -1,6 +1,6 @@
 <template>
   <div class="song-list-container">
-    <div class="list-item" v-for="(item, index) in songList" :key="index">
+    <div class="list-item" v-for="(item, index) in songList" :key="index" @click="handleClick(item)">
       <img class="cover">
       <div class="title">{{ item.name }}</div>
       <div class="more">
@@ -13,9 +13,15 @@
 import { MoreOne as MoreIcon } from '@icon-park/vue-next';
 import { useSongListStore } from '../stores/songList';
 import { storeToRefs } from 'pinia';
+import { useRouter } from 'vue-router';
 
 const songListStore = useSongListStore();
 const { songList } = storeToRefs(songListStore);
+const router = useRouter();
+const handleClick = (item) => {
+  // console.log(item);
+  router.push({ name: 'song-list-details', params: { name: item.name } });
+};
 </script>
 <style scoped lang="less">
 .song-list-container {
