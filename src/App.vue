@@ -8,6 +8,7 @@ import { useMusicLibraryStore } from './stores/musicLibrary';
 import { useHistoryStore } from './stores/history';
 import { usePlayerStore } from './stores/player';
 import { storeToRefs } from 'pinia';
+import { useSongListStore } from './stores/songList';
 // 引入userSettingsStore中的函数
 const userSettingsStore = useUserSettingsStore();
 const { loadUserSettings } = userSettingsStore;
@@ -22,6 +23,9 @@ const { loadHistory } = historyStore;
 const playerStore = usePlayerStore();
 const { currentPlayMusic } = storeToRefs(playerStore);
 const { setPlaylist, setCurrentPlayIndex, loadMusic } = playerStore;
+// 引入songListStore中的函数
+const songListStore = useSongListStore();
+const { loadSongList } = songListStore;
 
 onMounted(async () => {
   // 加载用户配置
@@ -41,5 +45,7 @@ onMounted(async () => {
   } else {
     return;
   }
+  // 加载歌单
+  await loadSongList();
 });
 </script>

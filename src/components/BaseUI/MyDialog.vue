@@ -9,8 +9,7 @@
           <slot name="main"></slot>
         </div>
         <div class="footer">
-          <button @click="cancel">取消</button>
-          <button @click="confirm">确定</button>
+          <slot name="footer"></slot>
         </div>
       </div>
     </div>
@@ -28,20 +27,8 @@ const openDialog = () => {
 const closeDialog = () => {
   showDialog.value = false;
 };
-const emit = defineEmits(['cancel', 'confirm']);
-// 取消
-const cancel = () => {
-  closeDialog();
-  emit('cancel');
-};
-// 确定
-const confirm = () => {
-  closeDialog();
-  emit('confirm');
-};
 // 将方法暴露给父组件
 defineExpose({ openDialog, closeDialog });
-
 </script>
 <style scoped lang="less">
 .dialog-container {

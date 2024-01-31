@@ -5,25 +5,35 @@
       <SongList />
     </div>
   </div>
-  <Dialog ref="dialogRef" @cancel="cancelCreate" @confirm="confirmCreate">
+  <MyDialog ref="dialogRef">
     <template #header>
       新建歌单
     </template>
     <template #main>
       <div class="input-container">
-        <input required type="text" class="input">
+        <input required type="text" class="input" v-model="inputValue">
         <label class="label">歌单名</label>
       </div>
     </template>
-  </Dialog>
+    <template #footer>
+      <button @click="cancelCreate">取消</button>
+      <button @click="confirmCreate">提交</button>
+    </template>
+  </MyDialog>
 </template>
 <script setup>
-import SongList from '../components/SongList.vue';
-import Dialog from '../components/BaseUI/Dialog.vue';
+import SongList from '@/components/SongList.vue';
+import MyDialog from '@/components/BaseUI/MyDialog.vue';
 import { ref } from 'vue';
+import { useSongListStore } from '@/stores/songList';
+
+const songListStore = useSongListStore();
+const { createSongList, saveSongListToLocal } = songListStore;
 
 // dialog实例
 const dialogRef = ref(null);
+// 输入框的值
+const inputValue = ref('');
 // 创建歌单
 const create = () => {
   // console.log('创建歌单');
@@ -32,10 +42,21 @@ const create = () => {
 // 取消创建
 const cancelCreate = () => {
   // console.log('取消创建');
+  inputValue.value = '';
+  dialogRef.value.closeDialog();
 };
 // 确认创建
-const confirmCreate = () => {
+const confirmCreate = async () => {
   // console.log('确认创建');
+  // console.log(inputValue.value);
+  try {
+    createSongList(inputValue.value.trim());
+    await saveSongListToLocal();
+    inputValue.value = '';
+    dialogRef.value.closeDialog();
+  } catch (error) {
+    console.log('error', error);
+  }
 };
 </script>
 <style scoped lang="less">
@@ -43,20 +64,17 @@ const confirmCreate = () => {
   width: 100%;
   height: 100%;
   padding: 20px 20px 0;
-  background-color: pink;
 
   .create {
     width: 100%;
     height: 70px;
     border-radius: 7px;
-    background-color: skyblue;
     margin-bottom: 20px;
   }
 
   .song-list {
     width: 100%;
     height: calc(100% - 90px);
-    background-color: yellow;
   }
 }
 
