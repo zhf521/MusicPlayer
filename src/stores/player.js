@@ -31,11 +31,11 @@ export const usePlayerStore = defineStore('player', () => {
             audio.pause();
         }
     };
-    const playlist = ref([]); // 播放列表
+    const playList = ref([]); // 播放列表
     // 设置播放列表
-    const setPlaylist = (list) => {
-        playlist.value = list;
-        // console.log('设置完的播放列表：', playlist.value);
+    const setPlayList = (list) => {
+        playList.value = list;
+        // console.log('设置完的播放列表：', playList.value);
     };
     const currentPlayIndex = ref(-1); // 当前播放的索引
     // 设置当前播放的索引
@@ -45,7 +45,7 @@ export const usePlayerStore = defineStore('player', () => {
     // 当前播放的音乐
     const currentPlayMusic = computed(() => {
         // console.log('当前播放的音乐：', playlist.value[currentPlayIndex.value]);
-        return playlist.value[currentPlayIndex.value];
+        return playList.value[currentPlayIndex.value];
     });
     // 上一曲
     const prev = async () => {
@@ -174,8 +174,8 @@ export const usePlayerStore = defineStore('player', () => {
         play,
         isPlaying,
         togglePlay,
-        playlist,
-        setPlaylist,
+        playList,
+        setPlayList,
         currentPlayIndex,
         setCurrentPlayIndex,
         currentPlayMusic,

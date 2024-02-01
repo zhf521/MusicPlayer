@@ -22,7 +22,7 @@ const { loadHistory } = historyStore;
 // 引入playerStore中的变量和函数
 const playerStore = usePlayerStore();
 const { currentPlayMusic } = storeToRefs(playerStore);
-const { setPlaylist, setCurrentPlayIndex, loadMusic } = playerStore;
+const { setPlayList, setCurrentPlayIndex, loadMusic } = playerStore;
 // 引入songListStore中的函数
 const songListStore = useSongListStore();
 const { loadSongList } = songListStore;
@@ -37,7 +37,7 @@ onMounted(async () => {
   let historyHead = history.value[0];
   if (historyHead) {
     // 设置播放列表
-    setPlaylist(historyHead.playlist);
+    setPlayList(historyHead.playList);
     // 设置当前播放索引
     setCurrentPlayIndex(historyHead.index);
     // 加载音乐

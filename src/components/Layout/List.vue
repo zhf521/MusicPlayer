@@ -1,12 +1,12 @@
 <template>
   <div class="list-container">
     <div class="tab">
-      <div :class="{ 'playlist-item': true, 'active': showPlaylist }" @click="showPlaylist = true">播放列表</div>
-      <div :class="{ 'history-item': true, 'active': !showPlaylist }" @click="showPlaylist = false">历史记录</div>
+      <div :class="{ 'play-list-item': true, 'active': showPlayList }" @click="showPlayList = true">播放列表</div>
+      <div :class="{ 'history-item': true, 'active': !showPlayList }" @click="showPlayList = false">历史记录</div>
     </div>
     <div class="list-content">
-      <div class="playlist" v-if="showPlaylist">
-        <MusicList :list="playlist" />
+      <div class="play-list" v-if="showPlayList">
+        <MusicList :list="playList" @itemDblclick="selectPlayListPlay" />
       </div>
       <div class="history" v-else>
         <MusicList />
@@ -22,10 +22,22 @@ import { usePlayerStore } from '@/stores/player';
 
 // 引入playerStore中的变量和函数
 const playerStore = usePlayerStore();
-const { playlist } = storeToRefs(playerStore);
+const { playList, currentPlayMusic } = storeToRefs(playerStore);
+const { setCurrentPlayIndex, loadMusic, play } = playerStore;
 
 // 是否展示播放列表
-const showPlaylist = ref(true);
+const showPlayList = ref(true);
+// 选择播放列表播放
+const selectPlayListPlay = async (musicList, item, index) => {
+  console.log('双击item了', musicList, item, index);
+  if (playList.value[index] !== currentPlayMusic.value) {
+    setCurrentPlayIndex(index);
+    await loadMusic(currentPlayMusic.value);
+    play();
+  } else {
+    return;
+  }
+};
 </script>
 <style scoped lang="less">
 .list-container {
@@ -41,7 +53,7 @@ const showPlaylist = ref(true);
     border-radius: 20px;
     padding: 3px;
 
-    .playlist-item {
+    .play-list-item {
       width: 100%;
       height: 100%;
       border-radius: 17px;

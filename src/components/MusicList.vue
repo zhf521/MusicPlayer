@@ -5,7 +5,8 @@
       <div class="clear" @click="clearList">清空列表</div> -->
     </div>
     <div class="music-list-content">
-      <div :class="{ 'music-list-item': true }" v-for="(item, index) in musicList" :key="item.filename">
+      <div :class="{ 'music-list-item': true }" v-for="(item, index) in musicList" :key="index"
+        @dblclick="dblclickItem(musicList, item, index)">
         <div class="music-info">
           <img :src="item.cover ? item.cover : '/defaultCover.png'" alt="音乐封面" class="cover">
           <div class="details">
@@ -32,10 +33,11 @@ const musicLibraryStore = useMusicLibraryStore();
 const { getMusicTagsByFilename } = musicLibraryStore;
 
 const props = defineProps(['list']);
+const emits = defineEmits(['itemDblclick']);
 
 // 列表
 const musicList = computed(() => {
-  console.log('接收到的列表', props.list);
+  // console.log('接收到的列表', props.list);
   return props.list.map(item => {
     if (JSON.stringify(getMusicTagsByFilename(item)) === '{}') {
       return item.split('/').pop().split('.').slice(0, -1).join('.');
@@ -44,6 +46,12 @@ const musicList = computed(() => {
     }
   });
 });
+
+const dblclickItem = (musicList, item, index) => {
+  // console.log('双击了', item);
+  emits('itemDblclick', musicList, item, index);
+};
+
 
 
 // import { computed } from 'vue';
@@ -159,7 +167,7 @@ const musicList = computed(() => {
 
           .title {
             font-size: 16px;
-            font-weight: 600;
+            font-weight: 550;
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
