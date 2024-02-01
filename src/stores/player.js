@@ -52,14 +52,14 @@ export const usePlayerStore = defineStore('player', () => {
         if (playMode.value === 0) {
             let index = currentPlayIndex.value - 1;
             if (index < 0) {
-                index = playlist.value.length - 1;
+                index = playList.value.length - 1;
             }
             // console.log('点击上一曲获取到的索引：', index);
             setCurrentPlayIndex(index);
             await loadMusic(currentPlayMusic.value);
             play();
         } else {
-            let index = Math.floor(Math.random() * playlist.value.length);
+            let index = Math.floor(Math.random() * playList.value.length);
             setCurrentPlayIndex(index);
             await loadMusic(currentPlayMusic.value);
             play();
@@ -79,14 +79,14 @@ export const usePlayerStore = defineStore('player', () => {
     const next = async () => {
         if (playMode.value === 0) {
             let index = currentPlayIndex.value + 1;
-            if (index > playlist.value.length - 1) {
+            if (index > playList.value.length - 1) {
                 index = 0;
             }
             setCurrentPlayIndex(index);
             await loadMusic(currentPlayMusic.value);
             play();
         } else {
-            let index = Math.floor(Math.random() * playlist.value.length);
+            let index = Math.floor(Math.random() * playList.value.length);
             setCurrentPlayIndex(index);
             await loadMusic(currentPlayMusic.value);
             play();
@@ -121,7 +121,7 @@ export const usePlayerStore = defineStore('player', () => {
         // 设置歌词
         lrc.setLyric(currentMusicTags.value.lyrics.lyrics);
         // 添加到历史记录并保存到本地
-        addToHistory(playlist.value, currentPlayIndex.value);
+        addToHistory(playList.value, currentPlayIndex.value);
         await saveHistoryToLocal();
     };
     const musicCurrentTime = ref(0); // 音频当前时间

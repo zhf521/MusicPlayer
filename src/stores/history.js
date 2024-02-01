@@ -17,14 +17,14 @@ export const useHistoryStore = defineStore('history', () => {
         }
     };
     // 添加到历史记录
-    const addToHistory = (playlist, index) => {
-        // console.log('添加到历史记录中的当前播放列表:', playlist);
+    const addToHistory = (playList, index) => {
+        // console.log('添加到历史记录中的当前播放列表:', playList);
         if (history.value.length === 0) {
-            history.value.unshift({ playlist: playlist, index: index });
+            history.value.unshift({ playList: playList, index: index });
         } else {
             const headItem = history.value[0];
-            if (headItem.playlist !== playlist || headItem.index !== index) {
-                history.value.unshift({ playlist: playlist, index: index });
+            if (headItem.playList !== playList || headItem.index !== index) {
+                history.value.unshift({ playList: playList, index: index });
             }
         }
         if (history.value.length > 10) {

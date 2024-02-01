@@ -28,8 +28,8 @@ const { setCurrentPlayIndex, loadMusic, play } = playerStore;
 // 是否展示播放列表
 const showPlayList = ref(true);
 // 选择播放列表播放
-const selectPlayListPlay = async (musicList, item, index) => {
-  console.log('双击item了', musicList, item, index);
+const selectPlayListPlay = async (index) => {
+  // console.log('双击item了', musicList, item, index);
   if (playList.value[index] !== currentPlayMusic.value) {
     setCurrentPlayIndex(index);
     await loadMusic(currentPlayMusic.value);
@@ -94,7 +94,7 @@ const selectPlayListPlay = async (musicList, item, index) => {
     width: 100%;
     height: calc(100% - 40px);
 
-    .playlist {
+    .play-list {
       width: 100%;
       height: 100%;
     }

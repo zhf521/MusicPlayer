@@ -1,16 +1,17 @@
 <template>
   <div class="music-list-container">
     <div class="header">
-      <!-- <div class="total">共{{ list.length }}首</div>
-      <div class="clear" @click="clearList">清空列表</div> -->
+      <div class="total">共{{ musicList.length }}首</div>
+      <!-- <div class="clear" @click="clearList">清空列表</div> -->
     </div>
     <div class="music-list-content">
-      <div :class="{ 'music-list-item': true }" v-for="(item, index) in musicList" :key="index"
-        @dblclick="dblclickItem(musicList, item, index)">
+      <div :class="{ 'music-list-item': true, 'active': item.filename === currentPlayMusic }"
+        v-for="(item, index) in musicList" :key="index" @dblclick="dblclickItem(index)">
         <div class="music-info">
           <img :src="item.cover ? item.cover : '/defaultCover.png'" alt="音乐封面" class="cover">
           <div class="details">
-            <div class="title">{{ item.title ? item.title : item }}</div>
+            <div class="title">{{ item.title ? item.title : item.filename.split('/').pop().split('.').slice(0,
+              -1).join('.') }}</div>
             <div class="artist-album">{{ item.artist ? item.artist : '未知艺术家' }} - {{ item.album ?
               item.album : '未知专辑'
             }}</div>
@@ -27,10 +28,15 @@
 import { MoreOne as MoreIcon } from '@icon-park/vue-next';
 import { computed } from 'vue';
 import { useMusicLibraryStore } from '@/stores/musicLibrary';
+import { usePlayerStore } from '@/stores/player';
+import { storeToRefs } from 'pinia';
 
 // 引入musicLibraryStore中的变量
 const musicLibraryStore = useMusicLibraryStore();
 const { getMusicTagsByFilename } = musicLibraryStore;
+// 引入playerStore中的变量
+const playerStore = usePlayerStore();
+const { currentPlayMusic } = storeToRefs(playerStore);
 
 const props = defineProps(['list']);
 const emits = defineEmits(['itemDblclick']);
@@ -40,68 +46,17 @@ const musicList = computed(() => {
   // console.log('接收到的列表', props.list);
   return props.list.map(item => {
     if (JSON.stringify(getMusicTagsByFilename(item)) === '{}') {
-      return item.split('/').pop().split('.').slice(0, -1).join('.');
+      return { filename: item };
     } else {
-      return getMusicTagsByFilename(item);
+      return { filename: item, ...getMusicTagsByFilename(item) };
     }
   });
 });
-
-const dblclickItem = (musicList, item, index) => {
+// 双击列表项目
+const dblclickItem = (index) => {
   // console.log('双击了', item);
-  emits('itemDblclick', musicList, item, index);
+  emits('itemDblclick', index);
 };
-
-
-
-// import { computed } from 'vue';
-// import { usePlayerStore } from '@/stores/player';
-// import { storeToRefs } from 'pinia';
-// import { useMusicLibraryStore } from '@/stores/musicLibrary';
-
-// // 引入playerStore中的变量和函数
-// const playerStore = usePlayerStore();
-// const { playlist, currentPlayMusic, currentPlayIndex } = storeToRefs(playerStore);
-// const { loadMusic, play, setPlaylist, setCurrentPlayIndex, } = playerStore;
-// // 引入musicLibraryStore中的函数
-// const musicLibraryStore = useMusicLibraryStore();
-// const { getMusicTagsByFilename } = musicLibraryStore;
-
-// // 清空列表
-// const clearList = () => {
-//   setPlaylist([]);
-// };
-// // 列表
-// const list = computed(() => {
-//   // console.log('playlist', playlist.value);
-//   // console.log('list', props.list.map(item => {
-//   //   if (JSON.stringify(getMusicTagsByFilename(item)) === '{}') {
-//   //     return item.split('/').pop().split('.').slice(0, -1).join('.');
-//   //   } else {
-//   //     return getMusicTagsByFilename(item);
-//   //   }
-//   // }));
-//   return playlist.value.map(item => {
-//     if (JSON.stringify(getMusicTagsByFilename(item)) === '{}') {
-//       return item.split('/').pop().split('.').slice(0, -1).join('.');
-//     } else {
-//       return getMusicTagsByFilename(item);
-//     }
-//   });
-// });
-// // 选择播放
-// const selectPlay = async (index) => {
-//   // console.log('当前播放的音乐', currentPlayMusic.value);
-//   if (playlist.value[index] !== currentPlayMusic.value) {
-//     // console.log('点击的不是当前播放的音乐');
-//     setCurrentPlayIndex(index);
-//     await loadMusic(currentPlayMusic.value);
-//     play();
-//   } else {
-//     // console.log('点击的是当前播放的音乐');
-//     return;
-//   }
-// };
 </script>
 <style scoped lang="less">
 .music-list-container {
@@ -167,7 +122,7 @@ const dblclickItem = (musicList, item, index) => {
 
           .title {
             font-size: 16px;
-            font-weight: 550;
+            font-weight: 500;
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
@@ -190,18 +145,17 @@ const dblclickItem = (musicList, item, index) => {
       }
 
       &.active {
-        background-color: #3780CE;
+        background-color: #F2F3F4;
 
-        .title {
-          color: #FFFFFF;
-        }
+        .details {
+          .title {
+            font-weight: 550;
+            color: blue;
+          }
 
-        .artist-album {
-          color: #CFCFCF;
-        }
-
-        .more {
-          color: #FFFFFF;
+          .artist-album {
+            color: blue;
+          }
         }
       }
     }

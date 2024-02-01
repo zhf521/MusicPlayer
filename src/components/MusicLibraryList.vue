@@ -27,8 +27,8 @@ import { useMusicLibraryStore } from '../stores/musicLibrary';
 
 // 引入playerStore中的变量和函数
 const playerStore = usePlayerStore();
-const { playlist, currentPlayMusic } = storeToRefs(playerStore);
-const { loadMusic, play, setPlaylist, setCurrentPlayIndex, } = playerStore;
+const { playList, currentPlayMusic } = storeToRefs(playerStore);
+const { loadMusic, play, setPlayList, setCurrentPlayIndex, } = playerStore;
 
 // 引入musicLibraryStore中的变量
 const musicLibraryStore = useMusicLibraryStore();
@@ -41,7 +41,7 @@ const musicList = computed(() => {
 });
 // 选择播放
 const selectPlay = async (index) => {
-  if (compareArrays(musicList.value, playlist.value)) {
+  if (compareArrays(musicList.value, playList.value)) {
     // console.log('播放列表相同');
     if (musicList.value[index] !== currentPlayMusic.value) {
       // console.log('点击的不是当前播放的音乐');
@@ -54,7 +54,7 @@ const selectPlay = async (index) => {
     }
   } else {
     // console.log('播放列表不同');
-    setPlaylist(musicList.value);
+    setPlayList(musicList.value);
     setCurrentPlayIndex(index);
     await loadMusic(currentPlayMusic.value);
     play();
