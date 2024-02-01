@@ -1,36 +1,31 @@
 <template>
   <div class="list-container">
     <div class="tab">
-      <div :class="{ 'playlist-item': true, 'active': showPlaylist }" @click="setShowPlaylist">播放列表</div>
-      <div :class="{ 'history-item': true, 'active': !showPlaylist }" @click="setShowHistoryList">历史记录</div>
+      <div :class="{ 'playlist-item': true, 'active': showPlaylist }" @click="showPlaylist = true">播放列表</div>
+      <div :class="{ 'history-item': true, 'active': !showPlaylist }" @click="showPlaylist = false">历史记录</div>
     </div>
     <div class="list-content">
       <div class="playlist" v-if="showPlaylist">
-        <Playlist />
+        <MusicList :list="playlist" />
       </div>
       <div class="history" v-else>
-        <HistoryList />
+        <MusicList />
       </div>
     </div>
   </div>
 </template>
 <script setup>
 import { ref } from 'vue';
-import Playlist from './Playlist.vue';
-import HistoryList from './HistoryList.vue';
+import MusicList from '@/components/MusicList.vue';
+import { storeToRefs } from 'pinia';
+import { usePlayerStore } from '@/stores/player';
+
+// 引入playerStore中的变量和函数
+const playerStore = usePlayerStore();
+const { playlist } = storeToRefs(playerStore);
 
 // 是否展示播放列表
 const showPlaylist = ref(true);
-// 设置展示播放列表
-const setShowPlaylist = () => {
-  // console.log('show playlist');
-  showPlaylist.value = true;
-};
-// 设置展示历史记录
-const setShowHistoryList = () => {
-  // console.log('show history list');
-  showPlaylist.value = false;
-};
 </script>
 <style scoped lang="less">
 .list-container {

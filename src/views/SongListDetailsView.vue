@@ -1,13 +1,12 @@
 <template>
   <div class="song-list-details-container">
-    <img src="" alt="" class="cover">
-    <div>{{ $route.params.name }}</div>
-    <div>
-      
+    <div class="song-list-details">
+      <SongListDetails />
     </div>
   </div>
 </template>
 <script setup>
+import SongListDetails from '@/components/SongListDetails.vue';
 
 </script>
 <style scoped lang="less">
@@ -16,10 +15,20 @@
   height: 100%;
   padding: 20px 20px 0;
 
-  .cover {
-    width: 200px;
-    height: 200px;
-    border-radius: 20px;
+  .song-list-info {
+    display: flex;
+
+    .cover {
+      width: 200px;
+      height: 200px;
+      border-radius: 20px;
+    }
+  }
+
+  .song-list {
+    width: 100%;
+    height: 100%;
+    // background-color: pink;
   }
 }
 </style>
