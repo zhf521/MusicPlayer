@@ -9,21 +9,25 @@
         <MusicList :list="playList" @itemDblclick="selectPlayListPlay" />
       </div>
       <div class="history" v-else>
-        <MusicList />
+        <MusicList :list="historyList"/>
       </div>
     </div>
   </div>
 </template>
 <script setup>
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import MusicList from '@/components/MusicList.vue';
 import { storeToRefs } from 'pinia';
 import { usePlayerStore } from '@/stores/player';
+import { useHistoryStore } from '@/stores/history';
 
 // 引入playerStore中的变量和函数
 const playerStore = usePlayerStore();
 const { playList, currentPlayMusic } = storeToRefs(playerStore);
 const { setCurrentPlayIndex, loadMusic, play } = playerStore;
+// 引入historyStore中的变量
+const historyStore = useHistoryStore();
+const { history } = storeToRefs(historyStore);
 
 // 是否展示播放列表
 const showPlayList = ref(true);
@@ -38,6 +42,12 @@ const selectPlayListPlay = async (index) => {
     return;
   }
 };
+// 历史记录列表
+const historyList = computed(() => {
+  return history.value.map((item) => {
+    return item.playList[item.index];
+  });
+});
 </script>
 <style scoped lang="less">
 .list-container {

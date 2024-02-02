@@ -105,6 +105,7 @@ const dblclickItem = (index) => {
       padding: 10px;
 
       .music-info {
+        height: 100%;
         display: flex;
         align-items: center;
         overflow: hidden;
@@ -117,11 +118,17 @@ const dblclickItem = (index) => {
         }
 
         .details {
+          height: 100%;
           margin-left: 10px;
           overflow: hidden;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
 
           .title {
+            height: 40%;
             font-size: 16px;
+            line-height: 20px;
             font-weight: 500;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -129,6 +136,8 @@ const dblclickItem = (index) => {
           }
 
           .artist-album {
+            height: 40%;
+            line-height: 20px;
             font-size: 14px;
             color: rgba(0, 0, 0, 0.6);
             overflow: hidden;
