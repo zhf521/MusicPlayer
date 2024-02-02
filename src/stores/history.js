@@ -1,6 +1,7 @@
 import localforage from 'localforage';
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
+import { compareArrays } from '@/utils/compareArrays';
 
 export const useHistoryStore = defineStore('history', () => {
     // 历史记录
@@ -19,14 +20,16 @@ export const useHistoryStore = defineStore('history', () => {
     // 添加到历史记录
     const addToHistory = (playList, index) => {
         // console.log('添加到历史记录中的当前播放列表:', playList);
-        if (history.value.length === 0) {
-            history.value.unshift({ playList: playList, index: index });
-        } else {
-            const headItem = history.value[0];
-            if (headItem.playList !== playList || headItem.index !== index) {
-                history.value.unshift({ playList: playList, index: index });
+        for (let i = 0; i < history.value.length; i++) {
+            const item = history.value[i];
+            if (
+                compareArrays(playList, item.playList) &&
+                item.index === index
+            ) {
+                history.value.splice(i, 1);
             }
         }
+        history.value.unshift({ playList: playList, index: index });
         if (history.value.length > 10) {
             history.value.pop();
         }
