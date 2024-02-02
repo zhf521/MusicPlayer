@@ -9,7 +9,7 @@
         <MusicList :list="playList" @itemDblclick="selectPlayListPlay" />
       </div>
       <div class="history" v-else>
-        <MusicList :list="historyList"/>
+        <MusicList :list="historyList" @itemDblclick="selectHistoryListPlay" />
       </div>
     </div>
   </div>
@@ -24,7 +24,7 @@ import { useHistoryStore } from '@/stores/history';
 // 引入playerStore中的变量和函数
 const playerStore = usePlayerStore();
 const { playList, currentPlayMusic } = storeToRefs(playerStore);
-const { setCurrentPlayIndex, loadMusic, play } = playerStore;
+const { setCurrentPlayIndex, loadMusic, play, setPlayList } = playerStore;
 // 引入historyStore中的变量
 const historyStore = useHistoryStore();
 const { history } = storeToRefs(historyStore);
@@ -33,7 +33,7 @@ const { history } = storeToRefs(historyStore);
 const showPlayList = ref(true);
 // 选择播放列表播放
 const selectPlayListPlay = async (index) => {
-  // console.log('双击item了', musicList, item, index);
+  // console.log('双击item了',index);
   if (playList.value[index] !== currentPlayMusic.value) {
     setCurrentPlayIndex(index);
     await loadMusic(currentPlayMusic.value);
@@ -48,6 +48,18 @@ const historyList = computed(() => {
     return item.playList[item.index];
   });
 });
+// 选择历史记录播放
+const selectHistoryListPlay = async (index) => {
+  // console.log('双击item了', index);
+  if (historyList.value[index] !== currentPlayMusic.value) {
+    setPlayList(history.value[index].playList);
+    setCurrentPlayIndex(history.value[index].index);
+    await loadMusic(currentPlayMusic.value);
+    play();
+  } else {
+    return;
+  }
+};
 </script>
 <style scoped lang="less">
 .list-container {
