@@ -5,8 +5,8 @@
       <!-- <div class="clear" @click="clearList">清空列表</div> -->
     </div>
     <div class="music-list-content">
-      <div :class="{ 'music-list-item': true, 'active': item.filename === currentPlayMusic }"
-        v-for="(item, index) in musicList" :key="index" @dblclick="dblclickItem(index)">
+      <div :class="{ 'music-list-item': true, 'active': props.isHighlight(item,index) }" v-for="(item, index) in musicList"
+        :key="index" @dblclick="dblclickItem(index)">
         <div class="music-info">
           <img :src="item.cover ? item.cover : '/defaultCover.png'" alt="音乐封面" class="cover">
           <div class="details">
@@ -38,7 +38,13 @@ const { getMusicTagsByFilename } = musicLibraryStore;
 const playerStore = usePlayerStore();
 const { currentPlayMusic } = storeToRefs(playerStore);
 
-const props = defineProps(['list']);
+const props = defineProps({
+  list: Array,
+  isHighlight: {
+    type: Function,
+    default: () => false,
+  }
+});
 const emits = defineEmits(['itemDblclick', 'moreClick']);
 
 // 列表

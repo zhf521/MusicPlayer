@@ -7,7 +7,7 @@
       </button>
     </div>
     <div class="music-library" v-else>
-      <MusicList :list="musicLibraryList" @itemDblclick="selectMusicLibraryListPlay" @moreClick="showMore" />
+      <MusicList :list="musicLibraryList" :isHighlight="(item) => item.filename === currentPlayMusic" @itemDblclick="selectMusicLibraryListPlay" @moreClick="showMore" />
     </div>
   </div>
 </template>

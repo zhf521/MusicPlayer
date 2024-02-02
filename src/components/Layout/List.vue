@@ -6,10 +6,12 @@
     </div>
     <div class="list-content">
       <div class="play-list" v-if="showPlayList">
-        <MusicList :list="playList" @itemDblclick="selectPlayListPlay" />
+        <MusicList :list="playList" @itemDblclick="selectPlayListPlay"
+          :isHighlight="(item) => item.filename === currentPlayMusic" />
       </div>
       <div class="history" v-else>
-        <MusicList :list="historyList" @itemDblclick="selectHistoryListPlay" />
+        <MusicList :list="historyList" @itemDblclick="selectHistoryListPlay"
+          :isHighlight="(item, index) => index === 0" />
       </div>
     </div>
   </div>

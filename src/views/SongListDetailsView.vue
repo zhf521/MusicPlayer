@@ -1,6 +1,6 @@
 <template>
   <div class="song-list-details-container">
-    <MusicList :list="detailsList" @itemDblclick="selectDetailsListPlay" />
+    <MusicList :list="detailsList" :isHighlight="(item) => item.filename === currentPlayMusic" @itemDblclick="selectDetailsListPlay" />
   </div>
 </template>
 <script setup>
