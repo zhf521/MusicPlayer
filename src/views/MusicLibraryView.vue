@@ -7,19 +7,25 @@
       </button>
     </div>
     <div class="music-library" v-else>
-      <MusicLibraryList />
+      <MusicList :list="musicLibraryList" @itemDblclick="selectMusicLibraryListPlay" />
     </div>
   </div>
 </template>
 <script setup>
 import { useRouter } from 'vue-router';
-import { useMusicLibraryStore } from '../stores/musicLibrary.js';
+import { useMusicLibraryStore } from '@/stores/musicLibrary';
 import { storeToRefs } from 'pinia';
-import MusicLibraryList from '../components/MusicLibraryList.vue';
+import MusicList from '@/components/MusicList.vue';
+import { computed } from 'vue';
+import { usePlayerStore } from '@/stores/player';
 
 // 引入musicLibraryStore中的变量
 const musicLibraryStore = useMusicLibraryStore();
 const { musicLibrary } = storeToRefs(musicLibraryStore);
+// 引入playerStore中的变量和方法
+const playerStore = usePlayerStore();
+const { currentPlayMusic } = storeToRefs(playerStore);
+const { setPlayList, setCurrentPlayIndex, loadMusic, play } = playerStore;
 
 // 引入路由器
 const router = useRouter();
@@ -27,12 +33,30 @@ const router = useRouter();
 const goToCloudFiles = () => {
   router.push({ name: 'cloud-files', params: { filename: '/' } });
 };
+// 音乐库列表
+const musicLibraryList = computed(() => {
+  return musicLibrary.value.map((item) => {
+    return item.filename;
+  });
+});
+// 选择音乐库列表播放
+const selectMusicLibraryListPlay = async (index) => {
+  // console.log(index);
+  if (musicLibrary.value[index] !== currentPlayMusic.value) {
+    setPlayList(musicLibraryList.value);
+    setCurrentPlayIndex(index);
+    await loadMusic(currentPlayMusic.value);
+    play();
+  } else {
+    return;
+  }
+};
 </script>
 <style scoped lang="less">
 .music-library-view-container {
   width: 100%;
   height: 100%;
-  padding: 20px 20px 0;
+  padding: 0 20px;
 
   .empty {
     width: 100%;
