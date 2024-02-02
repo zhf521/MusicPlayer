@@ -30,7 +30,7 @@ export const useSongListStore = defineStore('songList', () => {
     };
     // 添加歌曲到歌单
     const addSongsToSongList = (songs, songListName) => {
-        console.log('songs', songs, 'songListName', songListName);
+        // console.log('songs', songs, 'songListName', songListName);
         const targetSongList = songList.value.find(
             (item) => item.name === songListName
         );

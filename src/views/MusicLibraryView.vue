@@ -57,7 +57,7 @@ const selectMusicLibraryListPlay = async (index) => {
 };
 // 展示更多
 const showMore = (index) => {
-  console.log('展示更多', index);
+  // console.log('展示更多', index);
   addSongsToSongList([musicLibraryList.value[index]], '123');
   saveSongListToLocal();
 };
