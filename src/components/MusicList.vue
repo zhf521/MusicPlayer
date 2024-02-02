@@ -18,7 +18,7 @@
           </div>
         </div>
         <div class="more">
-          <MoreIcon theme="outline" size="32" />
+          <MoreIcon theme="outline" size="32" @click="clickMore(index)" />
         </div>
       </div>
     </div>
@@ -39,7 +39,7 @@ const playerStore = usePlayerStore();
 const { currentPlayMusic } = storeToRefs(playerStore);
 
 const props = defineProps(['list']);
-const emits = defineEmits(['itemDblclick']);
+const emits = defineEmits(['itemDblclick', 'moreClick']);
 
 // 列表
 const musicList = computed(() => {
@@ -56,6 +56,10 @@ const musicList = computed(() => {
 const dblclickItem = (index) => {
   // console.log('双击了', item);
   emits('itemDblclick', index);
+};
+// 点击更多
+const clickMore = (index) => {
+  emits('moreClick', index);
 };
 </script>
 <style scoped lang="less">

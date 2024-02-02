@@ -28,6 +28,18 @@ export const useSongListStore = defineStore('songList', () => {
             songList.value.push({ name: newSongList, songs: [] });
         }
     };
+    // 添加歌曲到歌单
+    const addSongsToSongList = (songs, songListName) => {
+        console.log('songs', songs, 'songListName', songListName);
+        const targetSongList = songList.value.find(
+            (item) => item.name === songListName
+        );
+        songs.forEach((song) => {
+            if (!targetSongList.songs.find((item) => item === song)) {
+                targetSongList.songs.push(song);
+            }
+        });
+    };
     // 保存歌单到本地
     const saveSongListToLocal = async () => {
         try {
@@ -43,6 +55,7 @@ export const useSongListStore = defineStore('songList', () => {
         songList,
         loadSongList,
         createSongList,
+        addSongsToSongList,
         saveSongListToLocal,
     };
 });

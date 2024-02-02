@@ -7,7 +7,7 @@
       </button>
     </div>
     <div class="music-library" v-else>
-      <MusicList :list="musicLibraryList" @itemDblclick="selectMusicLibraryListPlay" />
+      <MusicList :list="musicLibraryList" @itemDblclick="selectMusicLibraryListPlay" @moreClick="showMore" />
     </div>
   </div>
 </template>
@@ -18,6 +18,7 @@ import { storeToRefs } from 'pinia';
 import MusicList from '@/components/MusicList.vue';
 import { computed } from 'vue';
 import { usePlayerStore } from '@/stores/player';
+import { useSongListStore } from '@/stores/songList';
 
 // 引入musicLibraryStore中的变量
 const musicLibraryStore = useMusicLibraryStore();
@@ -26,6 +27,9 @@ const { musicLibrary } = storeToRefs(musicLibraryStore);
 const playerStore = usePlayerStore();
 const { currentPlayMusic } = storeToRefs(playerStore);
 const { setPlayList, setCurrentPlayIndex, loadMusic, play } = playerStore;
+// 引入songListStore中的方法
+const songListStore = useSongListStore();
+const { addSongsToSongList, saveSongListToLocal } = songListStore;
 
 // 引入路由器
 const router = useRouter();
@@ -50,6 +54,12 @@ const selectMusicLibraryListPlay = async (index) => {
   } else {
     return;
   }
+};
+// 展示更多
+const showMore = (index) => {
+  console.log('展示更多', index);
+  addSongsToSongList([musicLibraryList.value[index]], '123');
+  saveSongListToLocal();
 };
 </script>
 <style scoped lang="less">
