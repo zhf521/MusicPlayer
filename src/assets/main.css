@@ -10,3 +10,18 @@ body {
     width: 100vw;
     height: 100vh;
 }
+
+*::-webkit-scrollbar {
+    width: 8px;
+}
+
+/* 默认状态下，滑块透明 */
+*::-webkit-scrollbar-thumb {
+    background-color: transparent;
+}
+
+/* 鼠标悬停时，滑块为深灰色 */
+*:hover::-webkit-scrollbar-thumb {
+    background-color: #dadbdc;
+    border-radius: 4px;
+}
