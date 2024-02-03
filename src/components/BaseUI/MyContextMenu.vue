@@ -1,21 +1,21 @@
 <template>
-  <div class="pop-menu-container">
-    <div class="pop-menu">
-      <div class="pop-menu-item"></div>
+  <div class="context-menu-container">
+    <div class="context-menu">
+      <div class="context-menu-item"></div>
     </div>
   </div>
 </template>
 <script setup>
 </script>
 <style scoped lang="less">
-.pop-menu-container {
+.context-menu-container {
   position: fixed;
   width: 150px;
   padding: 10px;
   border-radius: 15px;
 
-  .pop-menu {
-    .pop-menu-item {}
+  .context-menu {
+    .context-menu-item {}
   }
 }
 </style>

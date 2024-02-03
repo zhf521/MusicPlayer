@@ -64,6 +64,9 @@ defineExpose({ openDialog, closeDialog });
 
     .footer {
       padding: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
     }
   }
 }
