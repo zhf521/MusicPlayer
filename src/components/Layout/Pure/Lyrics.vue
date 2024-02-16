@@ -11,8 +11,7 @@
     </div>
   </div>
   <div class="translateButton">
-    <TranslateIcon v-show="lrcLines[0] && lrcLines[0].extendedLyrics[0]" theme="outline" size="32"
-      @click="toggleShowTranslate" />
+    <TranslateIcon v-show="hasTranslate" theme="outline" size="32" @click="toggleShowTranslate" />
   </div>
 </template>
 <script setup>
@@ -95,6 +94,10 @@ const jumpToTime = (time) => {
 };
 // 显示翻译
 const showTranslate = ref(false);
+// 有无翻译歌词
+const hasTranslate = computed(() => {
+  return !lrcLines.value.every(item => item.extendedLyrics.length === 0);
+});
 const toggleShowTranslate = () => {
   showTranslate.value = !showTranslate.value;
 };
