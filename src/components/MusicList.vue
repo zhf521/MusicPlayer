@@ -79,7 +79,7 @@
 </template>
 
 <script setup>
-import { MoreOne as MoreIcon, PlayOne as PlayIcon, GoEnd as NextIcon, MusicMenu as SongListIcon } from '@icon-park/vue-next';
+import { MoreOne as MoreIcon, PlayOne as PlayIcon, GoEnd as NextIcon, MusicMenu as SongListIcon, Delete as DeleteIcon } from '@icon-park/vue-next';
 import { computed, ref } from 'vue';
 import { useMusicLibraryStore } from '@/stores/musicLibrary';
 import { usePlayerStore } from '@/stores/player';
@@ -100,6 +100,7 @@ const { songList } = storeToRefs(songListStore);
 
 const props = defineProps({
   list: Array,
+  listName: String,
   isHighlight: {
     type: Function,
     default: () => false,
@@ -150,6 +151,22 @@ const menu = [
       // console.log('添加到歌单');
       addDialogRef.value.openDialog();
       currentMenuItem.value = item;
+    }
+  },
+  {
+    label: '从列表中删除',
+    icon: DeleteIcon,
+    handler: (item, index) => {
+      console.log(props.listName)
+      if (props.listName === 'musicLibrary') {
+
+      } else if (props.listName === 'playList') {
+
+      } else if (props.listName === 'historyList') {
+
+      } else if (props.listName === 'detailsList') {
+
+      }
     }
   }
 ];

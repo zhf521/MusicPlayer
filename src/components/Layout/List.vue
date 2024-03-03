@@ -6,16 +6,17 @@
     </div>
     <div class="list-content">
       <div class="play-list" v-if="showPlayList">
-        <MusicList :list="playList" @itemDblclick="selectPlayListPlay"
+        <MusicList :list="playList" :listName="'playList'" @itemDblclick="selectPlayListPlay"
           :isHighlight="(item) => item.filename === currentPlayMusic" />
       </div>
       <div class="history" v-else>
-        <MusicList :list="historyList" @itemDblclick="selectHistoryListPlay"
+        <MusicList :list="historyList" :listName="'historyList'" @itemDblclick="selectHistoryListPlay"
           :isHighlight="(item, index) => index === 0" />
       </div>
     </div>
   </div>
 </template>
+
 <script setup>
 import { computed, ref } from 'vue';
 import MusicList from '@/components/MusicList.vue';
@@ -63,6 +64,7 @@ const selectHistoryListPlay = async (index) => {
   }
 };
 </script>
+
 <style scoped lang="less">
 .list-container {
   width: 100%;

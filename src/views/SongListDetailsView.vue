@@ -1,8 +1,10 @@
 <template>
   <div class="song-list-details-container">
-    <MusicList :list="detailsList" :isHighlight="(item) => item.filename === currentPlayMusic" @itemDblclick="selectDetailsListPlay" />
+    <MusicList :list="detailsList" :listName="'detailsList'" :isHighlight="(item) => item.filename === currentPlayMusic"
+      @itemDblclick="selectDetailsListPlay" />
   </div>
 </template>
+
 <script setup>
 import MusicList from '@/components/MusicList.vue';
 import { computed } from 'vue';
@@ -43,6 +45,7 @@ const selectDetailsListPlay = async (index) => {
   }
 };
 </script>
+
 <style scoped lang="less">
 .song-list-details-container {
   width: 100%;
