@@ -7,10 +7,12 @@
       </button>
     </div>
     <div class="music-library" v-else>
-      <MusicList :list="musicLibraryList" :isHighlight="(item) => item.filename === currentPlayMusic" @itemDblclick="selectMusicLibraryListPlay" @moreClick="showMore" />
+      <MusicList :list="musicLibraryList" :isHighlight="(item) => item.filename === currentPlayMusic"
+        @itemDblclick="selectMusicLibraryListPlay" />
     </div>
   </div>
 </template>
+
 <script setup>
 import { useRouter } from 'vue-router';
 import { useMusicLibraryStore } from '@/stores/musicLibrary';
@@ -55,13 +57,8 @@ const selectMusicLibraryListPlay = async (index) => {
     return;
   }
 };
-// 展示更多
-const showMore = (index) => {
-  // console.log('展示更多', index);
-  addSongsToSongList([musicLibraryList.value[index]], '123');
-  saveSongListToLocal();
-};
 </script>
+
 <style scoped lang="less">
 .music-library-view-container {
   width: 100%;

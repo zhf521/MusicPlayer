@@ -8,20 +8,23 @@
       <template #header>
         新建歌单
       </template>
+
       <template #main>
         <div class="input-container">
           <input required type="text" class="input" v-model="inputValue">
           <label class="label">歌单名</label>
         </div>
       </template>
+
       <template #footer>
         <button @click="cancelCreate">取消</button>
-        <button @click="confirmCreate">提交</button>
+        <button @click="confirmCreate">确认</button>
       </template>
     </MyDialog>
   </div>
   <router-view />
 </template>
+
 <script setup>
 import SongList from '@/components/SongList.vue';
 import MyDialog from '@/components/BaseUI/MyDialog.vue';
@@ -55,11 +58,13 @@ const confirmCreate = async () => {
     await saveSongListToLocal();
     inputValue.value = '';
     dialogRef.value.closeDialog();
+    
   } catch (error) {
     console.log('error', error);
   }
 };
 </script>
+
 <style scoped lang="less">
 .song-list-view-container {
   width: 100%;

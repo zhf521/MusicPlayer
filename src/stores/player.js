@@ -37,6 +37,11 @@ export const usePlayerStore = defineStore('player', () => {
         playList.value = list;
         // console.log('设置完的播放列表：', playList.value);
     };
+    // 添加音乐到播放列表
+    const addMusicToPlayList = (music) => {
+        // console.log('添加的音乐：', music);
+        playList.value.push(music);
+    }
     const currentPlayIndex = ref(-1); // 当前播放的索引
     // 设置当前播放的索引
     const setCurrentPlayIndex = (index) => {
@@ -176,6 +181,7 @@ export const usePlayerStore = defineStore('player', () => {
         togglePlay,
         playList,
         setPlayList,
+        addMusicToPlayList,
         currentPlayIndex,
         setCurrentPlayIndex,
         currentPlayMusic,
