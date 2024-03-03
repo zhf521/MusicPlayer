@@ -63,6 +63,12 @@ export const useMusicLibraryStore = defineStore('musicLibrary', () => {
             return {};
         }
     };
+    // 从音乐库中删除音乐
+    const removeMusicFromLibrary = (musicArray) => {
+        musicLibrary.value = musicLibrary.value.filter((item) => {
+            return !musicArray.includes(item.filename);
+        })
+    }
     // 保存音乐库到本地
     const saveMusicLibraryToLocal = async () => {
         try {
@@ -81,6 +87,7 @@ export const useMusicLibraryStore = defineStore('musicLibrary', () => {
         loadMusicLibrary,
         addTagsToMusic,
         getMusicTagsByFilename,
+        removeMusicFromLibrary,
         saveMusicLibraryToLocal,
     };
 });

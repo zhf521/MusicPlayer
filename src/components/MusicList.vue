@@ -76,6 +76,21 @@
       <button @click="confirmCreate">确认</button>
     </template>
   </MyDialog>
+  <MyDialog ref="deleteDialogRef">
+
+    <template #header>
+      从列表中删除
+    </template>
+
+    <template #main>
+      确认从列表中删除该歌曲吗？
+    </template>
+
+    <template #footer>
+      <button @click="cancelDelete">取消</button>
+      <button @click="confirmDelete">确认</button>
+    </template>
+  </MyDialog>
 </template>
 
 <script setup>
@@ -89,7 +104,7 @@ import { useSongListStore } from '@/stores/songList';
 
 // 引入musicLibraryStore中的变量
 const musicLibraryStore = useMusicLibraryStore();
-const { getMusicTagsByFilename } = musicLibraryStore;
+const { getMusicTagsByFilename, removeMusicFromLibrary, saveMusicLibraryToLocal } = musicLibraryStore;
 // 引入playerStore中的变量
 const playerStore = usePlayerStore();
 const { addMusicToPlayList } = playerStore;
@@ -157,16 +172,8 @@ const menu = [
     label: '从列表中删除',
     icon: DeleteIcon,
     handler: (item, index) => {
-      console.log(props.listName)
-      if (props.listName === 'musicLibrary') {
-
-      } else if (props.listName === 'playList') {
-
-      } else if (props.listName === 'historyList') {
-
-      } else if (props.listName === 'detailsList') {
-
-      }
+      deleteDialogRef.value.openDialog();
+      currentMenuItem.value = item;
     }
   }
 ];
@@ -198,12 +205,39 @@ const confirmCreate = async () => {
     console.log('error', error);
   }
 }
+// 添加到歌单
 const handleClick = async (item) => {
   // console.log('添加到歌单:', item)
   // console.log('当前要添加的项目：', currentMenuItem.value)
   addSongsToSongList([currentMenuItem.value.filename], item.name);
   await saveSongListToLocal();
   addDialogRef.value.closeDialog();
+}
+// deleteDialog实例
+const deleteDialogRef = ref(null);
+// 取消删除
+const cancelDelete = () => {
+  deleteDialogRef.value.closeDialog();
+}
+// 确认删除
+const confirmDelete = async () => {
+  try {
+    // console.log(props.listName)
+    if (props.listName === 'musicLibraryList') {
+      // console.log('删除歌曲：', currentMenuItem.value.filename);
+      removeMusicFromLibrary([currentMenuItem.value.filename]);
+      await saveMusicLibraryToLocal();
+      deleteDialogRef.value.closeDialog();
+    } else if (props.listName === 'playList') {
+
+    } else if (props.listName === 'historyList') {
+
+    } else if (props.listName === 'detailsList') {
+
+    }
+  } catch (error) {
+    console.log('error', error);
+  }
 }
 </script>
 
