@@ -3,14 +3,19 @@
     <img class="cover" :src="currentMusicTags && currentMusicTags.cover || '/defaultCover.png'" alt="音乐封面"
       @click="openPure">
     <div class="details">
-      <div class="title">{{ currentMusicTags && currentMusicTags.title || '欢迎使用！' }}</div>
-      <div class="artist">{{ currentMusicTags && currentMusicTags.artist || '嘻嘻嘻' }}</div>
+      <div class="title">
+        <Carousel :textContent="currentMusicTags && currentMusicTags.title || '欢迎使用！'" />
+      </div>
+      <div class="artist">
+        <Carousel :textContent="currentMusicTags && currentMusicTags.artist || '嘻嘻嘻'" />
+      </div>
     </div>
   </div>
 </template>
 <script setup>
 import { storeToRefs } from 'pinia';
 import { usePlayerStore } from '@/stores/player';
+import Carousel from '../../BaseUI/Carousel.vue';
 
 // 引入playerStore中的变量和方法
 const playerStore = usePlayerStore();
@@ -40,6 +45,7 @@ const openPure = () => {
 
   .details {
     margin-left: 10px;
+    width: calc(100% - 74px);
 
     .title {
       font-size: 18px;

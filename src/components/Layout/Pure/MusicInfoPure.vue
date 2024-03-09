@@ -2,14 +2,19 @@
   <div class="music-pure-container">
     <img class="cover" :src="currentMusicTags && currentMusicTags.cover || '/defaultCover.png'" alt="音乐封面">
     <div class="details">
-      <div class="title">{{ currentMusicTags && currentMusicTags.title || '欢迎使用！' }}</div>
-      <div class="artist">{{ currentMusicTags && currentMusicTags.artist || '嘻嘻嘻' }}</div>
+      <div class="title">
+        <Carousel :textContent="currentMusicTags && currentMusicTags.title || '欢迎使用！'" />
+      </div>
+      <div class="artist">
+        <Carousel :textContent="currentMusicTags && currentMusicTags.artist || '嘻嘻嘻'" />
+      </div>
     </div>
   </div>
 </template>
 <script setup>
 import { storeToRefs } from 'pinia';
 import { usePlayerStore } from '@/stores/player';
+import Carousel from '@/components/BaseUI/Carousel.vue';
 
 // 引入playerStore中的变量
 const playerStore = usePlayerStore();
@@ -32,16 +37,16 @@ const { currentMusicTags } = storeToRefs(playerStore);
   }
 
   .details {
+    width: 100%;
+
     .title {
       font-size: 20px;
       font-weight: 800;
-      text-align: center;
     }
 
     .artist {
       font-size: 16px;
       margin-top: 4px;
-      text-align: center;
     }
   }
 }
